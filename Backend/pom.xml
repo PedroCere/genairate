@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.5</version>
+    <version>3.1.5</version>
   </parent>
   <groupId>com.genairate.app</groupId>
   <artifactId>genairate-app</artifactId>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
-      <version>3.4.5</version>
+      <version>3.1.5</version>
     </dependency>
   </dependencies>
 
