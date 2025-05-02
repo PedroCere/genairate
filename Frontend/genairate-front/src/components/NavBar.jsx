@@ -1,145 +1,179 @@
-import React, { useState, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect } from "react";
+import {
+  FiChevronDown,
+  FiSearch
+} from "react-icons/fi";
+import {
+  FaBell,
+  FaSun,
+  FaMoon,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaPalette
+} from "react-icons/fa";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function DropdownMenu({ logout, onClose, position }) {
-  return ReactDOM.createPortal(
-    <div
-      className="absolute mt-2 w-48 max-w-screen origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 z-50"
-      style={{ top: position.top, left: position.left, right: 'auto' }}
-    >
-      <button
-        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        onClick={() => {
-          console.log('Perfil');
-          onClose();
-        }}
-      >
-        Mi Perfil
-      </button>
-      <button
-        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        onClick={() => {
-          console.log('Configuración');
-          onClose();
-        }}
-      >
-        Configuración
-      </button>
-      <button
-        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-        onClick={() => {
-          logout();
-          onClose();
-        }}
-      >
-        Cerrar Sesión
-      </button>
-    </div>
-    ,document.body
-  );
-}
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [soundVolume, setSoundVolume] = useState(0.5);
+  const [greeting, setGreeting] = useState("");
+  const [notificationCount] = useState(3);
+  const [hidden, setHidden] = useState(false);
+  const [themeColor, setThemeColor] = useState("emerald");
+  const [lastActive, setLastActive] = useState("");
+  const [searching, setSearching] = useState(false);
 
-export default function NavBar() {
-  const { user, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const buttonRef = useRef(null);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  const toggleMenu = () => {
-    if (!menuOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      });
-    }
-    setMenuOpen(!menuOpen);
+  const toggleTheme = () => {
+    const next = themeColor === "emerald" ? "purple" : themeColor === "purple" ? "teal" : "emerald";
+    setThemeColor(next);
+    localStorage.setItem("themeColor", next);
+    toast(`Theme set to ${next}`, { type: "info", autoClose: 2000 });
   };
 
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem("darkMode", newMode);
+    toast.info(`Switched to ${newMode ? "Dark" : "Light"} Mode`, { autoClose: 2000 });
+  };
+
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const prev = scrollY.getPrevious();
+    setHidden(latest > prev);
+  });
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 18) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
+
+    const autoDark = !(hour >= 6 && hour < 18);
+    setDarkMode(autoDark);
+    setSoundVolume(parseFloat(localStorage.getItem("soundVolume") || "0.5"));
+    setThemeColor(localStorage.getItem("themeColor") || "emerald");
+
+ 
+    const last = new Date();
+    last.setMinutes(last.getMinutes() - 12);
+    setLastActive(last.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+  }, []);
+
   return (
-    <nav className="bg-[#1E293B] border-b border-[#2C3A50] shadow-sm z-50">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex h-16 justify-between items-center relative">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-[#06B6D4] to-[#C084FC] rounded-md shadow-sm">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-[#06B6D4] to-[#C084FC] bg-clip-text text-transparent">
-              GenAirate
-            </span>
+    <motion.header
+    initial={{ y: -20, opacity: 0 }}
+    animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
+    transition={{ duration: 0.4 }}
+    className="h-16 relative backdrop-blur-md bg-[#1B1B1B]/80 border-b border-[#2F2F2F] shadow-sm sticky top-0 z-40"
+  >
+    <ToastContainer position="top-right" theme="dark" />
+  
+   
+    <div className="absolute left-0 h-full flex items-center gap-3 pl-4">
+      <motion.img src="/oxilogo.png" alt="OXI Logo" className="w-8 h-auto" whileHover={{ rotate: 12 }} />
+      <motion.span
+        className="text-sm text-emerald-300"
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
+        {greeting}, Santino 🌱
+      </motion.span>
+    </div>
+  
+      <div className="flex items-center justify-end h-full pr-4 md:pr-6 ml-auto gap-4">       
+        <div className="relative">
+          <input
+            onFocus={() => setSearching(true)}
+            onBlur={() => setTimeout(() => setSearching(false), 200)}
+            type="text"
+            placeholder="Search..."
+            className="bg-[#252525] px-10 py-1.5 rounded-md border border-[#2F2F2F] text-sm text-white placeholder-gray-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition w-36 focus:w-64"
+          />
+          <motion.div
+            animate={{ rotate: searching ? 360 : 0 }}
+            transition={{ repeat: searching ? Infinity : 0, duration: 1.2, ease: "linear" }}
+            className="absolute left-3 top-2.5 text-gray-400"
+          >
+            <FiSearch />
+          </motion.div>
+        </div>
+
+        <div className="relative">
+          <button className="text-gray-400 hover:text-white transition">
+            <FaBell />
+          </button>
+          <span className="absolute -top-1 -right-1 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full">
+            {notificationCount}
+          </span>
+        </div>
+
+      
+        <button onClick={toggleDarkMode} className="text-gray-400 hover:text-yellow-400 transition">
+          {darkMode ? <FaSun /> : <FaMoon />}
+        </button>
+
+        <div className="flex items-center gap-1">
+          {soundVolume > 0 ? <FaVolumeUp className="text-emerald-400" /> : <FaVolumeMute className="text-gray-400" />}
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={soundVolume}
+            onChange={(e) => {
+              setSoundVolume(parseFloat(e.target.value));
+              localStorage.setItem("soundVolume", e.target.value);
+            }}
+            className="w-20 accent-emerald-400"
+          />
+        </div>
+
+        <button onClick={toggleTheme} className="text-gray-400 hover:text-purple-400 transition">
+          <FaPalette />
+        </button>
+
+        <div className="flex items-center gap-2 relative cursor-pointer group" onClick={toggleMenu}>
+          <div className="relative">
+            <img
+              src="/profile.jpg"
+              alt="User"
+              className="h-10 w-10 rounded-full object-cover border-2 border-transparent group-hover:border-emerald-400 transition-all ring-2 ring-green-400 ring-offset-2"
+            />
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-400 border-2 border-[#1B1B1B]" />
           </div>
+          <span className="text-sm font-medium text-white hidden md:block">Santino Panchino</span>
+          <FiChevronDown className={`text-gray-400 transition-transform ${isMenuOpen ? "rotate-180 text-emerald-400" : ""}`} />
 
-          {/* Acción: Nuevo Artículo */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => console.log('Nuevo artículo')}
-              className="hidden sm:inline-flex items-center gap-2 rounded-md bg-[#06B6D4] hover:bg-[#0891b2] text-white px-3 py-2 text-sm font-medium transition"
-            >
-              <svg className="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Nuevo Artículo
-            </button>
-
-            {/* Perfil */}
-            <div className="relative overflow-visible">
-              <button
-                ref={buttonRef}
-                onClick={toggleMenu}
-                className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#1E293B]"
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="absolute top-14 right-0 w-56 bg-[#252525] rounded-lg shadow-xl z-50 border border-[#2F2F2F]"
               >
-                <span className="sr-only">Abrir menú de usuario</span>
-                <div className="w-8 h-8 rounded-full bg-[#C084FC] text-white flex items-center justify-center font-semibold shadow-md">
-                  {user?.name?.[0]?.toUpperCase() || 'U'}
+                <div className="py-2">
+                  <p className="px-4 py-2 text-sm text-gray-400 italic">Last seen at {lastActive}</p>
+                  <hr className="border-[#2F2F2F]" />
+                  <button className="w-full px-4 py-2 text-left text-sm text-gray-200 hover:bg-emerald-400/10 transition-all">Profile Settings</button>
+                  <button className="w-full px-4 py-2 text-left text-sm text-gray-200 hover:bg-emerald-400/10 transition-all">Change Language 🌍</button>
+                  <button className="w-full px-4 py-2 text-left text-sm text-gray-200 hover:bg-emerald-400/10 transition-all">View Activity Log</button>
+                  <div className="border-t border-[#2F2F2F] my-1" />
+                  <button className="w-full px-4 py-2 text-left text-sm text-gray-200 hover:bg-rose-500/10 hover:text-rose-400 transition-all">Logout</button>
                 </div>
-              </button>
-
-              {menuOpen && (
-                <DropdownMenu logout={logout} onClose={() => setMenuOpen(false)} position={dropdownPosition} />
-              )}
-            </div>
-          </div>
-
-          {/* Menú móvil */}
-          <div className="absolute right-0 top-full mt-2 w-48 max-w-[90vw] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 z-50">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-white hover:bg-[#334155] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-            >
-              <span className="sr-only">Abrir menú</span>
-              {isOpen ? (
-                <svg className="h-6 w-6" viewBox="0 0 24 24" stroke="currentColor" fill="none">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="h-6 w-6" viewBox="0 0 24 24" stroke="currentColor" fill="none">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* Menú colapsable móvil */}
-      {isOpen && (
-        <div className="sm:hidden px-2 pb-3 space-y-1">
-          <button className="block w-full text-left rounded-md px-3 py-2 text-sm font-medium text-white bg-[#334155]">
-            Dashboard
-          </button>
-          <button className="block w-full text-left rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-[#334155] hover:text-white">
-            Mi Perfil
-          </button>
-          <button className="block w-full text-left rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-[#334155] hover:text-white">
-            Configuración
-          </button>
-        </div>
-      )}
-    </nav>
+    </motion.header>
   );
-}
+};
+
+export default Navbar;

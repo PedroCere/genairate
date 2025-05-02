@@ -5,9 +5,6 @@ import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
-import { QueryClient, QueryClientProvider } from 'react-query';
-
-const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -33,15 +30,12 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <EditorProvider>
-          <div className="min-h-screen bg-background">
-            <RouterProvider router={router} />
-          </div>
-        </EditorProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <EditorProvider>
+        {/* ✅ Quitar el div extra */}
+        <RouterProvider router={router} />
+      </EditorProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useAuth } from '../context/AuthContext';
-import { useQuery } from 'react-query';
+import { useState, useEffect } from 'react';
 import { getRecentArticles } from '../services/ContentService';
 
 function formatDate(dateString) {
@@ -20,18 +20,26 @@ function formatDate(dateString) {
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
+  const [articles, setArticles] = useState([]);
+  const [articlesLoading, setArticlesLoading] = useState(false);
+  const [articlesError, setArticlesError] = useState(null);
 
-  const { 
-    data: articles, 
-    isLoading: articlesLoading,
-    error: articlesError 
-  } = useQuery(
-    ['recentArticles', user?.id],
-    () => getRecentArticles(user?.id),
-    {
-      enabled: !!user?.id
-    }
-  );
+  useEffect(() => {
+    if (!user?.id) return;
+
+    setArticlesLoading(true);
+    getRecentArticles(user.id)
+      .then(data => {
+        setArticles(data);
+        setArticlesError(null);
+      })
+      .catch(error => {
+        setArticlesError(error);
+      })
+      .finally(() => {
+        setArticlesLoading(false);
+      });
+  }, [user?.id]);
 
   if (loading) {
     return (
