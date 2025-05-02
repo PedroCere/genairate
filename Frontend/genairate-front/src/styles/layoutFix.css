@@ -1,0 +1,11 @@
+/* Adjusted layout fix to remove centering but keep flex layout and size constraints */
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  place-items: unset !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  min-width: 320px !important;
+  min-height: 100vh !important;
+  }
