@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor } from 'slate';
-import { withHistory } from 'slate-history';
 
 const initialValue = [
   {
@@ -11,7 +10,7 @@ const initialValue = [
 ];
 
 export default function RichEditor({ value, onChange }) {
-  const [editor] = useState(() => withHistory(withReact(createEditor()))); // Paréntesis adicional aquí
+  const [editor] = useState(() => withReact(createEditor()));
 
   return (
     <Slate

@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useLocation } from "react-router-dom";
@@ -32,12 +33,12 @@ export default function Sidebar() {
 
   const handleMouseEnter = () => {
     clearTimeout(hoverTimeout.current);
-    hoverTimeout.current = setTimeout(() => setIsHovered(true), 200);
+    hoverTimeout.current = setTimeout(() => setIsHovered(true), 150);
   };
 
   const handleMouseLeave = () => {
     clearTimeout(hoverTimeout.current);
-    hoverTimeout.current = setTimeout(() => setIsHovered(false), 200);
+    hoverTimeout.current = setTimeout(() => setIsHovered(false), 150);
   };
 
   const toggleTheme = () => {
@@ -48,100 +49,80 @@ export default function Sidebar() {
     <motion.aside
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      animate={{ width: isHovered ? 256 : 64 }}
+      animate={{ width: isHovered ? 200 : 64 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="h-screen bg-[#1E293B] border-r border-[#334155] backdrop-blur-lg overflow-hidden shadow-xl flex flex-col shrink-0"
+      className="h-screen bg-slate-900 border-r border-slate-800 backdrop-blur-md shadow-lg flex flex-col shrink-0"
     >
-      {/* LOGO */}
-      <div className="p-4 flex justify-center items-center">
-        <img src={logo} alt="GenAirate logo" className="h-[65px] w-auto object-contain" />
+      <div className="p-3 flex justify-center items-center">
+        <img src={logo} alt="GenAirate logo" className="h-12 w-auto object-contain" />
       </div>
 
-      {/* NAVIGATION - Espaciado idéntico a OXI */}
-      <nav className="flex flex-col px-2 flex-1 space-y-6">
-        <div className="space-y-2">
-          {navLinks.map(({ icon, label, path }, i) => (
-            <NavLink key={i} to={path}>
-              {({ isActive }) => (
-                <motion.button
-                  className={`w-full flex items-center ${
-                    isHovered ? "justify-start px-4" : "justify-center px-2"
-                  } gap-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                  ${
-                    isActive
-                      ? "bg-emerald-500/15 text-emerald-300 shadow-[inset_0_0_0_1px_rgba(52,211,153,0.15)]"
-                      : "hover:bg-white/5 text-[#94A3B8]"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <span className="text-lg text-current">{icon}</span>
-                  <AnimatePresence>
-                    {isHovered && (
-                      <motion.span
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        className="text-sm"
-                      >
-                        {label}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              )}
-            </NavLink>
-          ))}
-        </div>
+      <nav className="flex-1 px-2 space-y-5 mt-2">
+        {navLinks.map(({ icon, label, path }, index) => (
+          <NavLink key={index} to={path}>
+            {({ isActive }) => (
+              <motion.div
+                className={`flex items-center gap-3 py-2.5 px-2 rounded-md text-sm transition-all duration-200 cursor-pointer
+                  ${isHovered ? "justify-start" : "justify-center"}
+                  ${isActive ? "bg-emerald-500/10 text-emerald-300" : "text-slate-400 hover:bg-slate-800"}`}
+                whileHover={{ scale: 1.01 }}
+              >
+                <span className="text-lg">{icon}</span>
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                    >
+                      {label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </NavLink>
+        ))}
       </nav>
 
-      {/* BOTTOM SETTINGS - Espaciado idéntico a OXI */}
-      <div className="px-2 pb-4 space-y-6">
-        <div className="space-y-2">
-          <button
-            onClick={toggleTheme}
-            className={`w-full flex items-center ${
-              isHovered ? "justify-start px-4" : "justify-center px-2"
-            } gap-3 py-2.5 rounded-lg text-sm transition-all ${
-              theme === "dark" ? "text-amber-300" : "text-slate-400"
-            } hover:bg-white/5`}
-          >
-            <span className="text-lg">
-              {theme === "dark" ? <FaSun /> : <FaMoon />}
-            </span>
-            <AnimatePresence>
-              {isHovered && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="text-sm"
-                >
-                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
+      <div className="px-2 py-4 space-y-3">
+        <button
+          onClick={toggleTheme}
+          className={`flex items-center gap-3 w-full py-2 px-2 rounded-md text-sm transition
+            ${isHovered ? "justify-start" : "justify-center"}
+            ${theme === "dark" ? "text-yellow-300" : "text-slate-400"} hover:bg-slate-800`}
+        >
+          <span>{theme === "dark" ? <FaSun /> : <FaMoon />}</span>
+          <AnimatePresence>
+            {isHovered && (
+              <motion.span
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+              >
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
 
-          <button
-            className={`w-full flex items-center ${
-              isHovered ? "justify-start px-4" : "justify-center px-2"
-            } gap-3 py-2.5 rounded-lg text-sm transition-all text-rose-300 hover:bg-rose-500/10`}
-          >
-            <FaPowerOff className="text-lg" />
-            <AnimatePresence>
-              {isHovered && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="text-sm"
-                >
-                  Log out
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
-        </div>
+        <button
+          className={`flex items-center gap-3 w-full py-2 px-2 text-rose-300 rounded-md text-sm transition
+            ${isHovered ? "justify-start" : "justify-center"} hover:bg-rose-400/10`}
+        >
+          <FaPowerOff />
+          <AnimatePresence>
+            {isHovered && (
+              <motion.span
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+              >
+                Log out
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
       </div>
     </motion.aside>
   );
