@@ -1,5 +1,3 @@
-import Sidebar from '../components/SideBar.jsx';
-import Navbar from '../components/NavBar.jsx';
 import { useAuth } from '../context/AuthContext';
 import { useQuery } from 'react-query';
 import { getRecentArticles } from '../services/ContentService';
@@ -118,16 +116,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#1E293B] text-white overflow-hidden">
-      <Sidebar className="flex-shrink-0" />
-      <div className="flex flex-col flex-1">
-        <div className="px-8 py-6 w-full">
-          <Navbar />
-        </div>
-        <main className="flex-1 px-8 py-6 overflow-y-auto space-y-8">
-          <DashboardContent />
-        </main>
-      </div>
-    </div>
+    <section>
+      <DashboardContent />
+    </section>
   );
 }

@@ -40,7 +40,7 @@ function DropdownMenu({ logout, onClose, position }) {
   );
 }
 
-export default function NavBar() {
+export default function NavBarFixed() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

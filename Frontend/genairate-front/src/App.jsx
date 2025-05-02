@@ -4,6 +4,7 @@ import { EditorProvider } from './context/EditorContext';
 import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
 import ErrorPage from './components/ErrorPage';
+import Layout from './Layout';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
@@ -11,16 +12,22 @@ const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Dashboard />,
-    errorElement: <ErrorPage />
-  },
-  {
-    path: '/editor',
-    element: <EditorPage />
-  },
-  {
-    path: '/editor/:id',
-    element: <EditorPage />
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      {
+        path: 'editor',
+        element: <EditorPage />
+      },
+      {
+        path: 'editor/:id',
+        element: <EditorPage />
+      }
+    ]
   }
 ]);
 
