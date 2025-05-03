@@ -15,6 +15,8 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import logo from '../assets/logo1.png';
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
@@ -64,6 +66,7 @@ const Navbar = () => {
     setLastActive(last.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
   }, []);
 
+  // Color palette
   const colors = {
     primary: "#06B6D4",
     accent: "#C084FC",
@@ -74,6 +77,7 @@ const Navbar = () => {
     danger: "#F87171"
   };
 
+  // Helper to get color class or inline style
   const getColorClass = (colorName) => {
     switch (colorName) {
       case "primary": return "text-[#06B6D4]";
@@ -98,7 +102,7 @@ const Navbar = () => {
       <ToastContainer position="top-right" theme="dark" />
 
       <div className="absolute left-0 h-full flex items-center gap-3 pl-4">
-        <motion.img src="/logo1.png" alt="OXI Logo" className="w-8 h-auto" whileHover={{ rotate: 12 }} />
+        <motion.img src={logo} alt="logo1" className="w-8 h-auto" whileHover={{ rotate: 12 }} />
         <motion.span
           className={`${getColorClass("primary")} text-sm`}
           initial={{ opacity: 0, x: -10 }}
