@@ -1,173 +1,114 @@
-import React, { useState, useEffect } from "react";
-import {
-  FiChevronDown,
-  FiSearch
-} from "react-icons/fi";
-import {
-  FaBell,
-  FaSun,
-  FaMoon,
-  FaVolumeUp,
-  FaVolumeMute,
-  FaPalette
-} from "react-icons/fa";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import logo from '../assets/logo1.png';
-import navLinks from "./navLinks";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import profile2 from "../assets/profile2.jpg";
+import {
+  FiSearch,
+  FiBell,
+  FiEdit3,
+  FiChevronDown,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiBookOpen,
+  FiBarChart2,
+  FiHelpCircle,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
-const Navbar = ({ darkMode, toggleDarkMode }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [soundVolume, setSoundVolume] = useState(0.5);
-  const [greeting, setGreeting] = useState("");
-  const [notificationCount] = useState(3);
-  const [hidden, setHidden] = useState(false);
-  const [themeColor, setThemeColor] = useState("primary");
-  const [lastActive, setLastActive] = useState("");
-  const [searching, setSearching] = useState(false);
-
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-
-  const toggleTheme = () => {
-    const next = themeColor === "primary" ? "accent" : themeColor === "accent" ? "secondary" : "primary";
-    setThemeColor(next);
-    localStorage.setItem("themeColor", next);
-    toast(`Theme set to ${next}`, { type: "info", autoClose: 2000 });
-  };
-
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const prev = scrollY.getPrevious();
-    setHidden(latest > prev);
-  });
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning");
-    else if (hour < 18) setGreeting("Good afternoon");
-    else setGreeting("Good evening");
-
-    setSoundVolume(parseFloat(localStorage.getItem("soundVolume") || "0.5"));
-    setThemeColor(localStorage.getItem("themeColor") || "primary");
-
-    const last = new Date();
-    last.setMinutes(last.getMinutes() - 12);
-    setLastActive(last.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-  }, []);
-
-  // Helper to get color class or inline style replaced by CSS variables
-  const getColorStyle = (colorVar) => {
-    return { color: `var(${colorVar})` };
-  };
+const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleDropdown = () => setMenuOpen(!menuOpen);
 
   return (
-    <motion.header
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
-      transition={{ duration: 0.4 }}
-      style={{ backgroundColor: 'var(--color-navbar-bg)', borderBottomColor: 'var(--color-secondary)' }}
-      className="h-16 relative backdrop-blur-md border-b shadow-sm sticky top-0 z-40"
-    >
-      <ToastContainer position="top-right" theme="dark" />
+    <header className="w-full sticky top-0 z-50 border-b bg-white" style={{ borderColor: "var(--color-border)" }}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-      <div className="absolute left-0 h-full flex items-center gap-3 pl-4">
-        <motion.img src={logo} alt="logo1" className="w-8 h-auto" whileHover={{ rotate: 12 }} />
-        <motion.span
-          style={getColorStyle('--color-primary')}
-          className="text-sm"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          {greeting}, Santino 
-        </motion.span>
-      </div>
-
-      <div className="flex items-center justify-end h-full pr-4 md:pr-6 ml-auto gap-4">
-        <div className="relative">
-          <input
-            onFocus={() => setSearching(true)}
-            onBlur={() => setTimeout(() => setSearching(false), 200)}
-            type="text"
-            placeholder="Search..."
-            style={{ backgroundColor: 'var(--color-sidebar-bg)', color: 'var(--color-text)', borderColor: 'var(--color-secondary)' }}
-            className="px-10 py-1.5 rounded-md text-sm placeholder:text-gray-400 focus:ring-1 focus:ring-cyan-500 transition w-36 focus:w-64"
-          />
-          <motion.div
-            animate={{ rotate: searching ? 360 : 0 }}
-            transition={{ repeat: searching ? Infinity : 0, duration: 1.2, ease: "linear" }}
-            className="absolute left-3 top-2.5 text-gray-400"
-          >
-            <FiSearch />
-          </motion.div>
-        </div>
-
-        <div className="relative">
-          <button style={getColorStyle('--color-secondary')} className="hover:text-white transition">
-            <FaBell />
-          </button>
-          <span style={{ backgroundColor: 'var(--color-danger)', color: 'var(--color-text)' }} className="absolute -top-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full">
-            {notificationCount}
-          </span>
-        </div>
-
-        <button onClick={toggleDarkMode} style={getColorStyle('--color-secondary')} className="hover:text-green-400 transition">
-          {darkMode ? <FaSun /> : <FaMoon />}
-        </button>
-
-        <div className="flex items-center gap-2 relative cursor-pointer group" onClick={toggleMenu}>
+        {/* Izquierda - Logo + Search */}
+        <div className="flex items-center space-x-4">
+          <NavLink to="/" className="text-2xl font-serif font-bold text-black">
+            GenAirate
+          </NavLink>
           <div className="relative">
-            <img
-              src="/profile.jpg"
-              alt="User"
-              className="h-10 w-10 rounded-full object-cover border-2 border-transparent group-hover:border-cyan-500 transition-all ring-2 ring-green-400 ring-offset-2"
+            <input
+              type="text"
+              placeholder="Search"
+              className="pl-10 pr-4 py-2 w-64 text-sm rounded-full border bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
-            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-400 border-2 border-gray-800" />
+            <FiSearch className="absolute left-3 top-2.5 text-gray-700" />
           </div>
-          <span style={getColorStyle('--color-text')} className="text-sm font-medium hidden md:block">Santino Panchino</span>
-          <FiChevronDown style={getColorStyle('--color-secondary')} className={`transition-transform ${isMenuOpen ? "rotate-180 text-cyan-500" : ""}`} />
+        </div>
 
-          <AnimatePresence>
-            {isMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                style={{ backgroundColor: 'var(--color-sidebar-bg)', borderColor: 'var(--color-secondary)' }}
-                className="absolute top-14 right-0 w-56 rounded-lg shadow-xl z-50 border"
-              >
-                <div className="py-2">
-                  <p style={getColorStyle('--color-secondary')} className="px-4 py-2 text-sm italic">Last seen at {lastActive}</p>
-                  <hr style={{ borderColor: 'var(--color-secondary)' }} />
-                  <button style={getColorStyle('--color-text')} className="w-full px-4 py-2 text-left text-sm hover:bg-cyan-500/10 transition-all">Profile Settings</button>
-                  <button style={getColorStyle('--color-text')} className="w-full px-4 py-2 text-left text-sm hover:bg-cyan-500/10 transition-all">Change Language 🌍</button>
-                  <button style={getColorStyle('--color-text')} className="w-full px-4 py-2 text-left text-sm hover:bg-cyan-500/10 transition-all">View Activity Log</button>
-                  <div style={{ borderColor: 'var(--color-secondary)' }} className="border-t my-1" />
-                  <button style={{ color: 'var(--color-danger)' }} className="w-full px-4 py-2 text-left text-sm hover:bg-red-500/10 hover:text-red-500 transition-all">Logout</button>
-                  <div style={{ borderColor: 'var(--color-secondary)' }} className="border-t my-1" />
-                  {navLinks.map(({ icon, label, path }, index) => (
-                    <NavLink
-                      key={index}
-                      to={path}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-4 py-2 text-sm transition-all hover:bg-cyan-500/10 ${
-                          isActive ? "bg-cyan-500/20" : ""
-                        }`
-                      }
-                    >
-                      <span className="text-lg">{icon}</span>
-                      {label}
-                    </NavLink>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* Derecha - Acciones */}
+        <div className="flex items-center gap-5 ml-auto">
+
+          {/* Botón Write */}
+          <NavLink
+            to="/write"
+            className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black"
+          >
+            <FiEdit3 className="text-xl" />
+            Write
+          </NavLink>
+
+          {/* Notificación */}
+          <button className="text-gray-600 hover:text-black">
+            <FiBell className="text-xl" />
+          </button>
+
+          {/* Perfil con dropdown */}
+          <div className="relative">
+            <button onClick={toggleDropdown} className="flex items-center gap-2">
+              <img
+                src={profile2}
+                alt="User"
+                className="h-8 w-8 rounded-full object-cover border"
+              />
+              <FiChevronDown className="text-gray-500" />
+            </button>
+
+            <AnimatePresence>
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="absolute right-0 mt-2 w-64 bg-white border border-[var(--color-border)] rounded-lg shadow-lg z-50 overflow-hidden"
+                >
+                  <div className="px-4 py-2 text-sm text-muted text-gray-600">
+                    Signed in as <strong>Santino</strong>
+                  </div>
+                  <hr className="border-[var(--color-border)]" />
+
+                  <NavLink to="/profile" className="dropdown-item">
+                    <FiUser /> Profile
+                  </NavLink>
+                  <NavLink to="/library" className="dropdown-item">
+                    <FiBookOpen /> Library
+                  </NavLink>
+                  <NavLink to="/stories" className="dropdown-item">
+                    <FiEdit3 /> Stories
+                  </NavLink>
+                  <NavLink to="/stats" className="dropdown-item">
+                    <FiBarChart2 /> Stats
+                  </NavLink>
+                  <hr className="border-[var(--color-border)]" />
+                  <NavLink to="/settings" className="dropdown-item">
+                    <FiSettings /> Settings
+                  </NavLink>
+                  <NavLink to="/help" className="dropdown-item">
+                    <FiHelpCircle /> Help
+                  </NavLink>
+                  <hr className="border-[var(--color-border)]" />
+                  <button className="dropdown-item text-red-500 hover:bg-red-100">
+                    <FiLogOut /> Sign Out
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 };
 

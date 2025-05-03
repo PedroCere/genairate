@@ -18,6 +18,15 @@ function formatDate(dateString) {
   }
 }
 
+function StyleChip({ icon, value, bgColor }) {
+  return (
+    <div className={`flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium bg-${bgColor} text-white`}>
+      <span>{icon}</span>
+      <span>{value}</span>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const [articles, setArticles] = useState([]);
@@ -26,106 +35,88 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!user?.id) return;
-
     setArticlesLoading(true);
     getRecentArticles(user.id)
-      .then(data => {
-        setArticles(data);
-        setArticlesError(null);
-      })
-      .catch(error => {
-        setArticlesError(error);
-      })
-      .finally(() => {
-        setArticlesLoading(false);
-      });
+      .then(setArticles)
+      .catch(setArticlesError)
+      .finally(() => setArticlesLoading(false));
   }, [user?.id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--color-dashboard-bg)', color: 'var(--color-text)' }}>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--color-background)] text-[var(--color-text)]">
         <div className="loader">Loading...</div>
-        <p className="mt-4" style={{ color: 'var(--color-secondary)' }}>Cargando datos de usuario...</p>
+        <p className="mt-4 text-gray-500">Cargando datos de usuario...</p>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-dashboard-bg)', color: 'var(--color-text)' }}>
-        <p className="text-red-500">Error de autenticación. Redirigiendo...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] text-red-500">
+        <p>Error de autenticación. Redirigiendo...</p>
       </div>
     );
   }
 
-  function StyleChip({ icon, label, value, bgColor }) {
-    return (
-      <div className={`flex items-center gap-2 rounded-full px-3 py-1`} style={{ backgroundColor: `var(--color-${bgColor})`, opacity: 0.2 }}>
-        <span>{icon}</span>
-        <span className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{value}</span>
-      </div>
-    );
-  }
-
-  function DashboardContent() {
-    const totalWords = user.stats?.totalWords ?? 0;
-    const totalArticles = user.stats?.totalArticles || 0;
-    const preferredTone = "Creativo"; // Hardcoded as per guide
-
-    return (
-      <div className="space-y-8">
-        <section className="p-6 rounded-2xl shadow-xl space-y-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)' }}>
-          <h3 className="text-2xl font-semibold dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>Tu estilo</h3>
-          <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>Tono preferido: <span className="font-semibold" style={{ color: 'var(--color-text)' }}>{preferredTone}</span></p>
-          <div className="flex gap-4">
-            <StyleChip icon="✍️" label="Palabras totales" value={totalWords} bgColor="cyan-600" />
-            <StyleChip icon="⭐" label="Artículos totales" value={totalArticles} bgColor="purple-600" />
-          </div>
-        </section>
-
-        <section className="p-6 rounded-2xl shadow-xl space-y-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)' }}>
-          <div className="flex justify-between items-center">
-            <h3 className="text-2xl font-semibold dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>Tus artículos recientes</h3>
-            <button className="font-semibold text-sm flex items-center gap-1 transition dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>
-              Ver todo
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-          {articlesLoading ? (
-            <div className="animate-pulse space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-28 rounded-2xl" style={{ backgroundColor: 'var(--color-secondary)', opacity: 0.2 }} />
-              ))}
-            </div>
-          ) : articlesError ? (
-            <div className="p-4 rounded-lg" style={{ color: 'var(--color-danger)', backgroundColor: 'var(--color-danger)', opacity: 0.2 }}>
-              Error cargando artículos: {articlesError.message}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {(articles || []).slice(0, 4).map((a, i) => (
-                <div key={i} className="p-6 rounded-2xl shadow-md hover:shadow-lg transition flex flex-col gap-2 relative" style={{ backgroundColor: 'var(--color-secondary)', color: 'var(--color-text)' }}>
-                  <h4 className="font-semibold dark:text-[#FF9B8A]">{a.title}</h4>
-                  <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{formatDate(a.date)} · {a.words} palabras · {a.tone}</p>
-                  {a.isIaSuggested && (
-                    <span className="absolute top-4 right-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)', fontSize: '0.75rem', padding: '0.25rem 0.5rem', borderRadius: '0.5rem', boxShadow: '0 0 5px var(--color-primary)' }}>
-                      IA sugerido
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
-    );
-  }
+  const totalWords = user.stats?.totalWords ?? 0;
+  const totalArticles = user.stats?.totalArticles || 0;
+  const preferredTone = "Creativo"; // Static
 
   return (
-    <section>
-      <DashboardContent />
+    <section className="space-y-8 p-4 md:p-8 bg-[var(--color-background)] text-[var(--color-text)]">
+      {/* Bloque estilo */}
+      <div className="bg-[var(--color-surface)] rounded-2xl shadow-sm p-6 space-y-4">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Tu estilo</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Tono preferido: <span className="font-medium text-gray-800 dark:text-white">{preferredTone}</span>
+        </p>
+        <div className="flex gap-3 flex-wrap">
+          <StyleChip icon="✍️" value={`${totalWords} palabras`} bgColor="cyan-600" />
+          <StyleChip icon="⭐" value={`${totalArticles} artículos`} bgColor="purple-600" />
+        </div>
+      </div>
+
+      {/* Bloque artículos */}
+      <div className="bg-[var(--color-surface)] rounded-2xl shadow-sm p-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Tus artículos recientes</h3>
+          <button className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+            Ver todo
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {articlesLoading ? (
+          <div className="space-y-3 animate-pulse">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+            ))}
+          </div>
+        ) : articlesError ? (
+          <div className="text-red-600 bg-red-100 dark:bg-red-800 dark:text-red-200 p-4 rounded-lg">
+            Error cargando artículos: {articlesError.message}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {(articles || []).slice(0, 4).map((a, i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-all space-y-1 relative">
+                <h4 className="font-semibold text-gray-800 dark:text-white">{a.title}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {formatDate(a.date)} · {a.words} palabras · {a.tone}
+                </p>
+                {a.isIaSuggested && (
+                  <span className="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
+                    IA sugerido
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
