@@ -70,3 +70,32 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* ===== GenAIrate Custom UI Enhancements ===== */
+
+/* Sombras suaves para tarjetas y modales */
+.shadow-xl {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Fondos semitransparentes elegantes */
+.bg-glass {
+  background-color: rgba(30, 41, 59, 0.75); /* fondo dark translúcido */
+  backdrop-filter: blur(12px);
+}
+
+/* Transición general elegante */
+.transition-soft {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Texto primario mejor resaltado */
+.text-glow {
+  color: #06B6D4;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+}
+
+/* Fuente personalizada (si usás Inter por ejemplo) */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
