@@ -81,7 +81,7 @@ export default function Sidebar({ darkMode, toggleDarkMode }) {
                   className={`flex items-center gap-3 py-2.5 px-2 rounded-md text-sm transition-all duration-200 cursor-pointer justify-start`}
                   style={{
                     backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
-                    color: isActive ? 'var(--color-text)' : 'var(--color-secondary)'
+                    color: isActive ? 'var(--color-background)' : 'var(--color-text-lightmode)'
                   }}
                   whileHover={{ scale: 1.01 }}
                 >

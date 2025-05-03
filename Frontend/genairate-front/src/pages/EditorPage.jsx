@@ -70,7 +70,7 @@ export default function EditorPage() {
 
   return (
     <div className="flex h-screen bg-background">
-      <AISidebar />
+      <AiSideBar />
       
       <div className="flex-1 flex flex-col">
         <EditorToolbar onGenerate={handleGenerateInitial} />

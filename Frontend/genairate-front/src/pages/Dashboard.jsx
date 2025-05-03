@@ -1,6 +1,10 @@
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { getRecentArticles } from '../services/ContentService';
+import StatBox from '../components/StatBox';
+import ArticleCard from '../components/ArticleCard';
+import EmptyState from '../components/EmptyState';
+import { FiPlus, FiCpu, FiEdit, FiClock } from 'react-icons/fi';
 
 function formatDate(dateString) {
   try {
@@ -18,15 +22,6 @@ function formatDate(dateString) {
   }
 }
 
-function StyleChip({ icon, value, bgColor }) {
-  return (
-    <div className={`flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium bg-${bgColor} text-white`}>
-      <span>{icon}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
-
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const [articles, setArticles] = useState([]);
@@ -41,6 +36,16 @@ export default function Dashboard() {
       .catch(setArticlesError)
       .finally(() => setArticlesLoading(false));
   }, [user?.id]);
+
+  const handleCreateArticle = () => {
+    // Implement navigation or modal to create new article
+    alert('Crear nuevo artículo');
+  };
+
+  const handleViewTutorial = () => {
+    // Implement navigation to tutorial or onboarding
+    alert('Ver tutorial');
+  };
 
   if (loading) {
     return (
@@ -65,23 +70,56 @@ export default function Dashboard() {
 
   return (
     <section className="space-y-8 p-4 md:p-8 bg-[var(--color-background)] text-[var(--color-text)]">
-      {/* Bloque estilo */}
-      <div className="bg-[var(--color-surface)] rounded-2xl shadow-sm p-6 space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Tu estilo</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Tono preferido: <span className="font-medium text-gray-800 dark:text-white">{preferredTone}</span>
-        </p>
-        <div className="flex gap-3 flex-wrap">
-          <StyleChip icon="✍️" value={`${totalWords} palabras`} bgColor="cyan-600" />
-          <StyleChip icon="⭐" value={`${totalArticles} artículos`} bgColor="purple-600" />
+      {/* Header with branding and new article button */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center space-x-3">
+          <img src="/assets/logo1.png" alt="GenAirate Logo" className="h-10 w-10" />
+          <h1 className="text-3xl font-bold text-blue-600 dark:text-gray-100 font-serif">GenAirate</h1>
         </div>
+        <button
+          onClick={handleCreateArticle}
+          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition shadow-lg"
+          title="Nuevo artículo"
+        >
+          <FiCpu className="text-xl" />
+          + Nuevo artículo
+        </button>
       </div>
 
-      {/* Bloque artículos */}
-      <div className="bg-[var(--color-surface)] rounded-2xl shadow-sm p-6 space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Tus artículos recientes</h3>
-          <button className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+      {/* StatBox section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatBox
+          title="Total artículos"
+          value={totalArticles}
+          color="primary"
+          progress={75} // Example progress
+          comparison={15} // Example comparison percentage
+          icon={<span role="img" aria-label="document">📄</span>}
+        />
+        <StatBox
+          title="Total palabras"
+          value={totalWords}
+          color="accent"
+          progress={60} // Example progress
+          comparison={-5} // Example comparison percentage
+          icon={<FiEdit />}
+        />
+        <StatBox
+          title="Última edición"
+          value={user.stats?.lastEdit ? formatDate(user.stats.lastEdit) : 'N/A'}
+          color="success"
+          icon={<FiClock />}
+        />
+      </div>
+
+      {/* Articles section */}
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 drop-shadow-md">Trabajos recientes</h2>
+          <button
+            onClick={() => alert('Ver todos los artículos')}
+            className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+          >
             Ver todo
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
@@ -92,27 +130,23 @@ export default function Dashboard() {
         {articlesLoading ? (
           <div className="space-y-3 animate-pulse">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+              <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-inner" />
             ))}
           </div>
         ) : articlesError ? (
-          <div className="text-red-600 bg-red-100 dark:bg-red-800 dark:text-red-200 p-4 rounded-lg">
+          <div className="text-red-600 bg-red-100 dark:bg-red-800 dark:text-red-200 p-4 rounded-lg shadow-inner">
             Error cargando artículos: {articlesError.message}
           </div>
+        ) : articles.length === 0 ? (
+          <EmptyState
+            userName={user.name || 'Usuario'}
+            onCreateArticle={handleCreateArticle}
+            onViewTutorial={handleViewTutorial}
+          />
         ) : (
           <div className="space-y-4">
-            {(articles || []).slice(0, 4).map((a, i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-all space-y-1 relative">
-                <h4 className="font-semibold text-gray-800 dark:text-white">{a.title}</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {formatDate(a.date)} · {a.words} palabras · {a.tone}
-                </p>
-                {a.isIaSuggested && (
-                  <span className="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
-                    IA sugerido
-                  </span>
-                )}
-              </div>
+            {articles.slice(0, 4).map((article, i) => (
+              <ArticleCard key={i} article={article} className="shadow-md rounded-xl" />
             ))}
           </div>
         )}
