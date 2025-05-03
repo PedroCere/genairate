@@ -43,16 +43,16 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#1E293B] text-white">
+      <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--color-dashboard-bg)', color: 'var(--color-text)' }}>
         <div className="loader">Loading...</div>
-        <p className="mt-4 text-[#94A3B8]">Cargando datos de usuario...</p>
+        <p className="mt-4" style={{ color: 'var(--color-secondary)' }}>Cargando datos de usuario...</p>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1E293B] text-white">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-dashboard-bg)', color: 'var(--color-text)' }}>
         <p className="text-red-500">Error de autenticación. Redirigiendo...</p>
       </div>
     );
@@ -60,9 +60,9 @@ export default function Dashboard() {
 
   function StyleChip({ icon, label, value, bgColor }) {
     return (
-      <div className={`flex items-center gap-2 bg-${bgColor} bg-opacity-20 rounded-full px-3 py-1`}>
+      <div className={`flex items-center gap-2 rounded-full px-3 py-1`} style={{ backgroundColor: `var(--color-${bgColor})`, opacity: 0.2 }}>
         <span>{icon}</span>
-        <span className="text-sm text-white font-semibold">{value}</span>
+        <span className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{value}</span>
       </div>
     );
   }
@@ -74,19 +74,19 @@ export default function Dashboard() {
 
     return (
       <div className="space-y-8">
-        <section className="bg-gray-800 p-6 rounded-2xl shadow-xl space-y-4">
-          <h3 className="text-2xl font-semibold text-[#C084FC]">Tu estilo</h3>
-          <p className="text-sm text-[#94A3B8]">Tono preferido: <span className="font-semibold text-white">{preferredTone}</span></p>
+        <section className="p-6 rounded-2xl shadow-xl space-y-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)' }}>
+          <h3 className="text-2xl font-semibold dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>Tu estilo</h3>
+          <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>Tono preferido: <span className="font-semibold" style={{ color: 'var(--color-text)' }}>{preferredTone}</span></p>
           <div className="flex gap-4">
             <StyleChip icon="✍️" label="Palabras totales" value={totalWords} bgColor="cyan-600" />
             <StyleChip icon="⭐" label="Artículos totales" value={totalArticles} bgColor="purple-600" />
           </div>
         </section>
 
-        <section className="bg-gray-800 p-6 rounded-2xl shadow-xl space-y-4">
+        <section className="p-6 rounded-2xl shadow-xl space-y-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)' }}>
           <div className="flex justify-between items-center">
-            <h3 className="text-2xl font-semibold text-[#06B6D4]">Tus artículos recientes</h3>
-            <button className="text-[#06B6D4] hover:text-cyan-400 font-semibold text-sm flex items-center gap-1 transition">
+            <h3 className="text-2xl font-semibold dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>Tus artículos recientes</h3>
+            <button className="font-semibold text-sm flex items-center gap-1 transition dark:text-[#FF9B8A]" style={{ color: 'var(--color-accent)' }}>
               Ver todo
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -96,21 +96,21 @@ export default function Dashboard() {
           {articlesLoading ? (
             <div className="animate-pulse space-y-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-28 bg-[#94A3B8]/20 rounded-2xl" />
+                <div key={i} className="h-28 rounded-2xl" style={{ backgroundColor: 'var(--color-secondary)', opacity: 0.2 }} />
               ))}
             </div>
           ) : articlesError ? (
-            <div className="text-red-500 p-4 rounded-lg bg-red-900/20">
+            <div className="p-4 rounded-lg" style={{ color: 'var(--color-danger)', backgroundColor: 'var(--color-danger)', opacity: 0.2 }}>
               Error cargando artículos: {articlesError.message}
             </div>
           ) : (
             <div className="space-y-6">
               {(articles || []).slice(0, 4).map((a, i) => (
-                <div key={i} className="bg-[#2C3A50] p-6 rounded-2xl shadow-md hover:shadow-lg transition flex flex-col gap-2 relative">
-                  <h4 className="text-white font-semibold">{a.title}</h4>
-                  <p className="text-sm text-[#94A3B8]">{formatDate(a.date)} · {a.words} palabras · {a.tone}</p>
+                <div key={i} className="p-6 rounded-2xl shadow-md hover:shadow-lg transition flex flex-col gap-2 relative" style={{ backgroundColor: 'var(--color-secondary)', color: 'var(--color-text)' }}>
+                  <h4 className="font-semibold dark:text-[#FF9B8A]">{a.title}</h4>
+                  <p className="text-sm" style={{ color: 'var(--color-secondary)' }}>{formatDate(a.date)} · {a.words} palabras · {a.tone}</p>
                   {a.isIaSuggested && (
-                    <span className="absolute top-4 right-4 bg-[#C084FC] text-white text-xs px-2 py-1 rounded-full shadow">
+                    <span className="absolute top-4 right-4" style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)', fontSize: '0.75rem', padding: '0.25rem 0.5rem', borderRadius: '0.5rem', boxShadow: '0 0 5px var(--color-primary)' }}>
                       IA sugerido
                     </span>
                   )}
