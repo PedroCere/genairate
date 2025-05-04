@@ -94,6 +94,41 @@ export function EditorProvider({ children }) {
     }
   }, [activeSectionId, selectedText, article.sections, updateArticle, updateSectionContent]);
 
+  const translateText = useCallback(async (text, targetLanguage) => {
+    try {
+      updateArticle({ isLoading: true });
+      // Mocked translation for now
+      const translated = await contentService.translateText(text, targetLanguage);
+      
+      const currentSection = article.sections?.find(s => s.id === activeSectionId);
+      if (currentSection) {
+        const updatedContent = currentSection.content.replace(selectedText, translated);
+        updateSectionContent(activeSectionId, updatedContent);
+      }
+    } finally {
+      updateArticle({ isLoading: false });
+    }
+  }, [activeSectionId, selectedText, article.sections, updateArticle, updateSectionContent]);
+
+  const speechSynthesis = useCallback((text) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.warn('Speech synthesis not supported in this browser.');
+    }
+  }, []);
+
+  const exportAsPDF = useCallback(() => {
+    // Mocked export PDF functionality
+    console.log('Exporting article as PDF...');
+  }, []);
+
+  const exportAsMarkdown = useCallback(() => {
+    // Mocked export Markdown functionality
+    console.log('Exporting article as Markdown...');
+  }, []);
+
   const aiActions = {
     summarizeText: useCallback(async () => {
       const content = (article.sections || []).find(s => s.id === activeSectionId)?.content || '';
@@ -112,7 +147,12 @@ export function EditorProvider({ children }) {
         images: [...(prev.images || []), { url: imageUrl, prompt }]
       }));
       return imageUrl;
-    }, [])
+    }, []),
+
+    translateText,
+    speechSynthesis,
+    exportAsPDF,
+    exportAsMarkdown
   };
 
   const value = {
