@@ -60,7 +60,7 @@ export default function HistoryPage() {
   const [filteredArticles, setFilteredArticles] = useState([]);
 
   useEffect(() => {
-    // Use mocked data for now
+   
     setArticles(mockedArticles);
   }, []);
 
@@ -97,22 +97,22 @@ export default function HistoryPage() {
 
   function handleView(id) {
     console.log('View article', id);
-    // Implement navigation or modal to view article
+   
   }
 
   function handleEdit(id) {
     console.log('Edit article', id);
-    // Implement navigation to editor page with article id
+    
   }
 
   function handleDuplicate(id) {
     console.log('Duplicate article', id);
-    // Implement duplication logic
+   
   }
 
   function handleDelete(id) {
     console.log('Delete article', id);
-    // Implement delete logic with confirmation
+  
   }
 
   return (

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import HistoryPage from './pages/HistoryPage';
+import TemplatesPage from './pages/TemplatesPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: 'history',
         element: <HistoryPage />
+      },
+      {
+        path: 'templates',
+        element: <TemplatesPage />
       }
     ]
   }

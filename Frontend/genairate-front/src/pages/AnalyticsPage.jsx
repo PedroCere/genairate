@@ -23,7 +23,7 @@ export default function AnalyticsPage() {
       const data = await contentService.getAnalytics();
       setAnalytics(data);
 
-      // Calculate articles by type from demoArticles mock data
+     
       const typeCounts = demoArticles.reduce((acc, article) => {
         acc[article.type] = (acc[article.type] || 0) + 1;
         return acc;
@@ -37,23 +37,23 @@ export default function AnalyticsPage() {
     return <div className="text-center py-10">Cargando métricas...</div>;
   }
 
-  // Determine most used tone
+ 
   const toneEntries = Object.entries(analytics.toneDistribution);
   const mostUsedTone = toneEntries.reduce((max, entry) => (entry[1] > max[1] ? entry : max), ['', 0])[0];
 
-  // Data for weekly length bar chart
+ 
   const weeklyData = {
     labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7'],
     datasets: [
       {
         label: 'Longitud por semana (palabras)',
         data: analytics.weeklyProgress,
-        backgroundColor: 'rgba(37, 99, 235, 0.7)', // Tailwind blue-600
+        backgroundColor: 'rgba(37, 99, 235, 0.7)', 
       },
     ],
   };
 
-  // Data for articles by type pie chart
+  
   const articleTypes = Object.keys(articlesByType);
   const articleTypeCounts = Object.values(articlesByType);
   const articlesByTypeData = {
@@ -63,9 +63,9 @@ export default function AnalyticsPage() {
         label: 'Artículos por tipo',
         data: articleTypeCounts,
         backgroundColor: [
-          'rgba(59, 130, 246, 0.7)', // blue-500
-          'rgba(16, 185, 129, 0.7)', // green-500
-          'rgba(234, 179, 8, 0.7)',  // yellow-400
+          'rgba(59, 130, 246, 0.7)', 
+          'rgba(16, 185, 129, 0.7)', 
+          'rgba(234, 179, 8, 0.7)',  
         ],
         hoverOffset: 10,
       },
