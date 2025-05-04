@@ -1,11 +1,9 @@
 import { Node } from 'slate';
 
-// Convertir contenido de Slate a texto plano
 export const serializeContent = (value) => {
   return value.map(n => Node.string(n)).join('\n');
 };
 
-// Convertir texto plano a formato Slate
 export const deserializeContent = (text) => {
   const safeText = typeof text === 'string' ? text : '';
   return safeText.split('\n').map(line => ({
@@ -14,7 +12,6 @@ export const deserializeContent = (text) => {
   }));
 };
 
-// Funciones de ayuda para formato
 export const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
   

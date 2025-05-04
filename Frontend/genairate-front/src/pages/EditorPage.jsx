@@ -89,7 +89,7 @@ export default function EditorPage() {
         <EditorToolbar onGenerate={handleGenerateInitial} />
         
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 overflow-auto">
-          {/* Editor principal */}
+      
           <div className="bg-[#2C3A50] rounded-xl shadow-xl p-4">
             <RichEditor
               value={slateValue}
@@ -103,7 +103,7 @@ export default function EditorPage() {
             />
           </div>
           
-          {/* Vista previa */}
+          
           <ContentPreview />
         </div>
       </div>

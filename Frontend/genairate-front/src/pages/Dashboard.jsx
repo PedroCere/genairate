@@ -36,7 +36,7 @@ const highlights = [
 export default function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
-      {/* Main Content */}
+      
       <div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
@@ -57,7 +57,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Sidebar Right */}
+      
       <aside className="hidden lg:block space-y-8">
         <section>
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">Blogs de la comunidad</h3>
@@ -86,7 +86,7 @@ export default function Dashboard() {
         </section>
       </aside>
 
-      {/* Floating Button */}
+   
       <button className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10">
         + Nuevo artículo
       </button>

@@ -6,7 +6,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Set demo token in localStorage on mount
+
   useEffect(() => {
     localStorage.setItem('genairate_token', 'demo-token');
   }, []);
@@ -16,11 +16,10 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem('genairate_token');
       
       try {
-        // Simulate API loading time
+       
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         if (token) {
-          // Demo user data
           const userData = {
             id: 'demo-user',
             name: 'Demo User',

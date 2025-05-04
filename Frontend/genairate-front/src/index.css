@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 
-:root {
+:root { /* tema clarito :) */
   --color-background: #ffffff;
   --color-surface: #f9f9f9;
   --color-surface-card: #ffffff;
@@ -16,7 +16,7 @@
   --shadow-color: rgba(0, 0, 0, 0.04);
 }
 
-.dark {
+.dark {  /* tema oscuro como yo */
   --color-background: #0f172a;
   --color-surface: #1e293b;
   --color-surface-card: #334155;

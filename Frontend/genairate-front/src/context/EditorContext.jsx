@@ -8,7 +8,7 @@ export function EditorProvider({ children }) {
   const [article, setArticle] = useState({
     id: null,
     title: '',
-    sections: [], // Inicializado como array vacío
+    sections: [], 
     tone: 'profesional',
     language: 'es',
     format: 'blog',
