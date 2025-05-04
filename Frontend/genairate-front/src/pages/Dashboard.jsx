@@ -1,156 +1,96 @@
-import { useAuth } from '../context/AuthContext';
-import { useState, useEffect } from 'react';
-import { getRecentArticles } from '../services/ContentService';
-import StatBox from '../components/StatBox';
 import ArticleCard from '../components/ArticleCard';
 import EmptyState from '../components/EmptyState';
-import { FiPlus, FiCpu, FiEdit, FiClock } from 'react-icons/fi';
+import StatBox from '../components/StatBox';
+import { FaStar, FaPenFancy } from 'react-icons/fa';
 
-function formatDate(dateString) {
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    }) + ' h';
-  } catch {
-    return dateString;
-  }
-}
+const articles = [
+  {
+    id: 1,
+    title: 'Cómo escribir contenido efectivo con IA',
+    date: '2024-05-05',
+    wordCount: 850,
+    status: 'published',
+  },
+  {
+    id: 2,
+    title: 'Guía completa de SEO para blogs',
+    date: '2024-05-10',
+    wordCount: 450,
+    status: 'draft',
+  },
+];
+
+const highlights = [
+  {
+    title: 'Cómo destacar en contenido web este mes',
+    author: 'Comunidad GenAirate',
+    date: '3/5/2024',
+  },
+  {
+    title: 'Técnicas de escritura más leídas',
+    author: 'Laura P.',
+    date: '30/4/2024',
+  },
+];
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
-  const [articles, setArticles] = useState([]);
-  const [articlesLoading, setArticlesLoading] = useState(false);
-  const [articlesError, setArticlesError] = useState(null);
-
-  useEffect(() => {
-    if (!user?.id) return;
-    setArticlesLoading(true);
-    getRecentArticles(user.id)
-      .then(setArticles)
-      .catch(setArticlesError)
-      .finally(() => setArticlesLoading(false));
-  }, [user?.id]);
-
-  const handleCreateArticle = () => {
-    // Implement navigation or modal to create new article
-    alert('Crear nuevo artículo');
-  };
-
-  const handleViewTutorial = () => {
-    // Implement navigation to tutorial or onboarding
-    alert('Ver tutorial');
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--color-background)] text-[var(--color-text)]">
-        <div className="loader">Loading...</div>
-        <p className="mt-4 text-gray-500">Cargando datos de usuario...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] text-red-500">
-        <p>Error de autenticación. Redirigiendo...</p>
-      </div>
-    );
-  }
-
-  const totalWords = user.stats?.totalWords ?? 0;
-  const totalArticles = user.stats?.totalArticles || 0;
-  const preferredTone = "Creativo"; // Static
-
   return (
-    <section className="space-y-8 p-4 md:p-8 bg-[var(--color-background)] text-[var(--color-text)]">
-      {/* Header with branding and new article button */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center space-x-3">
-          <img src="/assets/logo1.png" alt="GenAirate Logo" className="h-10 w-10" />
-          <h1 className="text-3xl font-bold text-blue-600 dark:text-gray-100 font-serif">GenAirate</h1>
-        </div>
-        <button
-          onClick={handleCreateArticle}
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition shadow-lg"
-          title="Nuevo artículo"
-        >
-          <FiCpu className="text-xl" />
-          + Nuevo artículo
-        </button>
-      </div>
-
-      {/* StatBox section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatBox
-          title="Total artículos"
-          value={totalArticles}
-          color="primary"
-          progress={75} // Example progress
-          comparison={15} // Example comparison percentage
-          icon={<span role="img" aria-label="document">📄</span>}
-        />
-        <StatBox
-          title="Total palabras"
-          value={totalWords}
-          color="accent"
-          progress={60} // Example progress
-          comparison={-5} // Example comparison percentage
-          icon={<FiEdit />}
-        />
-        <StatBox
-          title="Última edición"
-          value={user.stats?.lastEdit ? formatDate(user.stats.lastEdit) : 'N/A'}
-          color="success"
-          icon={<FiClock />}
-        />
-      </div>
-
-      {/* Articles section */}
+    <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
+      {/* Main Content */}
       <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 drop-shadow-md">Trabajos recientes</h2>
-          <button
-            onClick={() => alert('Ver todos los artículos')}
-            className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-          >
-            Ver todo
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+        <h1 className="text-4xl font-serif font-bold text-gray-900 dark:text-white mb-8">GenAirate</h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+          <StatBox title="Total artículos" value={3} change={15} isPositive={true} />
+          <StatBox title="Total palabras" value={1500} change={-5} isPositive={false} />
+          <StatBox title="Última edición" value={'N/A'} change={0} isPositive={true} />
         </div>
 
-        {articlesLoading ? (
-          <div className="space-y-3 animate-pulse">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-inner" />
-            ))}
-          </div>
-        ) : articlesError ? (
-          <div className="text-red-600 bg-red-100 dark:bg-red-800 dark:text-red-200 p-4 rounded-lg shadow-inner">
-            Error cargando artículos: {articlesError.message}
-          </div>
-        ) : articles.length === 0 ? (
-          <EmptyState
-            userName={user.name || 'Usuario'}
-            onCreateArticle={handleCreateArticle}
-            onViewTutorial={handleViewTutorial}
-          />
+        <h2 className="text-2xl font-serif font-semibold text-gray-800 dark:text-gray-200 mb-4">Trabajos recientes</h2>
+        {articles.length === 0 ? (
+          <EmptyState />
         ) : (
           <div className="space-y-4">
-            {articles.slice(0, 4).map((article, i) => (
-              <ArticleCard key={i} article={article} className="shadow-md rounded-xl" />
+            {articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
             ))}
           </div>
         )}
       </div>
-    </section>
+
+      {/* Sidebar Right */}
+      <aside className="hidden lg:block space-y-8">
+        <section>
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">Blogs de la comunidad</h3>
+          <div className="space-y-4">
+            {highlights.map((item, idx) => (
+              <div key={idx}>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.title}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{item.author} • {item.date}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-gray-700 dark:text-gray-300">Escribe en GenAirate</h4>
+          </div>
+          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Guía de nuevos escritores</li>
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Consejos para escribir</li>
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Cómo ampliar tu audiencia</li>
+          </ul>
+          <button className="mt-4 w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition text-sm">
+            Empezar a escribir
+          </button>
+        </section>
+      </aside>
+
+      {/* Floating Button */}
+      <button className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10">
+        + Nuevo artículo
+      </button>
+    </div>
   );
 }
