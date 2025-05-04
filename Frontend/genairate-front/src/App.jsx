@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import { EditorProvider } from './context/EditorContext';
 import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
+import AnalyticsPage from './pages/AnalyticsPage';
+import HistoryPage from './pages/HistoryPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
       {
         path: 'editor/:id',
         element: <EditorPage />
+      },
+      {
+        path: 'analytics',
+        element: <AnalyticsPage />
+      },
+      {
+        path: 'history',
+        element: <HistoryPage />
       }
     ]
   }
