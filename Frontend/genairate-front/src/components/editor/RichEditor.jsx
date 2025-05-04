@@ -17,7 +17,7 @@ export default function RichEditor({ value, onChange }) {
   return (
     <Slate editor={editor} value={safeValue} onChange={onChange || (() => {})}>
       <Editable
-        className="p-4 text-text focus:outline-none min-h-[500px]"
+        className="p-4 text-text bg-surface-card rounded-xl shadow-subtle focus:outline-none min-h-[500px]"
         placeholder="Escribe tu contenido aquí..."
       />
     </Slate>

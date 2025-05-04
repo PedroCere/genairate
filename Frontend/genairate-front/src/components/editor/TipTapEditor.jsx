@@ -24,7 +24,7 @@ export default function TipTapEditor({ content, onUpdate }) {
   }
 
   return (
-    <div className="p-4 text-text min-h-[500px] border rounded">
+    <div className="p-4 text-text bg-surface-card rounded-xl shadow-subtle min-h-[500px] border border-border">
       <EditorContent editor={editor} />
     </div>
   );

@@ -7,24 +7,24 @@ export default function EditorToolbar() {
     saveDraft,
     publishArticle,
     aiActions,
-    updateArticle // Función añadida del contexto
+    updateArticle 
   } = useEditor();
 
   return (
-    <div className="flex items-center justify-between p-4 bg-[#2C3A50] border-b border-secondary/20">
+    <div className="flex items-center justify-between p-4 bg-surface-card border-b border-border rounded-t-xl text-text dark:text-text dark:bg-surface-card shadow-subtle">
       <div className="flex items-center space-x-4">
         <input
           type="text"
           value={article?.title || ''}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Título del artículo"
-          className="bg-transparent text-2xl font-bold text-text placeholder-secondary focus:outline-none"
+          className="bg-transparent text-2xl font-bold text-text placeholder-muted focus:outline-none"
         />
         
         <select
           value={article?.tone || 'profesional'}
           onChange={(e) => updateArticle({ tone: e.target.value })}
-          className="bg-background text-text px-3 py-1 rounded-lg"
+          className="bg-white dark:bg-white text-dark dark:text-black px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
         >
           <option value="profesional">Profesional</option>
           <option value="creativo">Creativo</option>
@@ -35,13 +35,13 @@ export default function EditorToolbar() {
       <div className="flex items-center space-x-4">
         <button 
           onClick={saveDraft}
-          className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-all"
+          className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
         >
           Guardar
         </button>
         <button
           onClick={publishArticle}
-          className="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary/90 transition-all"
+          className="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
         >
           Publicar
         </button>
