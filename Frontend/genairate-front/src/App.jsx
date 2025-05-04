@@ -7,6 +7,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import HistoryPage from './pages/HistoryPage';
 import TemplatesPage from './pages/TemplatesPage';
 import SettingsPage from './pages/SettingsPage';
+import AccountPage from './pages/AccountPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: 'settings',
         element: <SettingsPage />
+      },
+      {
+        path: 'account',
+        element: <AccountPage />
       }
     ]
   }
