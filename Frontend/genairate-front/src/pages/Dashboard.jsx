@@ -38,7 +38,6 @@ export default function Dashboard() {
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
       {/* Main Content */}
       <div>
-        <h1 className="text-4xl font-serif font-bold text-gray-900 dark:text-white mb-8">GenAirate</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <StatBox title="Total artículos" value={3} change={15} isPositive={true} />

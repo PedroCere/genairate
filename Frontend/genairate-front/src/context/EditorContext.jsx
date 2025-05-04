@@ -8,7 +8,7 @@ export function EditorProvider({ children }) {
   const [article, setArticle] = useState({
     id: null,
     title: '',
-    sections: [{ id: uuidv4(), heading: '', content: '' }],
+    sections: [], // Inicializado como array vacío
     tone: 'profesional',
     language: 'es',
     format: 'blog',
@@ -19,7 +19,7 @@ export function EditorProvider({ children }) {
     isLoading: false
   });
 
-  const [activeSectionId, setActiveSectionId] = useState(article.sections[0].id);
+  const [activeSectionId, setActiveSectionId] = useState(null);
   const [selectedText, setSelectedText] = useState('');
 
   const updateArticle = useCallback((updates) => {
@@ -37,7 +37,7 @@ export function EditorProvider({ children }) {
   const updateSectionContent = useCallback((sectionId, content) => {
     setArticle(prev => ({
       ...prev,
-      sections: prev.sections.map(section => 
+      sections: (prev.sections || []).map(section => 
         section.id === sectionId ? { ...section, content } : section
       )
     }));
@@ -47,12 +47,12 @@ export function EditorProvider({ children }) {
     const newSection = {
       id: uuidv4(),
       heading: '',
-      content: type === 'image' ? '' : ''
+      content: ''
     };
     
     setArticle(prev => ({
       ...prev,
-      sections: [...prev.sections, newSection]
+      sections: [...(prev.sections || []), newSection]
     }));
     setActiveSectionId(newSection.id);
   }, []);
@@ -69,7 +69,7 @@ export function EditorProvider({ children }) {
       setArticle(prev => ({
         ...prev,
         title: generatedContent.title,
-        sections: generatedContent.sections,
+        sections: generatedContent.sections || [],
         isLoading: false
       }));
     } catch (error) {
@@ -84,10 +84,11 @@ export function EditorProvider({ children }) {
       const rewritten = await contentService.rewriteText(text, tone);
       
       // Reemplazar el texto seleccionado
-      updateSectionContent(activeSectionId, 
-        article.sections.find(s => s.id === activeSectionId).content
-          .replace(selectedText, rewritten)
-      );
+      const currentSection = article.sections?.find(s => s.id === activeSectionId);
+      if (currentSection) {
+        const updatedContent = currentSection.content.replace(selectedText, rewritten);
+        updateSectionContent(activeSectionId, updatedContent);
+      }
     } finally {
       updateArticle({ isLoading: false });
     }
@@ -95,12 +96,12 @@ export function EditorProvider({ children }) {
 
   const aiActions = {
     summarizeText: useCallback(async () => {
-      const content = article.sections.find(s => s.id === activeSectionId).content;
+      const content = (article.sections || []).find(s => s.id === activeSectionId)?.content || '';
       return await contentService.summarizeText(content);
     }, [activeSectionId, article.sections]),
     
     correctGrammar: useCallback(async () => {
-      const content = article.sections.find(s => s.id === activeSectionId).content;
+      const content = (article.sections || []).find(s => s.id === activeSectionId)?.content || '';
       return await contentService.correctText(content);
     }, [activeSectionId, article.sections]),
     
@@ -108,7 +109,7 @@ export function EditorProvider({ children }) {
       const imageUrl = await aiService.generateImage(prompt);
       setArticle(prev => ({
         ...prev,
-        images: [...prev.images, { url: imageUrl, prompt }]
+        images: [...(prev.images || []), { url: imageUrl, prompt }]
       }));
       return imageUrl;
     }, [])

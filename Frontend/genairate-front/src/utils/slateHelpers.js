@@ -7,7 +7,8 @@ export const serializeContent = (value) => {
 
 // Convertir texto plano a formato Slate
 export const deserializeContent = (text) => {
-  return text.split('\n').map(line => ({
+  const safeText = typeof text === 'string' ? text : '';
+  return safeText.split('\n').map(line => ({
     type: 'paragraph',
     children: [{ text: line }],
   }));

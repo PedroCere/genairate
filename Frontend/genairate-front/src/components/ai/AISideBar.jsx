@@ -1,4 +1,6 @@
 import { useEditor } from '../../context/EditorContext';
+import React from 'react';
+
 
 export default function AISideBar() {
   const { aiActions, article, selectedText } = useEditor();

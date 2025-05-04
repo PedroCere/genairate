@@ -9,13 +9,13 @@ const initialValue = [
   },
 ];
 
-export default function RichEditor({ value, onChange }) {
+export default function RichEditor({ value = initialValue, onChange }) {
   const [editor] = useState(() => withReact(createEditor()));
 
   return (
     <Slate
       editor={editor}
-      value={value || initialValue}
+      value={value}
       onChange={onChange}
     >
       <Editable

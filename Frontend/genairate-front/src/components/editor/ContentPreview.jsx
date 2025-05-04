@@ -1,4 +1,5 @@
 import { useEditor } from '../../context/EditorContext';
+import { safeSlice } from '../../utils/safeStringSlice';
 
 export default function ContentPreview() {
   const { article } = useEditor();
@@ -15,7 +16,7 @@ export default function ContentPreview() {
             </h3>
           )}
           <p className="text-secondary leading-relaxed">
-            {section.content}
+            {safeSlice(section.content, 0, 100)}
           </p>
         </div>
       ))}

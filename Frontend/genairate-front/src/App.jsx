@@ -28,12 +28,15 @@ const router = createBrowserRouter([
   }
 ]);
 
+import ErrorBoundary from './components/ErrorBoundary';
+
 function App() {
   return (
     <AuthProvider>
       <EditorProvider>
-        {/* ✅ Quitar el div extra */}
-        <RouterProvider router={router} />
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
       </EditorProvider>
     </AuthProvider>
   );

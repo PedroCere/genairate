@@ -6,7 +6,8 @@ export default function EditorToolbar() {
     setTitle,
     saveDraft,
     publishArticle,
-    aiActions
+    aiActions,
+    updateArticle // Función añadida del contexto
   } = useEditor();
 
   return (
@@ -14,14 +15,14 @@ export default function EditorToolbar() {
       <div className="flex items-center space-x-4">
         <input
           type="text"
-          value={article.title}
+          value={article?.title || ''}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Título del artículo"
           className="bg-transparent text-2xl font-bold text-text placeholder-secondary focus:outline-none"
         />
         
         <select
-          value={article.tone}
+          value={article?.tone || 'profesional'}
           onChange={(e) => updateArticle({ tone: e.target.value })}
           className="bg-background text-text px-3 py-1 rounded-lg"
         >

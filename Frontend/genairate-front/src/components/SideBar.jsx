@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -85,7 +85,7 @@ export default function Sidebar({ darkMode, toggleDarkMode }) {
                   }}
                   whileHover={{ scale: 1.01 }}
                 >
-                  <span className="text-lg">{icon}</span>
+                  <span className="text-lg">{React.createElement(icon)}</span>
                   {sidebarWidth > 64 && (
                     <motion.span
                       initial={{ opacity: 0, x: -8 }}

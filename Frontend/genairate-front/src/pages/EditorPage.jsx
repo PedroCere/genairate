@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEditor } from '../context/EditorContext';
-import { deserializeContent, serializeContent } from '../utils/slateHelpers';
+import { deserializeContent } from '../utils/slateHelpers';
 import EditorToolbar from '../components/editor/EditorToolBar';
 import AiSideBar from '../components/ai/AiSideBar';
 import ContentPreview from '../components/editor/ContentPreview';
@@ -21,18 +21,27 @@ export default function EditorPage() {
   } = useEditor();
   
   const [isLoading, setIsLoading] = useState(!!id);
-  const [slateValue, setSlateValue] = useState(deserializeContent(article.sections[0]?.content || ''));
+  const [slateValue, setSlateValue] = useState(() => {
+    const sections = Array.isArray(article.sections) ? article.sections : [];
+    if (sections.length > 0) {
+      return deserializeContent(sections[0]?.content || '');
+    }
+    return deserializeContent('');
+  });
 
   useEffect(() => {
     if (id) {
       const loadArticle = async () => {
         try {
           const articleData = await getById(id);
-          const content = deserializeContent(articleData.sections[0].content);
+          const sections = Array.isArray(articleData.sections) ? articleData.sections : [];
+          const content = sections.length > 0 
+            ? deserializeContent(sections[0]?.content || '') 
+            : deserializeContent('');
           
           updateArticle({
             ...articleData,
-            sections: articleData.sections.map((section, index) => ({
+            sections: sections.map((section, index) => ({
               ...section,
               content: index === 0 ? content : section.content
             }))
@@ -52,12 +61,16 @@ export default function EditorPage() {
   const handleContentChange = (newValue) => {
     setSlateValue(newValue);
     const plainText = serializeContent(newValue);
-    updateSectionContent(article.sections[0].id, plainText);
+    if (article.sections && article.sections.length > 0) {
+      updateSectionContent(article.sections[0].id, plainText);
+    }
   };
 
   const handleGenerateInitial = async () => {
     await generateInitialArticle(article.title || 'Tema del artículo');
-    setSlateValue(deserializeContent(article.sections[0].content));
+    if (article.sections && article.sections.length > 0) {
+      setSlateValue(deserializeContent(article.sections[0].content));
+    }
   };
 
   if (isLoading) {
