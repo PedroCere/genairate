@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import ArticleCard from '../components/ArticleCard';
 import EmptyState from '../components/EmptyState';
 import StatBox from '../components/StatBox';
 import { FaStar, FaPenFancy } from 'react-icons/fa';
+import Modal from '../components/common/modals/Modal';
+import GenerateBlogModal from '../components/common/modals/GenerateBlogModal';
 
 const articles = [
   {
@@ -36,6 +40,9 @@ const highlights = [
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [showOptions, setShowOptions] = useState(false);
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
@@ -90,9 +97,48 @@ export default function Dashboard() {
       </aside>
 
    
-      <button className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10">
+      <button
+        onClick={() => setShowOptions(true)}
+        className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10"
+      >
         {t("NewArticle")}
       </button>
+
+      {showOptions && (
+        <Modal onClose={() => setShowOptions(false)}>
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Crear nuevo contenido</h2>
+            <button
+              onClick={() => {
+                setShowOptions(false);
+                navigate('/editor');
+              }}
+              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            >
+              ✍️ Empezar desde cero
+            </button>
+            <button
+              onClick={() => {
+                setShowOptions(false);
+                setShowGenerateModal(true);
+              }}
+              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            >
+              🤖 Generar con IA
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {showGenerateModal && (
+        <GenerateBlogModal
+          onGenerate={(article) => {
+            
+            navigate(`/editor?id=${article.id}`);
+          }}
+          onClose={() => setShowGenerateModal(false)}
+        />
+      )}
     </div>
   );
 }
