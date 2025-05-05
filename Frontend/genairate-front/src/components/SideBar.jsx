@@ -1,18 +1,34 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   FaPowerOff,
   FaSun,
   FaMoon,
   FaChevronRight,
   FaChevronLeft,
-  FaBars
+  FaBars,
+  FaChartLine,
+  FaFeatherAlt,
+  FaListUl,
+  FaFolderOpen,
+  FaCogs,
+  FaUser,
+  FaHome
 } from "react-icons/fa";
-import navLinks from "./navLinks";
+
+const navLinks = [
+  { icon: FaHome, label: "Inicio", path: "/" },
+  { icon: FaChartLine, label: "Dashboard", path: "/dashboard" },
+  { icon: FaFeatherAlt, label: "Editor", path: "/editor" },
+  { icon: FaListUl, label: "Analytics", path: "/analytics" },
+  { icon: FaFolderOpen, label: "History", path: "/history" },
+  { icon: FaListUl, label: "Templates", path: "/templates" },
+  { icon: FaCogs, label: "Settings", path: "/settings" },
+  { icon: FaUser, label: "Account", path: "/account" }
+];
 
 export default function Sidebar({ darkMode, toggleDarkMode }) {
-  const location = useLocation();
   const [isHovered, setIsHovered] = useState(false);
   const [isStatic, setIsStatic] = useState(false);
   const hoverTimeout = useRef(null);
@@ -75,10 +91,10 @@ export default function Sidebar({ darkMode, toggleDarkMode }) {
 
         <nav className="flex-1 px-2 space-y-5 mt-2">
           {navLinks.map(({ icon, label, path }, index) => (
-            <NavLink key={index} to={path}>
+            <NavLink key={index} to={path} end>
               {({ isActive }) => (
                 <motion.div
-                  className={`flex items-center gap-3 py-2.5 px-2 rounded-md text-sm transition-all duration-200 cursor-pointer justify-start`}
+                  className="flex items-center gap-3 py-2.5 px-2 rounded-md text-sm transition-all duration-200 cursor-pointer justify-start"
                   style={{
                     backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
                     color: isActive ? 'var(--color-background)' : 'var(--color-text-lightmode)'
