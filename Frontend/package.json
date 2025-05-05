@@ -1,5 +1,5 @@
 {
-  "name": "genairate-front",
+  "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,9 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tiptap/extension-image": "^2.11.9",
-    "@tiptap/react": "^2.11.9",
-    "@tiptap/starter-kit": "^2.11.9",
     "@types/chart.js": "^2.9.41",
     "axios": "^1.9.0",
     "chart.js": "^4.4.9",
@@ -26,12 +23,11 @@
     "react-router-dom": "^7.5.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
-    "slate-react": "^0.89.0",
-    "uuid": "^9.0.0",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@tailwindcss/postcss": "^4.1.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
