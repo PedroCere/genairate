@@ -11,6 +11,9 @@ import AccountPage from './pages/AccountPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 
+import i18n from './i18n';
+import { I18nextProvider } from 'react-i18next';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -57,13 +60,15 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
-    <AuthProvider>
-      <EditorProvider>
-        <ErrorBoundary>
-          <RouterProvider router={router} />
-        </ErrorBoundary>
-      </EditorProvider>
-    </AuthProvider>
+    <I18nextProvider i18n={i18n}>
+      <AuthProvider>
+        <EditorProvider>
+          <ErrorBoundary>
+            <RouterProvider router={router} />
+          </ErrorBoundary>
+        </EditorProvider>
+      </AuthProvider>
+    </I18nextProvider>
   );
 }
 

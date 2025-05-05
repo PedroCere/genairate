@@ -14,10 +14,20 @@ import {
   FiHelpCircle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+
   const toggleDropdown = () => setMenuOpen(!menuOpen);
+  const toggleLangDropdown = () => setLangMenuOpen(!langMenuOpen);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setLangMenuOpen(false);
+  };
 
   return (
     <header
@@ -31,12 +41,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             to="/"
             className="text-2xl font-serif font-bold text-black dark:text-white"
           >
-            GenAirate
+            {t("GenAirate")}
           </NavLink>
           <div className="relative">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={t("Search")}
               className="pl-10 pr-4 py-2 w-64 text-sm rounded-full border bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-500"
             />
             <FiSearch className="absolute left-3 top-2.5 text-gray-700 dark:text-gray-300" />
@@ -50,7 +60,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
           >
             <FiEdit3 className="text-xl" />
-            Write
+            {t("Write")}
           </NavLink>
 
           <button className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white">
@@ -96,6 +106,41 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             )}
           </button>
 
+          {/* Language selector dropdown */}
+          <div className="relative">
+            <button
+              onClick={toggleLangDropdown}
+              className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+            >
+              {t("Language")}
+              <FiChevronDown className="text-gray-500 dark:text-gray-400" />
+            </button>
+
+            <AnimatePresence>
+              {langMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-[var(--color-border)] dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
+                >
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {t("English")}
+                  </button>
+                  <button
+                    onClick={() => changeLanguage('es')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {t("Spanish")}
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center gap-2">
               <img
@@ -115,32 +160,32 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-[var(--color-border)] dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
                 >
                   <div className="px-4 py-2 text-sm text-muted text-gray-600 dark:text-gray-300">
-                    Signed in as <strong>Santino</strong>
+                    {t("SignedInAs")} <strong>Santino</strong>
                   </div>
                   <hr className="border-[var(--color-border)] dark:border-gray-700" />
 
                   <NavLink to="/profile" className="dropdown-item dark:text-gray-300">
-                    <FiUser /> Profile
+                    <FiUser /> {t("Profile")}
                   </NavLink>
                   <NavLink to="/library" className="dropdown-item dark:text-gray-300">
-                    <FiBookOpen /> Library
+                    <FiBookOpen /> {t("Library")}
                   </NavLink>
                   <NavLink to="/stories" className="dropdown-item dark:text-gray-300">
-                    <FiEdit3 /> Stories
+                    <FiEdit3 /> {t("Stories")}
                   </NavLink>
                   <NavLink to="/stats" className="dropdown-item dark:text-gray-300">
-                    <FiBarChart2 /> Stats
+                    <FiBarChart2 /> {t("Stats")}
                   </NavLink>
                   <hr className="border-[var(--color-border)] dark:border-gray-700" />
                   <NavLink to="/settings" className="dropdown-item dark:text-gray-300">
-                    <FiSettings /> Settings
+                    <FiSettings /> {t("Settings")}
                   </NavLink>
                   <NavLink to="/help" className="dropdown-item dark:text-gray-300">
-                    <FiHelpCircle /> Help
+                    <FiHelpCircle /> {t("Help")}
                   </NavLink>
                   <hr className="border-[var(--color-border)] dark:border-gray-700" />
                   <button className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
-                    <FiLogOut /> Sign Out
+                    <FiLogOut /> {t("SignOut")}
                   </button>
                 </motion.div>
               )}

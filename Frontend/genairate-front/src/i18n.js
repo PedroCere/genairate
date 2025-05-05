@@ -1,0 +1,133 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      "GenAirate": "GenAirate",
+      "Search": "Search",
+      "Write": "Write",
+      "SignedInAs": "Signed in as",
+      "Profile": "Profile",
+      "Library": "Library",
+      "Stories": "Stories",
+      "Stats": "Stats",
+      "Settings": "Settings",
+      "Help": "Help",
+      "SignOut": "Sign Out",
+      "Language": "Language",
+      "English": "English",
+      "Spanish": "Spanish",
+      "WelcomeTo": "Welcome to",
+      "GenerateArticles": "Generate articles with artificial intelligence, directly from your device.",
+      "OfflineNoLimits": "Offline. No limits.",
+      "NewArticle": "+ New article",
+      "TemplatesComingSoon": "Templates coming soon",
+      "ExploreTemplates": "Explore templates",
+      "GenAIrateOffline": "GenAIrate works completely offline.",
+      "ContentStaysLocal": "All the content you generate stays on your device, without relying on the cloud.",
+      "GenerativeAIOffline": "Generative AI offline",
+      "MadeWithLocal": "Made with 💻 locally",
+      "TotalArticles": "Total articles",
+      "TotalWords": "Total words",
+      "LastEdit": "Last edit",
+      "RecentWorks": "Recent works",
+      "CommunityBlogs": "Community blogs",
+      "WriteInGenAirate": "Write in GenAirate",
+      "NewWritersGuide": "New writers guide",
+      "WritingTips": "Writing tips",
+      "ExpandAudience": "How to expand your audience",
+      "StartWriting": "Start writing",
+      "AIHelper": "AI Assistant",
+    "QuickActions": "Quick Actions",
+    "RewriteSelection": "Rewrite Selection",
+    "SummarizeSection": "Summarize Section",
+    "CorrectGrammar": "Correct Grammar",
+    "Translation": "Translation",
+    "TranslateSelection": "Translate Selection",
+    "SelectTextToTranslate": "Please select some text to translate.",
+    "GenerateImage": "Generate Image",
+    "CreateAIImage": "Create AI Image",
+    "TextToSpeech": "Text to Speech",
+    "PlaySection": "Play Section",
+    "NoContentToPlay": "No content available to play.",
+    "Export": "Export",
+    "ExportAsPDF": "Export as PDF",
+    "ExportAsMarkdown": "Export as Markdown",
+    "French": "French",
+    "German": "German",
+    "Italian": "Italian"
+    }
+  },
+  es: {
+    translation: {
+      "GenAirate": "GenAirate",
+      "Search": "Buscar",
+      "Write": "Escribir",
+      "SignedInAs": "Conectado como",
+      "Profile": "Perfil",
+      "Library": "Biblioteca",
+      "Stories": "Historias",
+      "Stats": "Estadísticas",
+      "Settings": "Configuración",
+      "Help": "Ayuda",
+      "SignOut": "Cerrar sesión",
+      "Language": "Idioma",
+      "English": "Inglés",
+      "Spanish": "Español",
+      "WelcomeTo": "Bienvenido a",
+      "GenerateArticles": "Generá artículos con inteligencia artificial, directamente desde tu dispositivo.",
+      "OfflineNoLimits": "Sin conexión. Sin límites.",
+      "NewArticle": "+ Nuevo artículo",
+      "TemplatesComingSoon": "Plantillas próximamente",
+      "ExploreTemplates": "Explorar plantillas",
+      "GenAIrateOffline": "GenAIrate funciona completamente offline.",
+      "ContentStaysLocal": "Todo el contenido que generás permanece en tu dispositivo, sin depender de la nube.",
+      "GenerativeAIOffline": "IA generativa sin conexión",
+      "MadeWithLocal": "Hecho con 💻 en local",
+      "TotalArticles": "Total artículos",
+      "TotalWords": "Total palabras",
+      "LastEdit": "Última edición",
+      "RecentWorks": "Trabajos recientes",
+      "CommunityBlogs": "Blogs de la comunidad",
+      "WriteInGenAirate": "Escribe en GenAirate",
+      "NewWritersGuide": "Guía de nuevos escritores",
+      "WritingTips": "Consejos para escribir",
+      "ExpandAudience": "Cómo ampliar tu audiencia",
+      "StartWriting": "Empezar a escribir",
+      "AIHelper": "Asistente de IA",
+    "QuickActions": "Acciones rápidas",
+    "RewriteSelection": "Reescribir selección",
+    "SummarizeSection": "Resumir sección",
+    "CorrectGrammar": "Corregir gramática",
+    "Translation": "Traducción",
+    "TranslateSelection": "Traducir selección",
+    "SelectTextToTranslate": "Por favor, selecciona un texto para traducir.",
+    "GenerateImage": "Generar imagen",
+    "CreateAIImage": "Crear imagen IA",
+    "TextToSpeech": "Texto a voz",
+    "PlaySection": "Reproducir sección",
+    "NoContentToPlay": "No hay contenido para reproducir.",
+    "Export": "Exportar",
+    "ExportAsPDF": "Exportar como PDF",
+    "ExportAsMarkdown": "Exportar como Markdown",
+    "French": "Francés",
+    "German": "Alemán",
+    "Italian": "Italiano"
+    }
+  }
+  
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: 'en',
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false
+    }
+  });
+
+export default i18n;

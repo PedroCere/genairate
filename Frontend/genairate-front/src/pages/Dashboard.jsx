@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import ArticleCard from '../components/ArticleCard';
 import EmptyState from '../components/EmptyState';
 import StatBox from '../components/StatBox';
@@ -34,18 +35,20 @@ const highlights = [
 ];
 
 export default function Dashboard() {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
       
       <div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <StatBox title="Total artículos" value={3} change={15} isPositive={true} />
-          <StatBox title="Total palabras" value={1500} change={-5} isPositive={false} />
-          <StatBox title="Última edición" value={'N/A'} change={0} isPositive={true} />
+          <StatBox title={t("TotalArticles")} value={3} change={15} isPositive={true} />
+          <StatBox title={t("TotalWords")} value={1500} change={-5} isPositive={false} />
+          <StatBox title={t("LastEdit")} value={'N/A'} change={0} isPositive={true} />
         </div>
 
-        <h2 className="text-2xl font-serif font-semibold text-gray-800 dark:text-gray-200 mb-4">Trabajos recientes</h2>
+        <h2 className="text-2xl font-serif font-semibold text-gray-800 dark:text-gray-200 mb-4">{t("RecentWorks")}</h2>
         {articles.length === 0 ? (
           <EmptyState />
         ) : (
@@ -60,7 +63,7 @@ export default function Dashboard() {
       
       <aside className="hidden lg:block space-y-8">
         <section>
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">Blogs de la comunidad</h3>
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">{t("CommunityBlogs")}</h3>
           <div className="space-y-4">
             {highlights.map((item, idx) => (
               <div key={idx}>
@@ -73,23 +76,24 @@ export default function Dashboard() {
 
         <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300">Escribe en GenAirate</h4>
+            <h4 className="font-semibold text-gray-700 dark:text-gray-300">{t("WriteInGenAirate")}</h4>
           </div>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Guía de nuevos escritores</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Consejos para escribir</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> Cómo ampliar tu audiencia</li>
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("NewWritersGuide")}</li>
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("WritingTips")}</li>
+            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("ExpandAudience")}</li>
           </ul>
           <button className="mt-4 w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition text-sm">
-            Empezar a escribir
+            {t("StartWriting")}
           </button>
         </section>
       </aside>
 
    
       <button className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10">
-        + Nuevo artículo
+        {t("NewArticle")}
       </button>
     </div>
   );
 }
+
