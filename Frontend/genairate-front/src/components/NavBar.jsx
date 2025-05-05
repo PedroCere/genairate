@@ -56,7 +56,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         <div className="flex items-center gap-5 ml-auto">
 
           <NavLink
-            to="/write"
+            to="/editor"
             className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
           >
             <FiEdit3 className="text-xl" />

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { NavLink, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   FaPowerOff,
   FaSun,
@@ -12,6 +13,7 @@ import {
 import navLinks from "./navLinks";
 
 export default function Sidebar({ darkMode, toggleDarkMode }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isHovered, setIsHovered] = useState(false);
   const [isStatic, setIsStatic] = useState(false);
@@ -92,7 +94,7 @@ export default function Sidebar({ darkMode, toggleDarkMode }) {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
                     >
-                      {label}
+                      {t(label)}
                     </motion.span>
                   )}
                 </motion.div>
