@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function AccountPage() {
+  const { t } = useTranslation();
   // Mock user data
   const initialUser = {
-    name: 'Pedro Pérez',
-    email: 'pedro.perez@example.com',
-    username: 'pedroperez',
+    name: 'Agustín Paltrucci',
+    email: 'agus.perez@example.com',
+    username: 'aguspaltrucci',
     joined: '2023-01-15',
   };
 
@@ -76,19 +78,19 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-serif font-semibold mb-6">Cuenta</h1>
+      <h1 className="text-3xl font-serif font-semibold mb-6">{t('AccountTitle')}</h1>
 
       <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6 space-y-6">
         {/* Name */}
         <div>
           <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            Nombre
+            {t('Name')}
             {editField !== 'name' ? (
               <button
                 onClick={() => startEdit('name')}
                 className="text-blue-600 hover:underline text-sm"
               >
-                Editar
+                {t('Edit')}
               </button>
             ) : (
               <div className="space-x-2">
@@ -96,13 +98,13 @@ export default function AccountPage() {
                   onClick={saveEdit}
                   className="text-green-600 hover:underline text-sm"
                 >
-                  Guardar
+                  {t('Save')}
                 </button>
                 <button
                   onClick={cancelEdit}
                   className="text-red-600 hover:underline text-sm"
                 >
-                  Cancelar
+                  {t('Cancel')}
                 </button>
               </div>
             )}
@@ -122,13 +124,13 @@ export default function AccountPage() {
         {/* Email */}
         <div>
           <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            Correo electrónico
+            {t('Email')}
             {editField !== 'email' ? (
               <button
                 onClick={() => startEdit('email')}
                 className="text-blue-600 hover:underline text-sm"
               >
-                Editar
+                {t('Edit')}
               </button>
             ) : (
               <div className="space-x-2">
@@ -136,13 +138,13 @@ export default function AccountPage() {
                   onClick={saveEdit}
                   className="text-green-600 hover:underline text-sm"
                 >
-                  Guardar
+                  {t('Save')}
                 </button>
                 <button
                   onClick={cancelEdit}
                   className="text-red-600 hover:underline text-sm"
                 >
-                  Cancelar
+                  {t('Cancel')}
                 </button>
               </div>
             )}
@@ -162,13 +164,13 @@ export default function AccountPage() {
         {/* Username */}
         <div>
           <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            Nombre de usuario
+            {t('Username')}
             {editField !== 'username' ? (
               <button
                 onClick={() => startEdit('username')}
                 className="text-blue-600 hover:underline text-sm"
               >
-                Editar
+                {t('Edit')}
               </button>
             ) : (
               <div className="space-x-2">
@@ -176,13 +178,13 @@ export default function AccountPage() {
                   onClick={saveEdit}
                   className="text-green-600 hover:underline text-sm"
                 >
-                  Guardar
+                  {t('Save')}
                 </button>
                 <button
                   onClick={cancelEdit}
                   className="text-red-600 hover:underline text-sm"
                 >
-                  Cancelar
+                  {t('Cancel')}
                 </button>
               </div>
             )}
@@ -201,7 +203,7 @@ export default function AccountPage() {
 
         {/* Joined */}
         <div>
-          <h2 className="text-xl font-semibold mb-1">Fecha de registro</h2>
+          <h2 className="text-xl font-semibold mb-1">{t('Joined')}</h2>
           <p>{user.joined}</p>
         </div>
 
@@ -212,11 +214,11 @@ export default function AccountPage() {
             disabled={saving}
             className="w-full bg-black dark:bg-white text-white dark:text-black px-6 py-1.5 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition disabled:opacity-50"
           >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
+            {saving ? t('Saving') : t('SaveChanges')}
           </button>
           {saveSuccess && (
             <p className="mt-2 text-green-600 dark:text-green-400 font-medium">
-              Preferencias guardadas con éxito.
+              {t('PreferencesSaved')}
             </p>
           )}
         </div>
@@ -228,11 +230,11 @@ export default function AccountPage() {
             disabled={eliminating}
             className="w-full bg-red-600 text-white px-10 py-1.5 rounded-full hover:bg-red-700 transition disabled:opacity-50"
           >
-            {eliminating ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
+            {eliminating ? t('DeletingAccount') : t('DeleteAccount')}
           </button>
           {eliminateSuccess && (
             <p className="mt-2 text-red-600 dark:text-red-400 font-medium">
-              Cuenta eliminada con éxito.
+              {t('AccountDeleted')}
             </p>
           )}
         </div>

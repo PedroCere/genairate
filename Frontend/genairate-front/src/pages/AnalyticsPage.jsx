@@ -1,99 +1,83 @@
 import { useEffect, useState } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { contentService } from '../services/ContentService';
-import StatBox from '../components/StatBox';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const demoArticles = [
-  { id: '1', type: 'guía' },
-  { id: '2', type: 'lista' },
-  { id: '3', type: 'análisis' },
-  { id: '4', type: 'guía' },
-  { id: '5', type: 'lista' },
-];
+const MOCK_DATA = {
+  views: 0,
+  reads: 0,
+  timeline: [0, 0, 0, 0, 0], 
+};
 
 export default function AnalyticsPage() {
-  const [analytics, setAnalytics] = useState(null);
-  const [articlesByType, setArticlesByType] = useState({});
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    async function fetchAnalytics() {
-      const data = await contentService.getAnalytics();
-      setAnalytics(data);
-
-     
-      const typeCounts = demoArticles.reduce((acc, article) => {
-        acc[article.type] = (acc[article.type] || 0) + 1;
-        return acc;
-      }, {});
-      setArticlesByType(typeCounts);
-    }
-    fetchAnalytics();
+    setTimeout(() => {
+      setStats(MOCK_DATA);
+    }, 500);
   }, []);
 
-  if (!analytics) {
-    return <div className="text-center py-10">Cargando métricas...</div>;
+  if (!stats) {
+    return <div className="text-center py-10 text-gray-700 dark:text-gray-300">Cargando métricas...</div>;
   }
 
- 
-  const toneEntries = Object.entries(analytics.toneDistribution);
-  const mostUsedTone = toneEntries.reduce((max, entry) => (entry[1] > max[1] ? entry : max), ['', 0])[0];
-
- 
-  const weeklyData = {
-    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7'],
+  const barData = {
+    labels: ['May 1', 'May 2', 'May 3', 'May 4', 'May 5'],
     datasets: [
       {
-        label: 'Longitud por semana (palabras)',
-        data: analytics.weeklyProgress,
-        backgroundColor: 'rgba(37, 99, 235, 0.7)', 
+        label: 'Views',
+        data: stats.timeline,
+        backgroundColor: 'rgba(34, 197, 94, 0.9)',
+        borderRadius: 4,
+        barPercentage: 0.6,
       },
     ],
   };
 
-  
-  const articleTypes = Object.keys(articlesByType);
-  const articleTypeCounts = Object.values(articlesByType);
-  const articlesByTypeData = {
-    labels: articleTypes,
-    datasets: [
-      {
-        label: 'Artículos por tipo',
-        data: articleTypeCounts,
-        backgroundColor: [
-          'rgba(59, 130, 246, 0.7)', 
-          'rgba(16, 185, 129, 0.7)', 
-          'rgba(234, 179, 8, 0.7)',  
-        ],
-        hoverOffset: 10,
-      },
-    ],
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 } },
+    },
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-serif font-semibold mb-8">Métricas de contenido generado</h1>
+    <div className="max-w-3xl mx-auto px-6 py-12 text-center text-gray-900 dark:text-gray-100">
+      <h1 className="text-3xl font-semibold mb-6">Your story stats</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-        <StatBox title="Palabras promedio por artículo" value={analytics.avgWords} />
-        <StatBox title="Tono más usado" value={mostUsedTone.charAt(0).toUpperCase() + mostUsedTone.slice(1)} />
+      <p className="text-lg text-gray-500 dark:text-gray-400 mb-1">Monthly</p>
+      <p className="text-sm text-gray-400 mb-8">May 1, 2025 – May 5, 2025 (UTC) ・ Updated hourly</p>
+
+      <div className="flex justify-center gap-20 mb-10">
+        <div>
+          <p className="text-4xl font-bold">{stats.views}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Views</p>
+        </div>
+        <div>
+          <p className="text-4xl font-bold">{stats.reads}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Reads</p>
+        </div>
       </div>
 
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-4">Longitud por semana</h2>
-        <div className="max-w-xl mx-auto">
-          <Bar data={weeklyData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+      <div className="max-w-2xl mx-auto border-t border-gray-200 dark:border-gray-700 pt-6">
+        <Bar data={barData} options={options} height={200} />
+        <div className="flex justify-end text-xs text-gray-400 mt-2 pr-2">
+          <span className="mr-4">● Views</span>
         </div>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Artículos por tipo</h2>
-        <div className="max-w-lg mx-auto">
-          <Pie data={articlesByTypeData} options={{ responsive: true, plugins: { legend: { position: 'bottom' } } }} />
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

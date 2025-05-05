@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const mockedTemplates = [
   {
@@ -28,6 +29,7 @@ const articleTypes = ['guía', 'lista', 'análisis'];
 const textStyles = ['formal', 'informal', 'analítico'];
 
 export default function TemplatesPage() {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState([]);
   const [form, setForm] = useState({
     id: null,
@@ -38,7 +40,6 @@ export default function TemplatesPage() {
   });
 
   useEffect(() => {
-   
     setTemplates(mockedTemplates);
   }, []);
 
@@ -56,17 +57,15 @@ export default function TemplatesPage() {
 
   function handleSave() {
     if (!form.name || !form.articleType || !form.textStyle || form.sectionsCount < 1) {
-      alert('Por favor, complete todos los campos correctamente.');
+      alert(t('PleaseCompleteAllFields'));
       return;
     }
 
     if (form.id) {
-     
       setTemplates((prev) =>
         prev.map((t) => (t.id === form.id ? { ...form } : t))
       );
     } else {
-      
       const newTemplate = {
         ...form,
         id: Date.now().toString(),
@@ -74,7 +73,6 @@ export default function TemplatesPage() {
       setTemplates((prev) => [...prev, newTemplate]);
     }
 
-    
     setForm({
       id: null,
       name: '',
@@ -87,14 +85,14 @@ export default function TemplatesPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
       <h1 className="text-3xl font-serif font-semibold mb-8">
-        Administrador de Plantillas
+        {t('TemplatesPageTitle')}
       </h1>
 
       <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Crear / Editar Plantilla</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('CreateEditTemplate')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
           <div>
-            <label className="block mb-1 font-medium">Nombre de la plantilla</label>
+            <label className="block mb-1 font-medium">{t('TemplateName')}</label>
             <input
               type="text"
               name="name"
@@ -104,7 +102,7 @@ export default function TemplatesPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Cantidad de secciones</label>
+            <label className="block mb-1 font-medium">{t('SectionsCount')}</label>
             <input
               type="number"
               name="sectionsCount"
@@ -115,14 +113,14 @@ export default function TemplatesPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Tipo de artículo</label>
+            <label className="block mb-1 font-medium">{t('ArticleType')}</label>
             <select
               name="articleType"
               value={form.articleType}
               onChange={handleInputChange}
               className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
             >
-              <option value="">Seleccione</option>
+              <option value="">{t('Select')}</option>
               {articleTypes.map((type) => (
                 <option key={type} value={type}>
                   {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -131,14 +129,14 @@ export default function TemplatesPage() {
             </select>
           </div>
           <div>
-            <label className="block mb-1 font-medium">Estilo textual</label>
+            <label className="block mb-1 font-medium">{t('TextStyle')}</label>
             <select
               name="textStyle"
               value={form.textStyle}
               onChange={handleInputChange}
               className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
             >
-              <option value="">Seleccione</option>
+              <option value="">{t('Select')}</option>
               {textStyles.map((style) => (
                 <option key={style} value={style}>
                   {style.charAt(0).toUpperCase() + style.slice(1)}
@@ -151,15 +149,15 @@ export default function TemplatesPage() {
           onClick={handleSave}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          Guardar plantilla
+          {t('SaveTemplate')}
         </button>
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">Lista de Plantillas</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('TemplatesList')}</h2>
         {templates.length === 0 ? (
           <p className="text-center text-gray-500 dark:text-gray-400">
-            No hay plantillas disponibles.
+            {t('NoTemplatesAvailable')}
           </p>
         ) : (
           <ul className="space-y-4">
@@ -171,14 +169,14 @@ export default function TemplatesPage() {
                 <div>
                   <h3 className="font-semibold text-lg">{template.name}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Secciones: {template.sectionsCount} • Tipo: {template.articleType.charAt(0).toUpperCase() + template.articleType.slice(1)} • Estilo: {template.textStyle.charAt(0).toUpperCase() + template.textStyle.slice(1)}
+                    {t('Sections')}: {template.sectionsCount} • {t('Type')}: {template.articleType.charAt(0).toUpperCase() + template.articleType.slice(1)} • {t('TextStyle')}: {template.textStyle.charAt(0).toUpperCase() + template.textStyle.slice(1)}
                   </p>
                 </div>
                 <button
                   onClick={() => handleEdit(template)}
                   className="text-blue-600 hover:underline"
                 >
-                  Editar
+                  {t('Edit')}
                 </button>
               </li>
             ))}
