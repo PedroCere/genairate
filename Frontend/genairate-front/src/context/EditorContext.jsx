@@ -155,6 +155,16 @@ export function EditorProvider({ children }) {
     exportAsMarkdown
   };
 
+  const updateEditorFromGenerated = (article) => {
+    setArticle(prev => ({
+      ...prev,
+      title: article.title,
+      tone: article.tone,
+      language: article.language,
+      sections: article.sections
+    }));
+  };
+
   const value = {
     article,
     activeSectionId,
@@ -167,6 +177,7 @@ export function EditorProvider({ children }) {
     generateInitialArticle,
     rewriteText,
     aiActions,
+    updateEditorFromGenerated,
     saveDraft: useCallback(async () => {
       await contentService.saveDraft(article.id, article);
     }, [article]),

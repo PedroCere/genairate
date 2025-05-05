@@ -4,7 +4,10 @@ import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
+import { useFontSize } from './components/FontSizeContext';
+
 export default function Layout() {
+  const { getFontSizeClass } = useFontSize();
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen flex font-sans bg-white dark:bg-gray-900 dark:text-white overflow-hidden">
+    <div className={`${getFontSizeClass()} min-h-screen flex font-sans bg-white dark:bg-gray-900 dark:text-white overflow-hidden`}>
       <Sidebar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       <div className="flex-1 flex flex-col">

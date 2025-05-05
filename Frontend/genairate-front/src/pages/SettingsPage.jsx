@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useFontSize } from '../components/FontSizeContext';
 
 const mockPreferences = {
   defaultLanguage: 'es',
@@ -8,7 +10,6 @@ const mockPreferences = {
   enableAutocorrect: true,
 };
 
-// Mock userService with getPreferences and updatePreferences
 const userService = {
   getPreferences: () =>
     new Promise((resolve) => {
@@ -21,6 +22,8 @@ const userService = {
 };
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
+  const { size, setSize } = useFontSize();
   const [preferences, setPreferences] = useState({
     defaultLanguage: '',
     defaultTone: '',
@@ -59,20 +62,20 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center text-gray-700 dark:text-gray-300">
-        Cargando preferencias...
+        {t('LoadingPreferences')}
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-serif font-semibold mb-6">Configuración</h1>
+      <h1 className="text-3xl font-serif font-semibold mb-6">{t('SettingsTitle')}</h1>
 
       <div className="space-y-6">
         {/* Default Language */}
         <div>
           <label htmlFor="defaultLanguage" className="block mb-2 font-medium">
-            Idioma por defecto
+            {t('DefaultLanguage')}
           </label>
           <select
             id="defaultLanguage"
@@ -81,18 +84,18 @@ export default function SettingsPage() {
             onChange={handleChange}
             className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
-            <option value="es">Español</option>
-            <option value="en">Inglés</option>
-            <option value="fr">Francés</option>
-            <option value="de">Alemán</option>
-            <option value="it">Italiano</option>
+            <option value="es">{t('Spanish')}</option>
+            <option value="en">{t('English')}</option>
+            <option value="fr">{t('French')}</option>
+            <option value="de">{t('German')}</option>
+            <option value="it">{t('Italian')}</option>
           </select>
         </div>
 
         {/* Default Tone */}
         <div>
           <label htmlFor="defaultTone" className="block mb-2 font-medium">
-            Tono por defecto
+            {t('DefaultTone')}
           </label>
           <select
             id="defaultTone"
@@ -101,17 +104,17 @@ export default function SettingsPage() {
             onChange={handleChange}
             className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
-            <option value="Formal">Formal</option>
-            <option value="Informal">Informal</option>
-            <option value="Amigable">Amigable</option>
-            <option value="Profesional">Profesional</option>
+            <option value="Formal">{t('Formal')}</option>
+            <option value="Informal">{t('Informal')}</option>
+            <option value="Friendly">{t('Friendly')}</option>
+            <option value="Professional">{t('Professional')}</option>
           </select>
         </div>
 
         {/* Default Format */}
         <div>
           <label htmlFor="defaultFormat" className="block mb-2 font-medium">
-            Formato por defecto
+            {t('DefaultFormat')}
           </label>
           <select
             id="defaultFormat"
@@ -120,10 +123,10 @@ export default function SettingsPage() {
             onChange={handleChange}
             className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
-            <option value="Blog Post">Blog Post</option>
-            <option value="Artículo">Artículo</option>
-            <option value="Correo Electrónico">Correo Electrónico</option>
-            <option value="Informe">Informe</option>
+            <option value="Blog Post">{t('BlogPost')}</option>
+            <option value="Article">{t('Article')}</option>
+            <option value="Email">{t('Email')}</option>
+            <option value="Report">{t('Report')}</option>
           </select>
         </div>
 
@@ -138,7 +141,7 @@ export default function SettingsPage() {
             className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400"
           />
           <label htmlFor="enableTTS" className="font-medium">
-            Activar TTS
+            {t('EnableTTS')}
           </label>
         </div>
 
@@ -153,8 +156,26 @@ export default function SettingsPage() {
             className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400"
           />
           <label htmlFor="enableAutocorrect" className="font-medium">
-            Activar corrección automática
+            {t('EnableAutocorrect')}
           </label>
+        </div>
+
+        {/* Font Size Selector */}
+        <div>
+          <label htmlFor="fontSize" className="block mb-2 font-medium">
+            Tamaño de texto:
+          </label>
+          <select
+            id="fontSize"
+            name="fontSize"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+            className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          >
+            <option value="small">Pequeño</option>
+            <option value="medium">Mediano</option>
+            <option value="large">Grande</option>
+          </select>
         </div>
 
         {/* Save Button */}
@@ -164,11 +185,11 @@ export default function SettingsPage() {
             disabled={saving}
             className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition disabled:opacity-50"
           >
-            {saving ? 'Guardando...' : 'Guardar Preferencias'}
+            {saving ? t('Saving') : t('SavePreferences')}
           </button>
           {saveSuccess && (
             <p className="mt-2 text-green-600 dark:text-green-400 font-medium">
-              Preferencias guardadas con éxito.
+              {t('PreferencesSaved')}
             </p>
           )}
         </div>

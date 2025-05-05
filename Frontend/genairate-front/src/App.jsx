@@ -11,6 +11,11 @@ import AccountPage from './pages/AccountPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 
+import i18n from './i18n';
+import { I18nextProvider } from 'react-i18next';
+
+import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -55,15 +60,31 @@ const router = createBrowserRouter([
 
 import ErrorBoundary from './components/ErrorBoundary';
 
+function AppWrapper({ children }) {
+  const { getFontSizeClass } = useFontSize();
+
+  return (
+    <div className={`${getFontSizeClass()} text-gray-900 dark:text-gray-100 min-h-screen`}>
+      {children}
+    </div>
+  );
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <EditorProvider>
-        <ErrorBoundary>
-          <RouterProvider router={router} />
-        </ErrorBoundary>
-      </EditorProvider>
-    </AuthProvider>
+    <I18nextProvider i18n={i18n}>
+      <AuthProvider>
+        <EditorProvider>
+          <FontSizeProvider>
+            <ErrorBoundary>
+              <AppWrapper>
+                <RouterProvider router={router} />
+              </AppWrapper>
+            </ErrorBoundary>
+          </FontSizeProvider>
+        </EditorProvider>
+      </AuthProvider>
+    </I18nextProvider>
   );
 }
 
