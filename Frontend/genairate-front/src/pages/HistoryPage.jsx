@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
+import { useTranslation } from 'react-i18next';
 
 const mockedArticles = [
   {
@@ -49,6 +50,7 @@ const types = ['guía', 'lista', 'análisis'];
 const languages = ['es', 'en'];
 
 export default function HistoryPage() {
+  const { t } = useTranslation();
   const [articles, setArticles] = useState([]);
   const [filters, setFilters] = useState({
     dateFrom: '',
@@ -60,7 +62,6 @@ export default function HistoryPage() {
   const [filteredArticles, setFilteredArticles] = useState([]);
 
   useEffect(() => {
-   
     setArticles(mockedArticles);
   }, []);
 
@@ -97,33 +98,29 @@ export default function HistoryPage() {
 
   function handleView(id) {
     console.log('View article', id);
-   
   }
 
   function handleEdit(id) {
     console.log('Edit article', id);
-    
   }
 
   function handleDuplicate(id) {
     console.log('Duplicate article', id);
-   
   }
 
   function handleDelete(id) {
     console.log('Delete article', id);
-  
   }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
       <h1 className="text-3xl font-serif font-semibold mb-8">
-        Historial de artículos generados
+        {t('HistoryPageTitle')}
       </h1>
 
       <section className="mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-          <label className="block mb-1 font-medium">Fecha desde</label>
+          <label className="block mb-1 font-medium">{t('DateFrom')}</label>
           <input
             type="date"
             name="dateFrom"
@@ -133,7 +130,7 @@ export default function HistoryPage() {
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Fecha hasta</label>
+          <label className="block mb-1 font-medium">{t('DateTo')}</label>
           <input
             type="date"
             name="dateTo"
@@ -143,14 +140,14 @@ export default function HistoryPage() {
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Tono</label>
+          <label className="block mb-1 font-medium">{t('Tone')}</label>
           <select
             name="tone"
             value={filters.tone}
             onChange={handleFilterChange}
             className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
           >
-            <option value="">Todos</option>
+            <option value="">{t('All')}</option>
             {tones.map((tone) => (
               <option key={tone} value={tone}>
                 {tone.charAt(0).toUpperCase() + tone.slice(1)}
@@ -159,14 +156,14 @@ export default function HistoryPage() {
           </select>
         </div>
         <div>
-          <label className="block mb-1 font-medium">Tipo</label>
+          <label className="block mb-1 font-medium">{t('Type')}</label>
           <select
             name="type"
             value={filters.type}
             onChange={handleFilterChange}
             className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
           >
-            <option value="">Todos</option>
+            <option value="">{t('All')}</option>
             {types.map((type) => (
               <option key={type} value={type}>
                 {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -175,14 +172,14 @@ export default function HistoryPage() {
           </select>
         </div>
         <div>
-          <label className="block mb-1 font-medium">Idioma</label>
+          <label className="block mb-1 font-medium">{t('Language')}</label>
           <select
             name="language"
             value={filters.language}
             onChange={handleFilterChange}
             className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
           >
-            <option value="">Todos</option>
+            <option value="">{t('All')}</option>
             {languages.map((lang) => (
               <option key={lang} value={lang}>
                 {lang.toUpperCase()}
@@ -195,7 +192,7 @@ export default function HistoryPage() {
       <section>
         {filteredArticles.length === 0 ? (
           <p className="text-center text-gray-500 dark:text-gray-400">
-            No se encontraron artículos con los filtros seleccionados.
+            {t('NoArticlesFound')}
           </p>
         ) : (
           filteredArticles.map((article) => (
@@ -206,25 +203,25 @@ export default function HistoryPage() {
                   onClick={() => handleView(article.id)}
                   className="text-blue-600 hover:underline"
                 >
-                  Ver
+                  {t('View')}
                 </button>
                 <button
                   onClick={() => handleEdit(article.id)}
                   className="text-green-600 hover:underline"
                 >
-                  Editar
+                  {t('Edit')}
                 </button>
                 <button
                   onClick={() => handleDuplicate(article.id)}
                   className="text-yellow-600 hover:underline"
                 >
-                  Duplicar
+                  {t('Duplicate')}
                 </button>
                 <button
                   onClick={() => handleDelete(article.id)}
                   className="text-red-600 hover:underline"
                 >
-                  Eliminar
+                  {t('Delete')}
                 </button>
               </div>
             </div>
