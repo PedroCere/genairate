@@ -9,8 +9,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('genairate_token');
     if (token) {
-      // No iniciar sesión automática. Si querés validarlo con backend, hacelo acá.
-      localStorage.removeItem('genairate_token');
+      // Set a dummy user if token exists to simulate logged-in state
+      setUser({
+        id: 'dummy-user',
+        name: 'Dummy User',
+        preferences: {
+          language: 'es',
+          tone: 'profesional'
+        }
+      });
     }
     setLoading(false);
   }, []);
