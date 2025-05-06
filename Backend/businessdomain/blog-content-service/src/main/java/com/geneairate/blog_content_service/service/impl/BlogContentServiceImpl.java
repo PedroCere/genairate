@@ -2,7 +2,7 @@ package com.geneairate.blog_content_service.service.impl;
 
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
-import com.geneairate.blog_content_service.gateway.IAPredictorGateway;
+import com.geneairate.blog_content_service.gateway.OpenRouterClient;
 import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.model.Section;
 import com.geneairate.blog_content_service.repository.BlogContentRepository;
@@ -15,17 +15,37 @@ import java.util.stream.Collectors;
 
 @Service
 public class BlogContentServiceImpl implements BlogContentService {
-    private final IAPredictorGateway predictorGateway;
+    private final OpenRouterClient predictorGateway;
     private final BlogContentRepository repository;
 
-    public BlogContentServiceImpl(IAPredictorGateway predictorGateway, BlogContentRepository repository) {
+    public BlogContentServiceImpl(OpenRouterClient predictorGateway, BlogContentRepository repository) {
         this.predictorGateway = predictorGateway;
         this.repository = repository;
     }
 
     @Override
     public ContentResponse generarContenido(ContentRequest request) {
-        ContentResponse response = predictorGateway.generarPrediccion(request);
+        String prompt = String.format("""
+            [INST]
+            Generá un artículo de blog en %s sobre: \"%s\".
+
+            Formato deseado:
+            - Título atractivo
+            - Introducción de 1–2 párrafos
+            - 3 subtítulos con contenido explicativo
+            - Conclusión
+
+            Tono: %s | Formato: %s
+            IMPORTANTE: Respondé solo en JSON válido con campos estructurados.
+            [/INST]
+            """,
+                request.getLanguage(),
+                request.getUserInput(),
+                request.getTone(),
+                request.getFormat()
+        );
+
+        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
 
         BlogArticle article = new BlogArticle(
                 null,
@@ -50,7 +70,6 @@ public class BlogContentServiceImpl implements BlogContentService {
         return predictorGateway.reescribirTexto(request);
     }
 
-
     @Override
     public ContentResponse resumirContenido(ContentRequest request) {
         return predictorGateway.resumirContenido(request);
@@ -65,7 +84,6 @@ public class BlogContentServiceImpl implements BlogContentService {
     public ContentResponse traducirContenido(ContentRequest request) {
         return predictorGateway.traducirContenido(request);
     }
-
 
     @Override
     public ContentResponse obtenerPorId(String id) {
@@ -104,7 +122,6 @@ public class BlogContentServiceImpl implements BlogContentService {
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
 
     private ContentResponse mapToDto(BlogArticle article) {
         return new ContentResponse(
