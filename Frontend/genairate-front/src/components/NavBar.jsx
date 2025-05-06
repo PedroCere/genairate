@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import profile2 from "../assets/profile2.jpg";
+import profile2 from "../assets/profile5.jpg";
 import {
   FiSearch,
   FiBell,
@@ -164,7 +164,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   </div>
                   <hr className="border-[var(--color-border)] dark:border-gray-700" />
 
-                  <NavLink to="/profile" className="dropdown-item dark:text-gray-300">
+                  <NavLink to="/account" className="dropdown-item dark:text-gray-300">
                     <FiUser /> {t("Profile")}
                   </NavLink>
                   <NavLink to="/library" className="dropdown-item dark:text-gray-300">
