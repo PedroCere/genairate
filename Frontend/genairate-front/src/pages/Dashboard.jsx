@@ -3,25 +3,83 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import ArticleCard from '../components/ArticleCard';
 import EmptyState from '../components/EmptyState';
-import StatBox from '../components/StatBox';
-import { FaStar, FaPenFancy } from 'react-icons/fa';
+import ArticleTabs from '../components/ArticleTabs';
 import Modal from '../components/common/modals/Modal';
 import GenerateBlogModal from '../components/common/modals/GenerateBlogModal';
+import blog1 from '../assets/blog1.jpg';
+import blog2 from '../assets/blog2.jpg';
+import blog3 from '../assets/blog3.jpg';
+import blog4 from '../assets/blog4.jpg';
+import blog5 from '../assets/blog5.jpg';
+import profile1 from '../assets/profile1.jpg';
+import profile2 from '../assets/profile2.jpg';
+import profile3 from '../assets/profile3.jpg';
+import profile4 from '../assets/profile4.jpg';
+import profile5 from '../assets/profile5.jpg';
+import profile6 from '../assets/profile6.jpg';
+
+const tabs = ["For you", "Following", "Featured", "Productivity", "Technology", "Programming"];
 
 const articles = [
   {
     id: 1,
-    title: 'Cómo escribir contenido efectivo con IA',
-    date: '2024-05-05',
-    wordCount: 850,
-    status: 'published',
+    title: "How AI is Transforming Content Creation",
+    description: "Explore how generative models like ChatGPT are changing how we write, market, and brainstorm.",
+    author: "Ana Torres",
+    authorImage: profile1,
+    image: blog1,
+    date: "2024-05-05",
+    views: 845,
+    comments: 14,
+    tab: "Technology",
   },
   {
     id: 2,
-    title: 'Guía completa de SEO para blogs',
-    date: '2024-05-10',
-    wordCount: 450,
-    status: 'draft',
+    title: "Breaking Free from Procrastination",
+    description: "A psychological approach to developing better writing habits in digital environments.",
+    author: "Luis Peña",
+    authorImage: profile3,
+    image: blog2,
+    date: "2024-04-29",
+    views: 1520,
+    comments: 23,
+    tab: "Productivity",
+  },
+  {
+    id: 3,
+    title: "Featured: The Future of Programming",
+    description: "Insights into the evolving landscape of programming languages and tools.",
+    author: "Marta Gómez",
+    authorImage: profile4,
+    image: blog3,
+    date: "2024-05-01",
+    views: 980,
+    comments: 19,
+    tab: "Featured",
+  },
+  {
+    id: 4,
+    title: "Top Productivity Hacks for Developers",
+    description: "Maximize your coding efficiency with these proven techniques.",
+    author: "Carlos Ruiz",
+    authorImage: profile6,
+    image: blog4,
+    date: "2024-04-25",
+    views: 1340,
+    comments: 27,
+    tab: "Productivity",
+  },
+  {
+    id: 5,
+    title: "Programming Paradigms Explained",
+    description: "A deep dive into different programming paradigms and their use cases.",
+    author: "Elena Martínez",
+    authorImage: profile5,
+    image: blog5,
+    date: "2024-05-03",
+    views: 1120,
+    comments: 21,
+    tab: "Programming",
   },
 ];
 
@@ -41,33 +99,28 @@ const highlights = [
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("For you");
   const [showOptions, setShowOptions] = useState(false);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
-      
       <div>
+        <ArticleTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <StatBox title={t("TotalArticles")} value={3} change={15} isPositive={true} />
-          <StatBox title={t("TotalWords")} value={1500} change={-5} isPositive={false} />
-          <StatBox title={t("LastEdit")} value={'N/A'} change={0} isPositive={true} />
-        </div>
-
-        <h2 className="text-2xl font-serif font-semibold text-gray-800 dark:text-gray-200 mb-4">{t("RecentWorks")}</h2>
-        {articles.length === 0 ? (
+        {articles.filter(article => activeTab === "For you" || article.tab === activeTab).length === 0 ? (
           <EmptyState />
         ) : (
           <div className="space-y-4">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
+            {articles
+              .filter(article => activeTab === "For you" || article.tab === activeTab)
+              .map(article => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
           </div>
         )}
       </div>
 
-      
       <aside className="hidden lg:block space-y-8">
         <section>
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">{t("CommunityBlogs")}</h3>
@@ -86,9 +139,9 @@ export default function Dashboard() {
             <h4 className="font-semibold text-gray-700 dark:text-gray-300">{t("WriteInGenAirate")}</h4>
           </div>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("NewWritersGuide")}</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("WritingTips")}</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("ExpandAudience")}</li>
+            <li>✍️ {t("NewWritersGuide")}</li>
+            <li>✍️ {t("WritingTips")}</li>
+            <li>✍️ {t("ExpandAudience")}</li>
           </ul>
           <button className="mt-4 w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition text-sm">
             {t("StartWriting")}
@@ -96,7 +149,6 @@ export default function Dashboard() {
         </section>
       </aside>
 
-   
       <button
         onClick={() => setShowOptions(true)}
         className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10"
@@ -133,7 +185,6 @@ export default function Dashboard() {
       {showGenerateModal && (
         <GenerateBlogModal
           onGenerate={(article) => {
-            
             navigate(`/editor?id=${article.id}`);
           }}
           onClose={() => setShowGenerateModal(false)}
@@ -142,4 +193,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
