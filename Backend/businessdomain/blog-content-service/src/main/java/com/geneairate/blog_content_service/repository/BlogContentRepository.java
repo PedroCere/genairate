@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface BlogContentRepository extends JpaRepository<BlogArticle,String> {
 
-    List<BlogArticle> findTop3ByOrderByCreatedAtDesc(); // ✅ CORRECTO
+    List<BlogArticle> findTop3ByOrderByCreatedAtDesc();
 
 }
