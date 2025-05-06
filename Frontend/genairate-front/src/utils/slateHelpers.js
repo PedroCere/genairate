@@ -1,15 +1,45 @@
 import { Node } from 'slate';
 
+function sanitizeTextNodes(nodes) {
+  return nodes.map(node => {
+    if (node.children) {
+      return {
+        ...node,
+        children: sanitizeTextNodes(node.children),
+      };
+    }
+    return {
+      ...node,
+      text: typeof node.text === 'string' ? node.text : '',
+    };
+  });
+}
+
 export const serializeContent = (value) => {
   return value.map(n => Node.string(n)).join('\n');
 };
 
-export const deserializeContent = (text) => {
-  const safeText = typeof text === 'string' ? text : '';
-  return safeText.split('\n').map(line => ({
+export const deserializeContent = (contentString) => {
+  if (typeof contentString !== 'string' || contentString.trim() === '') {
+    console.warn("Empty or invalid content string, falling back to empty slate value");
+    return [{
+      type: 'paragraph',
+      children: [{ text: '' }]
+    }];
+  }
+  try {
+    const parsed = JSON.parse(contentString);
+    if (Array.isArray(parsed)) {
+      return sanitizeTextNodes(parsed);
+    }
+  } catch (e) {
+    console.warn("Error parsing content, falling back to empty slate value");
+  }
+
+  return [{
     type: 'paragraph',
-    children: [{ text: line }],
-  }));
+    children: [{ text: '' }]
+  }];
 };
 
 export const toggleMark = (editor, format) => {

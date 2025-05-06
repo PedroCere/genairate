@@ -7,11 +7,21 @@ import HomePage from './pages/HomePage';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
+import AnalyticsPage from './pages/AnalyticsPage';
+import HistoryPage from './pages/HistoryPage';
+import TemplatesPage from './pages/TemplatesPage';
+import SettingsPage from './pages/SettingsPage';
+import AccountPage from './pages/AccountPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+
+import i18n from './i18n';
+import { I18nextProvider } from 'react-i18next';
+
+import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
 
 function RoutesWithAuth({ darkMode, toggleDarkMode }) {
   const { isAuthenticated, loading } = useContext(AuthContext);
@@ -29,7 +39,12 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { index: true, element: <HomePage /> },
               { path: 'dashboard', element: <Dashboard /> },
               { path: 'editor', element: <EditorPage /> },
-              { path: 'editor/:id', element: <EditorPage /> }
+              { path: 'editor/:id', element: <EditorPage /> },
+              { path: 'analytics', element: <AnalyticsPage /> },
+              { path: 'history', element: <HistoryPage /> },
+              { path: 'templates', element: <TemplatesPage /> },
+              { path: 'settings', element: <SettingsPage /> },
+              { path: 'account', element: <AccountPage /> }
             ]
           }
         ]
@@ -46,6 +61,16 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
   );
 
   return <RouterProvider router={router} />;
+}
+
+function AppWrapper({ children }) {
+  const { getFontSizeClass } = useFontSize();
+
+  return (
+    <div className={`${getFontSizeClass()} text-gray-900 dark:text-gray-100 min-h-screen`}>
+      {children}
+    </div>
+  );
 }
 
 function App() {
@@ -74,14 +99,21 @@ function App() {
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   return (
-    <AuthProvider>
-      <EditorProvider>
-        <ErrorBoundary>
-          <RoutesWithAuth darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </ErrorBoundary>
-      </EditorProvider>
-    </AuthProvider>
+    <I18nextProvider i18n={i18n}>
+      <AuthProvider>
+        <EditorProvider>
+          <FontSizeProvider>
+            <ErrorBoundary>
+              <AppWrapper>
+                <RoutesWithAuth darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+              </AppWrapper>
+            </ErrorBoundary>
+          </FontSizeProvider>
+        </EditorProvider>
+      </AuthProvider>
+    </I18nextProvider>
   );
 }
 
 export default App;
+
