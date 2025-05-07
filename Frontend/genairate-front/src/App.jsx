@@ -10,8 +10,9 @@ import EditorPage from './pages/EditorPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import HistoryPage from './pages/HistoryPage';
 import TemplatesPage from './pages/TemplatesPage';
-import SettingsPage from './pages/SettingsPage';
+import SettingsLayout from './components/settings/SettingsLayout';
 import AccountPage from './pages/AccountPage';
+import PreferencesSection from './components/preferences/PreferencesSection';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -43,8 +44,17 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { path: 'analytics', element: <AnalyticsPage /> },
               { path: 'history', element: <HistoryPage /> },
               { path: 'templates', element: <TemplatesPage /> },
-              { path: 'settings', element: <SettingsPage /> },
-              { path: 'account', element: <AccountPage /> }
+              {
+                path: 'settings',
+                element: <SettingsLayout />,
+                children: [
+                  { index: true, element: <PreferencesSection /> },
+                  { path: 'account', element: <AccountPage /> },
+                  { path: 'preferences', element: <PreferencesSection /> },
+                  { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
+                  { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
+                ]
+              }
             ]
           }
         ]

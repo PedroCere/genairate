@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFontSize } from '../components/FontSizeContext';
+import { useFontSize } from '../../components/FontSizeContext';
 
 const mockPreferences = {
   defaultLanguage: 'es',

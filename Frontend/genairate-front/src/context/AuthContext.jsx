@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('genairate_token');
     if (token) {
-      // Set a dummy user if token exists to simulate logged-in state
+     
       setUser({
         id: 'dummy-user',
         name: 'Dummy User',
