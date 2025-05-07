@@ -25,6 +25,7 @@ const navLinks = [
   { icon: FaListUl, label: "Analytics", path: "/analytics" },
   { icon: FaFolderOpen, label: "History", path: "/history" },
   { icon: FaListUl, label: "Templates", path: "/templates" },
+  { icon: FaUser, label: "Profile", path: "/profile/aguspaltrucci" },
   { icon: FaCogs, label: "Settings", path: "/settings" }
 ];
 

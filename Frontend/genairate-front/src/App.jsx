@@ -12,6 +12,7 @@ import HistoryPage from './pages/HistoryPage';
 import TemplatesPage from './pages/TemplatesPage';
 import SettingsLayout from './components/settings/SettingsLayout';
 import AccountPage from './pages/AccountPage';
+import ProfilePage from './pages/ProfilePage';
 import PreferencesSection from './components/preferences/PreferencesSection';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
@@ -44,6 +45,7 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { path: 'analytics', element: <AnalyticsPage /> },
               { path: 'history', element: <HistoryPage /> },
               { path: 'templates', element: <TemplatesPage /> },
+              { path: 'profile/:username', element: <ProfilePage /> },
               {
                 path: 'settings',
                 element: <SettingsLayout />,
