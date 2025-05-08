@@ -21,7 +21,7 @@ const userService = {
     }),
 };
 
-export default function SettingsPage() {
+export default function PreferencesSection() {
   const { t } = useTranslation();
   const { size, setSize } = useFontSize();
   const [preferences, setPreferences] = useState({
@@ -69,7 +69,7 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-serif font-semibold mb-6">{t('SettingsTitle')}</h1>
+      {/* Removed h1 title as it is now in the unified page */}
 
       <div className="space-y-6">
         {/* Default Language */}
