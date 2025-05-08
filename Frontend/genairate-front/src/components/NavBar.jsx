@@ -166,7 +166,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   <NavLink to="/library" className="dropdown-item dark:text-gray-300">
                     <FiBookOpen /> {t("Library")}
                   </NavLink>
-                  <NavLink to="/history" className="dropdown-item dark:text-gray-300">
+                  <NavLink to="/stories" className="dropdown-item dark:text-gray-300">
                     <FiEdit3 /> {t("Stories")}
                   </NavLink>
                   <NavLink to="/analytics" className="dropdown-item dark:text-gray-300">
