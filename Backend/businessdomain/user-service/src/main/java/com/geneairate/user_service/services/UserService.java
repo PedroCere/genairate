@@ -1,9 +1,6 @@
 package com.geneairate.user_service.services;
 
-import com.geneairate.user_service.dtos.UpdateUserPreferencesRequest;
-import com.geneairate.user_service.dtos.UserPreferencesResponse;
-import com.geneairate.user_service.dtos.UserProfileResponse;
-import com.geneairate.user_service.dtos.UserStatsResponse;
+import com.geneairate.user_service.dtos.*;
 import com.geneairate.user_service.model.User;
 import com.geneairate.user_service.respository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +29,17 @@ public class UserService {
         p.email = u.getEmail();
         p.role = u.getRole();
         p.createdAt = u.getCreatedAt();
+        p.description = u.getDescription();
+        p.location = u.getLocation();
         return p;
+    }
+
+    public UserProfileResponse updateProfile(UpdateUserProfileRequest req) {
+        User u = getCurrentUser();
+        u.setDescription(req.description);
+        u.setLocation(req.location);
+        repo.save(u);
+        return getProfile();
     }
 
     public UserPreferencesResponse getPreferences() {

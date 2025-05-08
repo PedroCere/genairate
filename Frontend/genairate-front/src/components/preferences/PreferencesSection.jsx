@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFontSize } from '../../components/FontSizeContext';
-
-const mockPreferences = {
-  defaultLanguage: 'es',
-  defaultTone: 'Formal',
-  defaultFormat: 'Blog Post',
-  enableTTS: false,
-  enableAutocorrect: true,
-};
-
-const userService = {
-  getPreferences: () =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve(mockPreferences), 500);
-    }),
-  updatePreferences: (prefs) =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve(prefs), 500);
-    }),
-};
+import { getUserPreferences, updateUserPreferences } from '../../services/apiClient';
 
 export default function PreferencesSection() {
   const { t } = useTranslation();
@@ -36,7 +18,7 @@ export default function PreferencesSection() {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
-    userService.getPreferences().then((prefs) => {
+    getUserPreferences().then((prefs) => {
       setPreferences(prefs);
       setLoading(false);
     });
@@ -52,7 +34,7 @@ export default function PreferencesSection() {
 
   const handleSave = () => {
     setSaving(true);
-    userService.updatePreferences(preferences).then(() => {
+    updateUserPreferences(preferences).then(() => {
       setSaving(false);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -69,10 +51,7 @@ export default function PreferencesSection() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-gray-100">
-      {/* Removed h1 title as it is now in the unified page */}
-
       <div className="space-y-6">
-        {/* Default Language */}
         <div>
           <label htmlFor="defaultLanguage" className="block mb-2 font-medium">
             {t('DefaultLanguage')}
@@ -92,7 +71,6 @@ export default function PreferencesSection() {
           </select>
         </div>
 
-        {/* Default Tone */}
         <div>
           <label htmlFor="defaultTone" className="block mb-2 font-medium">
             {t('DefaultTone')}
@@ -111,7 +89,6 @@ export default function PreferencesSection() {
           </select>
         </div>
 
-        {/* Default Format */}
         <div>
           <label htmlFor="defaultFormat" className="block mb-2 font-medium">
             {t('DefaultFormat')}
@@ -130,7 +107,6 @@ export default function PreferencesSection() {
           </select>
         </div>
 
-        {/* Enable TTS */}
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
@@ -145,7 +121,6 @@ export default function PreferencesSection() {
           </label>
         </div>
 
-        {/* Enable Autocorrect */}
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
@@ -160,7 +135,6 @@ export default function PreferencesSection() {
           </label>
         </div>
 
-        {/* Font Size Selector */}
         <div>
           <label htmlFor="fontSize" className="block mb-2 font-medium">
             Tamaño de texto:
@@ -178,7 +152,6 @@ export default function PreferencesSection() {
           </select>
         </div>
 
-        {/* Save Button */}
         <div>
           <button
             onClick={handleSave}

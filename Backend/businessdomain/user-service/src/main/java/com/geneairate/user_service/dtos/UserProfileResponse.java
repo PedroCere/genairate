@@ -7,4 +7,6 @@ public class UserProfileResponse {
     public String email;
     public String role;
     public LocalDateTime createdAt;
+    public String description;
+    public String location;
 }

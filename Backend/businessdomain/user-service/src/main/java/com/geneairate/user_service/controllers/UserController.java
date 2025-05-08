@@ -1,9 +1,6 @@
 package com.geneairate.user_service.controllers;
 
-import com.geneairate.user_service.dtos.UpdateUserPreferencesRequest;
-import com.geneairate.user_service.dtos.UserPreferencesResponse;
-import com.geneairate.user_service.dtos.UserProfileResponse;
-import com.geneairate.user_service.dtos.UserStatsResponse;
+import com.geneairate.user_service.dtos.*;
 import com.geneairate.user_service.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +18,11 @@ public class UserController {
     @GetMapping("/profile")
     public UserProfileResponse profile() {
         return userService.getProfile();
+    }
+
+    @PutMapping("/profile")
+    public UserProfileResponse updateProfile(@RequestBody UpdateUserProfileRequest req) {
+        return userService.updateProfile(req);
     }
 
     @GetMapping("/preferences")

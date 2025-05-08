@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import fondoVideo from '../assets/fondo2.mp4';
-import { getUserProfile } from '../services/authService';
+import { getUserProfile, updateUserProfile } from '../services/apiClient';
 
 const userStories = [
   { id: 1, title: 'Cómo escribir mejor con IA', date: '2024-05-01', views: 300, cover: '/src/assets/blog1.jpg', type: 'blog' },
@@ -27,25 +27,29 @@ export default function ProfilePage() {
   const [filterBy, setFilterBy] = useState('all');
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editDescription, setEditDescription] = useState('');
+  const [editLocation, setEditLocation] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const data = await getUserProfile();
-        // Map backend fields to frontend profile fields
         setProfile({
           name: data.username || '',
           username: data.username || '',
-          bio: '', // no bio from backend
-          avatar: '/src/assets/profile1.jpg', // placeholder avatar
-          location: '', // no location from backend
-          profession: '', // no profession from backend
-          twitter: '', // no twitter from backend
-          linkedin: '', // no linkedin from backend
-          followers: 0, // no followers from backend
-          following: 0, // no following from backend
+          bio: data.description || '',
+          avatar: '/src/assets/profile1.jpg',
+          location: data.location || '',
+          profession: '',
+          twitter: '',
+          linkedin: '',
+          followers: 0,
+          following: 0,
           isCurrentUser: true
         });
+        setEditDescription(data.description || '');
+        setEditLocation(data.location || '');
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
       } finally {
@@ -54,6 +58,20 @@ export default function ProfilePage() {
     };
     fetchProfile();
   }, []);
+
+  const handleSave = async () => {
+    try {
+      await updateUserProfile({ description: editDescription, location: editLocation });
+      setProfile((prev) => ({
+        ...prev,
+        bio: editDescription,
+        location: editLocation,
+      }));
+      setEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
 
   const filteredStories = useMemo(() => {
     let filtered = userStories;
@@ -117,17 +135,54 @@ export default function ProfilePage() {
               <span>@{profile.username}</span>
             )}
           </p>
-          <p className="mt-2">{profile.bio}</p>
+          {editing ? (
+            <>
+              <textarea
+                className="w-full mt-2 p-2 border rounded"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder={t('EditDescription')}
+              />
+              <input
+                type="text"
+                className="w-full mt-2 p-2 border rounded"
+                value={editLocation}
+                onChange={(e) => setEditLocation(e.target.value)}
+                placeholder={t('EditLocation')}
+              />
+              <div className="mt-2 flex gap-2">
+                <button
+                  onClick={handleSave}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  {t('Save')}
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                >
+                  {t('Cancel')}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2">{profile.bio}</p>
+              {profile.isCurrentUser && (
+                <button
+                  className="ml-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 mt-2"
+                  onClick={() => setEditing(true)}
+                >
+                  {t('EditProfile')}
+                </button>
+              )}
+            </>
+          )}
           <div className="flex gap-6 mt-3 text-sm text-gray-600 dark:text-gray-400">
             <p><strong>{profile.followers}</strong> {t('Followers')}</p>
             <p><strong>{profile.following}</strong> {t('Following')}</p>
           </div>
         </div>
-        {profile.isCurrentUser && (
-          <button className="ml-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
-            {t('EditProfile')}
-          </button>
-        )}
         <button onClick={shareProfile} className="ml-4 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
           {t('ShareProfile')}
         </button>

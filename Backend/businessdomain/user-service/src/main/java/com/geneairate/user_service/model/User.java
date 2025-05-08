@@ -26,6 +26,9 @@ public class User {
     private String defaultFormat = "lista";
     private String defaultLanguage = "es";
 
+    private String description;
+    private String location;
+
     private int totalArticles = 0;
     private int totalWords = 0;
     private String tonesUsed = "";
@@ -106,6 +109,22 @@ public class User {
 
     public void setDefaultLanguage(String defaultLanguage) {
         this.defaultLanguage = defaultLanguage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public int getTotalArticles() {
