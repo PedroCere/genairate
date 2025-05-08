@@ -17,15 +17,31 @@ public class BlogArticle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     private String title;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String introduction;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "article_id")
-    private List<Section> sections;
+    private String subtitle1;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String content1;
 
+    private String subtitle2;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String content2;
+
+    private String subtitle3;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String content3;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String conclusion;
 
     @ElementCollection

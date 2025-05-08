@@ -11,21 +11,16 @@ import java.util.List;
 @Builder
 public class ContentResponse {
 
-    private String id;
+    private Long id;
     private String title;
     private String introduction;
-    private List<SectionDTO> sections;
+    private String subtitle1;
+    private String content1;
+    private String subtitle2;
+    private String content2;
+    private String subtitle3;
+    private String content3;
     private String conclusion;
     private List<String> keywords;
     private String metaDescription;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SectionDTO {
-        private String subtitle;
-        private String content;
-    }
 }

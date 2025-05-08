@@ -4,13 +4,11 @@ import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
 import com.geneairate.blog_content_service.gateway.OpenRouterClient;
 import com.geneairate.blog_content_service.model.BlogArticle;
-import com.geneairate.blog_content_service.model.Section;
 import com.geneairate.blog_content_service.repository.BlogContentRepository;
 import com.geneairate.blog_content_service.service.BlogContentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,19 +24,36 @@ public class BlogContentServiceImpl implements BlogContentService {
     @Override
     public ContentResponse generarContenido(ContentRequest request) {
         String prompt = String.format("""
-            [INST]
-            Generá un artículo de blog en %s sobre: \"%s\".
-
-            Formato deseado:
-            - Título atractivo
-            - Introducción de 1–2 párrafos
-            - 3 subtítulos con contenido explicativo
-            - Conclusión
-
-            Tono: %s | Formato: %s
-            IMPORTANTE: Respondé solo en JSON válido con campos estructurados.
-            [/INST]
-            """,
+                                
+                                        [INST]
+                                        Generá un artículo de blog en %s sobre: "%s".
+                                                
+                                        Formato deseado:
+                                        - Título llamativo
+                                        - Introducción (1–2 párrafos)
+                                        - 3 subtítulos temáticos con desarrollo textual (deben ser conceptos distintos del tema)
+                                        - Conclusión inspiradora o resumida
+                                                
+                                        Respondé en JSON con los campos exactos:
+                                        {
+                                          "title": "string",
+                                          "introduction": "string",
+                                          "subtitle1": "string",
+                                          "content1": "string",
+                                          "subtitle2": "string",
+                                          "content2": "string",
+                                          "subtitle3": "string",
+                                          "content3": "string",
+                                          "conclusion": "string",
+                                          "keywords": ["string"],
+                                          "metaDescription": "string"
+                                        }
+                                                
+                                        Tono: %s | Formato: %s
+                                        IMPORTANTE: No agregues explicaciones ni texto fuera del JSON.
+                                        [/INST]
+                                                
+                        """,
                 request.getLanguage(),
                 request.getUserInput(),
                 request.getTone(),
@@ -47,21 +62,23 @@ public class BlogContentServiceImpl implements BlogContentService {
 
         ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
 
-        BlogArticle article = new BlogArticle(
-                null,
-                response.getTitle(),
-                response.getIntroduction(),
-                response.getSections().stream()
-                        .map(sec -> new Section(null, sec.getSubtitle(), sec.getContent()))
-                        .collect(Collectors.toList()),
-                response.getConclusion(),
-                response.getKeywords(),
-                response.getMetaDescription(),
-                true,
-                System.currentTimeMillis()
-        );
-        repository.save(article);
+        BlogArticle article = BlogArticle.builder()
+                .title(response.getTitle())
+                .introduction(response.getIntroduction())
+                .subtitle1(response.getSubtitle1())
+                .content1(response.getContent1())
+                .subtitle2(response.getSubtitle2())
+                .content2(response.getContent2())
+                .subtitle3(response.getSubtitle3())
+                .content3(response.getContent3())
+                .conclusion(response.getConclusion())
+                .keywords(response.getKeywords())
+                .metaDescription(response.getMetaDescription())
+                .isDraft(true)
+                .createdAt(System.currentTimeMillis())
+                .build();
 
+        repository.save(article);
         return response;
     }
 
@@ -86,7 +103,7 @@ public class BlogContentServiceImpl implements BlogContentService {
     }
 
     @Override
-    public ContentResponse obtenerPorId(String id) {
+    public ContentResponse obtenerPorId(Long id) {
         BlogArticle article = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
         return mapToDto(article);
@@ -94,24 +111,27 @@ public class BlogContentServiceImpl implements BlogContentService {
 
     @Override
     public void guardarArticulo(ContentResponse content) {
-        BlogArticle article = new BlogArticle(
-                UUID.randomUUID().toString(),
-                content.getTitle(),
-                content.getIntroduction(),
-                content.getSections().stream()
-                        .map(sec -> new Section(sec.getSubtitle(), sec.getContent()))
-                        .collect(Collectors.toList()),
-                content.getConclusion(),
-                content.getKeywords(),
-                content.getMetaDescription(),
-                false,
-                System.currentTimeMillis()
-        );
+        BlogArticle article = BlogArticle.builder()
+                .title(content.getTitle())
+                .introduction(content.getIntroduction())
+                .subtitle1(content.getSubtitle1())
+                .content1(content.getContent1())
+                .subtitle2(content.getSubtitle2())
+                .content2(content.getContent2())
+                .subtitle3(content.getSubtitle3())
+                .content3(content.getContent3())
+                .conclusion(content.getConclusion())
+                .keywords(content.getKeywords())
+                .metaDescription(content.getMetaDescription())
+                .isDraft(false)
+                .createdAt(System.currentTimeMillis())
+                .build();
+
         repository.save(article);
     }
 
     @Override
-    public void eliminarPorId(String id) {
+    public void eliminarPorId(Long id) {
         repository.deleteById(id);
     }
 
@@ -120,21 +140,32 @@ public class BlogContentServiceImpl implements BlogContentService {
         return repository.findTop3ByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private ContentResponse mapToDto(BlogArticle article) {
-        return new ContentResponse(
-                article.getId(),
-                article.getTitle(),
-                article.getIntroduction(),
-                article.getSections().stream()
-                        .map(sec -> new ContentResponse.SectionDTO(sec.getSubtitle(), sec.getContent()))
-                        .collect(Collectors.toList()),
-                article.getConclusion(),
-                article.getKeywords(),
-                article.getMetaDescription()
-        );
+        return ContentResponse.builder()
+                .id(article.getId())
+                .title(article.getTitle())
+                .introduction(article.getIntroduction())
+                .subtitle1(article.getSubtitle1())
+                .content1(article.getContent1())
+                .subtitle2(article.getSubtitle2())
+                .content2(article.getContent2())
+                .subtitle3(article.getSubtitle3())
+                .content3(article.getContent3())
+                .conclusion(article.getConclusion())
+                .keywords(article.getKeywords())
+                .metaDescription(article.getMetaDescription())
+                .build();
+    }
+
+    @Override
+    public List<ContentResponse> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
 }

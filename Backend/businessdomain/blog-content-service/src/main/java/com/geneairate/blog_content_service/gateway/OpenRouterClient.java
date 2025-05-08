@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,7 +21,8 @@ import java.util.Map;
 public class OpenRouterClient {
 
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
-    private static final String API_KEY = System.getenv("OPENROUTER_API_KEY");
+    @Value("${openrouter.api.key}")
+    private String apiKey;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -76,7 +78,7 @@ public class OpenRouterClient {
     private String generarRawRespuesta(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(API_KEY);
+        headers.setBearerAuth(apiKey);
 
         Map<String, Object> body = new HashMap<>();
         body.put("model", "mistralai/mistral-7b-instruct");
@@ -98,10 +100,36 @@ public class OpenRouterClient {
         try {
             JsonNode root = objectMapper.readTree(json);
             String content = root.path("choices").get(0).path("message").path("content").asText();
+
             JsonNode jsonContent = objectMapper.readTree(content);
-            return objectMapper.treeToValue(jsonContent, ContentResponse.class);
+
+            return ContentResponse.builder()
+                    .title(jsonContent.path("title").asText())
+                    .introduction(jsonContent.path("introduction").asText())
+                    .subtitle1(jsonContent.path("subtitle1").asText())
+                    .content1(jsonContent.path("content1").asText())
+                    .subtitle2(jsonContent.path("subtitle2").asText())
+                    .content2(jsonContent.path("content2").asText())
+                    .subtitle3(jsonContent.path("subtitle3").asText())
+                    .content3(jsonContent.path("content3").asText())
+                    .conclusion(jsonContent.path("conclusion").asText())
+                    .metaDescription(jsonContent.path("metaDescription").asText())
+                    .keywords(parseKeywords(jsonContent.path("keywords")))
+                    .build();
+
         } catch (Exception e) {
             throw new RuntimeException("Error parseando respuesta IA", e);
         }
     }
+
+    private List<String> parseKeywords(JsonNode keywordsNode) {
+        List<String> keywords = new ArrayList<>();
+        if (keywordsNode.isArray()) {
+            for (JsonNode k : keywordsNode) {
+                keywords.add(k.asText());
+            }
+        }
+        return keywords;
+    }
+
 }

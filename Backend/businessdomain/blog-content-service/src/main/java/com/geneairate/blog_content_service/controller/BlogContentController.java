@@ -2,6 +2,7 @@ package com.geneairate.blog_content_service.controller;
 
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
+import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.service.BlogContentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class BlogContentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContentResponse> getById(@PathVariable String id) {
+    public ResponseEntity<ContentResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
 
@@ -55,7 +56,7 @@ public class BlogContentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.eliminarPorId(id);
         return ResponseEntity.ok().build();
     }
@@ -63,5 +64,12 @@ public class BlogContentController {
     @GetMapping("/recent")
     public ResponseEntity<List<ContentResponse>> recent() {
         return ResponseEntity.ok(service.obtenerRecientes());
+    }
+
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ContentResponse>> getAllBlogs(){
+        List<ContentResponse> blogs = service.getAll();
+        return ResponseEntity.ok(blogs);
     }
 }
