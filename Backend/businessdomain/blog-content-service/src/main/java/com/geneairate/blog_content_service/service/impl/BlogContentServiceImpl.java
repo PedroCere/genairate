@@ -2,7 +2,9 @@ package com.geneairate.blog_content_service.service.impl;
 
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
+import com.geneairate.blog_content_service.dto.PromptStyleTemplate;
 import com.geneairate.blog_content_service.gateway.OpenRouterClient;
+import com.geneairate.blog_content_service.gateway.TemplateClient;
 import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.repository.BlogContentRepository;
 import com.geneairate.blog_content_service.service.BlogContentService;
@@ -15,49 +17,53 @@ import java.util.stream.Collectors;
 public class BlogContentServiceImpl implements BlogContentService {
     private final OpenRouterClient predictorGateway;
     private final BlogContentRepository repository;
+    private final TemplateClient templateClient;
 
-    public BlogContentServiceImpl(OpenRouterClient predictorGateway, BlogContentRepository repository) {
+    public BlogContentServiceImpl(OpenRouterClient predictorGateway, BlogContentRepository repository, TemplateClient templateClient) {
         this.predictorGateway = predictorGateway;
         this.repository = repository;
+        this.templateClient = templateClient;
     }
 
     @Override
     public ContentResponse generarContenido(ContentRequest request) {
+        PromptStyleTemplate template = templateClient.getTemplateById(request.getTemplateId());
+
         String prompt = String.format("""
-                                
                                         [INST]
-                                        Generá un artículo de blog en %s sobre: "%s".
-                                                
+                                        Generá un artículo de blog en %s sobre: \"%s\".
+
                                         Formato deseado:
                                         - Título llamativo
                                         - Introducción (1–2 párrafos)
                                         - 3 subtítulos temáticos con desarrollo textual (deben ser conceptos distintos del tema)
                                         - Conclusión inspiradora o resumida
-                                                
+
                                         Respondé en JSON con los campos exactos:
                                         {
-                                          "title": "string",
-                                          "introduction": "string",
-                                          "subtitle1": "string",
-                                          "content1": "string",
-                                          "subtitle2": "string",
-                                          "content2": "string",
-                                          "subtitle3": "string",
-                                          "content3": "string",
-                                          "conclusion": "string",
-                                          "keywords": ["string"],
-                                          "metaDescription": "string"
+                                          \"title\": \"string\",
+                                          \"introduction\": \"string\",
+                                          \"subtitle1\": \"string\",
+                                          \"content1\": \"string\",
+                                          \"subtitle2\": \"string\",
+                                          \"content2\": \"string\",
+                                          \"subtitle3\": \"string\",
+                                          \"content3\": \"string\",
+                                          \"conclusion\": \"string\",
+                                          \"keywords\": [\"string\"],
+                                          \"metaDescription\": \"string\"
                                         }
-                                                
-                                        Tono: %s | Formato: %s
+
+                                        Tono: %s | Longitud: %s
+                                        %s
                                         IMPORTANTE: No agregues explicaciones ni texto fuera del JSON.
                                         [/INST]
-                                                
                         """,
-                request.getLanguage(),
+                template.getLanguage(),
                 request.getUserInput(),
-                request.getTone(),
-                request.getFormat()
+                template.getTone(),
+                template.getLength(),
+                template.getExtraInstructions() != null ? template.getExtraInstructions() : ""
         );
 
         ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);

@@ -18,4 +18,5 @@ public class ContentRequest {
     private String tone = "profesional";
     private String format = "lista";
     private String language = "es";
+    private Long templateId;
 }
