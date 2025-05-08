@@ -1,22 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import fondoVideo from '../assets/fondo2.mp4';
-
-const profile = {
-  name: 'Agustín Paltrucci',
-  username: 'aguspaltrucci',
-  bio: 'Apasionado por la IA y la escritura creativa.',
-  avatar: '/src/assets/profile1.jpg',
-  location: 'Buenos Aires',
-  profession: 'Escritor técnico',
-  twitter: 'https://twitter.com/aguspaltrucci',
-  linkedin: 'https://linkedin.com/in/aguspaltrucci',
-  followers: 1200,
-  following: 180,
-  isCurrentUser: true
-};
+import { getUserProfile } from '../services/authService';
 
 const userStories = [
   { id: 1, title: 'Cómo escribir mejor con IA', date: '2024-05-01', views: 300, cover: '/src/assets/blog1.jpg', type: 'blog' },
@@ -38,6 +25,35 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const [sortBy, setSortBy] = useState('recent');
   const [filterBy, setFilterBy] = useState('all');
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await getUserProfile();
+        // Map backend fields to frontend profile fields
+        setProfile({
+          name: data.username || '',
+          username: data.username || '',
+          bio: '', // no bio from backend
+          avatar: '/src/assets/profile1.jpg', // placeholder avatar
+          location: '', // no location from backend
+          profession: '', // no profession from backend
+          twitter: '', // no twitter from backend
+          linkedin: '', // no linkedin from backend
+          followers: 0, // no followers from backend
+          following: 0, // no following from backend
+          isCurrentUser: true
+        });
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const filteredStories = useMemo(() => {
     let filtered = userStories;
@@ -64,12 +80,18 @@ export default function ProfilePage() {
     alert(t('LinkCopied'));
   };
 
+  if (loading) {
+    return <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">{t('LoadingProfile')}...</div>;
+  }
+
+  if (!profile) {
+    return <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">{t('ProfileNotFound')}</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
 
-    
-<div className="relative h-64 md:h-80 rounded-lg overflow-hidden mb-6">
-
+      <div className="relative h-64 md:h-80 rounded-lg overflow-hidden mb-6">
         <video
           src={fondoVideo}
           autoPlay
@@ -84,13 +106,16 @@ export default function ProfilePage() {
         </div>
       </div>
 
-    
       <div className="flex items-center gap-6 mb-6">
         <img src={profile.avatar} alt={profile.name} className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-900" />
         <div className="flex-1">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             📍 {profile.location} · 🧠 {profile.profession} ·{' '}
-            <a href={profile.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">@{profile.username}</a>
+            {profile.twitter ? (
+              <a href={profile.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">@{profile.username}</a>
+            ) : (
+              <span>@{profile.username}</span>
+            )}
           </p>
           <p className="mt-2">{profile.bio}</p>
           <div className="flex gap-6 mt-3 text-sm text-gray-600 dark:text-gray-400">
@@ -108,14 +133,12 @@ export default function ProfilePage() {
         </button>
       </div>
 
-     
       <div className="flex gap-6 text-sm text-gray-500 dark:text-gray-400 mb-6">
         <p>📝 {userStories.length} {t('Posts')}</p>
         <p>👀 {totalViews} {t('TotalViews')}</p>
         <p>📅 {t('Last')}: {lastPublication.toLocaleDateString()}</p>
       </div>
 
-    
       <div className="flex gap-4 mb-4">
         <select
           className="rounded border p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 transition"
@@ -139,7 +162,6 @@ export default function ProfilePage() {
         </select>
       </div>
 
-     
       <div className="space-y-4">
         <AnimatePresence>
           {filteredStories.map((story) => (
@@ -161,7 +183,6 @@ export default function ProfilePage() {
         </AnimatePresence>
       </div>
 
-   
       <aside className="mt-10">
         <h3 className="text-md font-semibold mb-3">{t('RecommendedForYou')}</h3>
         <div className="space-y-4">
@@ -179,7 +200,6 @@ export default function ProfilePage() {
         </div>
       </aside>
 
-    
       <section className="mt-10">
         <h3 className="text-md font-semibold mb-3">{t('Testimonials')}</h3>
         <div className="space-y-4">
