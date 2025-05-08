@@ -23,6 +23,7 @@ import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import SettingsPage from './pages/SettingsPage';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
@@ -60,7 +61,7 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
                   { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
                   { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
                 ]
-              }
+              },
 
               { path: 'settings', element: <SettingsPage /> },
               { path: 'account', element: <AccountPage /> },
