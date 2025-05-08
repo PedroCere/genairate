@@ -14,6 +14,10 @@ import SettingsLayout from './components/settings/SettingsLayout';
 import AccountPage from './pages/AccountPage';
 import ProfilePage from './pages/ProfilePage';
 import PreferencesSection from './components/preferences/PreferencesSection';
+import LibraryPage from './pages/LibraryPage';
+import StoriesPage from './pages/StoriesPage';
+import ArticleViewPage from './pages/ArticleViewPage';
+import HelpPage from './pages/HelpPage'; // ✅ IMPORTADO
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -22,7 +26,6 @@ import RegisterPage from './pages/RegisterPage';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
-
 import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
 
 function RoutesWithAuth({ darkMode, toggleDarkMode }) {
@@ -45,6 +48,7 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { path: 'analytics', element: <AnalyticsPage /> },
               { path: 'history', element: <HistoryPage /> },
               { path: 'templates', element: <TemplatesPage /> },
+
               { path: 'profile/:username', element: <ProfilePage /> },
               {
                 path: 'settings',
@@ -57,6 +61,14 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
                   { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
                 ]
               }
+
+              { path: 'settings', element: <SettingsPage /> },
+              { path: 'account', element: <AccountPage /> },
+              { path: 'library', element: <LibraryPage /> },
+              { path: 'stories', element: <StoriesPage /> },
+              { path: 'help', element: <HelpPage /> }, // ✅ NUEVA RUTA
+              { path: 'article/:id', element: <ArticleViewPage /> }
+
             ]
           }
         ]
@@ -128,4 +140,3 @@ function App() {
 }
 
 export default App;
-
