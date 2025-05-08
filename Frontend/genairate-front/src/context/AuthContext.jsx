@@ -1,50 +1,25 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
-    localStorage.setItem('genairate_token', 'demo-token');
-  }, []);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('genairate_token');
-      
-      try {
-       
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        if (token) {
-          const userData = {
-            id: 'demo-user',
-            name: 'Demo User',
-            email: 'demo@genairate.com',
-            preferences: {
-              language: 'es',
-              tone: 'profesional',
-              autoCorrect: true
-            },
-            stats: {
-              totalArticles: 3,
-              totalWords: 1500,
-              lastEdited: new Date().toISOString()
-            }
-          };
-          setUser(userData);
+    const token = localStorage.getItem('genairate_token');
+    if (token) {
+     
+      setUser({
+        id: 'dummy-user',
+        name: 'Dummy User',
+        preferences: {
+          language: 'es',
+          tone: 'profesional'
         }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
+      });
+    }
+    setLoading(false);
   }, []);
 
   const login = async (userData, token) => {

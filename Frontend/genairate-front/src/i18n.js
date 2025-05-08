@@ -233,7 +233,29 @@ const resources = {
 "PreferencesSaved": "Preferencias guardadas con éxito.",
 "DeleteAccount": "Eliminar cuenta",
 "DeletingAccount": "Eliminando cuenta...",
-"AccountDeleted": "Cuenta eliminada con éxito."
+"AccountDeleted": "Cuenta eliminada con éxito.",
+
+  "EditProfile": "Editar perfil",
+  "ShareProfile": "Compartir mi perfil",
+  "Followers": "seguidores",
+  "Following": "siguiendo",
+  "Posts": "publicaciones",
+  "TotalViews": "vistas totales",
+  "Last": "Última",
+  "SortPosts": "Ordenar publicaciones",
+  "MostRecent": "Más recientes",
+  "MostViewed": "Más vistas",
+  "FilterPosts": "Filtrar publicaciones",
+  "All": "Todos",
+  "Blog": "Blog",
+  "Guide": "Guía",
+  "Tutorial": "Tutorial",
+  "Views": "vistas",
+  "RecommendedForYou": "Recomendados para ti",
+  "MutualFollowers": "Seguidores en común",
+  "ViewProfile": "Ver perfil",
+  "Testimonials": "Testimonios",
+  "LinkCopied": "URL copiada al portapapeles"
     }
   }
   
