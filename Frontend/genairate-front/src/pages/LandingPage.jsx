@@ -19,7 +19,7 @@ export default function LandingPage({ darkMode, toggleDarkMode }) {
       {/* Navbar */}
       <header className="w-full px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
         <h1 className="text-2xl font-bold font-serif">
-          <Link to="/">GenAIrate</Link>
+          GenAIrate
         </h1>
         <div className="flex items-center gap-3">
           <Link

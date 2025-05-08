@@ -17,12 +17,13 @@ import PreferencesSection from './components/preferences/PreferencesSection';
 import LibraryPage from './pages/LibraryPage';
 import StoriesPage from './pages/StoriesPage';
 import ArticleViewPage from './pages/ArticleViewPage';
-import HelpPage from './pages/HelpPage'; // ✅ IMPORTADO
+import HelpPage from './pages/HelpPage';
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import OnboardingPage from './pages/OnboardingPage';
 import SettingsPage from './pages/SettingsPage';
 
 import i18n from './i18n';
@@ -49,7 +50,6 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { path: 'analytics', element: <AnalyticsPage /> },
               { path: 'history', element: <HistoryPage /> },
               { path: 'templates', element: <TemplatesPage /> },
-
               { path: 'profile/:username', element: <ProfilePage /> },
               {
                 path: 'settings',
@@ -62,23 +62,23 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
                   { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
                 ]
               },
-
               { path: 'settings', element: <SettingsPage /> },
               { path: 'account', element: <AccountPage /> },
               { path: 'library', element: <LibraryPage /> },
               { path: 'stories', element: <StoriesPage /> },
-              { path: 'help', element: <HelpPage /> }, // ✅ NUEVA RUTA
-              { path: 'article/:id', element: <ArticleViewPage /> }
-
+              { path: 'help', element: <HelpPage /> },
+              { path: 'article/:id', element: <ArticleViewPage /> },
             ]
-          }
+          },
+          // rutas externas incluso estando autenticado
+          { path: '/login', element: <LoginPage /> },
+          { path: '/register', element: <RegisterPage /> },
+          { path: '/landingpage', element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> },
+          { path: 'onboarding', element: <OnboardingPage /> },
+          { path: '*', element: <ErrorPage /> }
         ]
       : [
-          {
-            path: '/',
-            element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
-            errorElement: <ErrorPage />
-          },
+          { path: '/', element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> },
           { path: '/login', element: <LoginPage /> },
           { path: '/register', element: <RegisterPage /> },
           { path: '*', element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> }

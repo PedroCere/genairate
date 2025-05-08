@@ -26,11 +26,11 @@ export default function LoginPage() {
     }
 
     login({ name: foundUser.name, email: foundUser.email }, 'demo-token');
-    navigate('/');
+    navigate('/')
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="flex items-start justify-center min-h-screen pt-8 px-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="w-full max-w-md p-8 rounded-xl border border-gray-300 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
         <h2 className="text-2xl font-bold mb-6 text-center">Iniciar sesión</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

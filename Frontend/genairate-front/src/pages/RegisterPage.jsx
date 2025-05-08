@@ -11,17 +11,18 @@ export default function RegisterPage() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    // Simula registro + login
-    const userData = {
-      name,
-      email,
-    };
+
+    const finalName = name || 'Nuevo Usuario';
+    const finalEmail = email || 'nuevo@genairate.com';
+    const finalPassword = password || '123456';
+
+    const userData = { name: finalName, email: finalEmail };
     login(userData, 'demo-token');
-    navigate('/');
+    navigate('/onboarding');
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="flex items-start justify-center min-h-screen pt-8 px-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="w-full max-w-md p-8 rounded-xl border border-gray-300 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
         <h2 className="text-2xl font-bold mb-6 text-center">Crear cuenta</h2>
         <form onSubmit={handleRegister} className="space-y-4">
@@ -30,9 +31,9 @@ export default function RegisterPage() {
             <input
               type="text"
               value={name}
-              required
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Tu nombre"
             />
           </div>
           <div>
@@ -40,9 +41,9 @@ export default function RegisterPage() {
             <input
               type="email"
               value={email}
-              required
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="nombre@ejemplo.com"
             />
           </div>
           <div>
@@ -50,9 +51,9 @@ export default function RegisterPage() {
             <input
               type="password"
               value={password}
-              required
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="••••••••"
             />
           </div>
           <button
