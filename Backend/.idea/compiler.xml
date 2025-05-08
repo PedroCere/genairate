@@ -10,9 +10,9 @@
         <module name="eureka-service" />
         <module name="blog-content-service" />
         <module name="config-service" />
+        <module name="user-service" />
         <module name="gateway-service" />
         <module name="template-service" />
-        <module name="user-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

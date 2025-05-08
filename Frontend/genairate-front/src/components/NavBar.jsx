@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import profile2 from "../assets/profile1.jpg";
 import {
   FiSearch,
@@ -15,11 +15,14 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "../context/AuthContext";
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => setMenuOpen(!menuOpen);
   const toggleLangDropdown = () => setLangMenuOpen(!langMenuOpen);
@@ -27,6 +30,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setLangMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -180,7 +188,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     <FiHelpCircle /> {t("Help")}
                   </NavLink>
                   <hr className="border-gray-300 dark:border-gray-700" />
-                  <button className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
+                  <button onClick={handleLogout} className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
                     <FiLogOut /> {t("SignOut")}
                   </button>
                 </motion.div>

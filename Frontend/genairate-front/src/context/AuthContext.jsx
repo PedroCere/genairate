@@ -7,49 +7,58 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('genairate_token');
-    if (token) {
-     
-      setUser({
-        id: 'dummy-user',
-        name: 'Dummy User',
-        preferences: {
-          language: 'es',
-          tone: 'profesional'
-        }
-      });
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error('Error parsing user from localStorage:', err);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
     }
+
     setLoading(false);
   }, []);
 
-  const login = async (userData, token) => {
-    localStorage.setItem('genairate_token', token);
+  const login = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    const safeUserData = userData || {};
     setUser({
-      ...userData,
-      preferences: userData.preferences || {
+      ...safeUserData,
+      preferences: safeUserData.preferences || {
         language: 'es',
-        tone: 'profesional'
-      }
+        tone: 'profesional',
+      },
     });
   };
 
   const logout = () => {
-    localStorage.removeItem('genairate_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
   };
 
   const isAuthenticated = () => {
-    return !!user && !!localStorage.getItem('genairate_token');
+    return !!user && !!localStorage.getItem('token');
   };
 
   const updateUserPreferences = (newPreferences) => {
-    setUser(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        ...newPreferences
-      }
-    }));
+    setUser((prev) => {
+      const updated = {
+        ...prev,
+        preferences: {
+          ...prev.preferences,
+          ...newPreferences,
+        },
+      };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -60,7 +69,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         isAuthenticated,
-        updateUserPreferences
+        updateUserPreferences,
       }}
     >
       {children}

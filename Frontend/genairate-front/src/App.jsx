@@ -1,92 +1,37 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { AuthProvider, AuthContext } from './context/AuthContext';
-import { EditorProvider } from './context/EditorContext';
+import { useEffect, useState } from 'react';
 
-import HomePage from './pages/HomePage';
+import { AuthProvider } from './context/AuthContext';
+import { EditorProvider } from './context/EditorContext';
+import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
+
+import RequireAuth from './components/RequireAuth';
+import ErrorBoundary from './components/ErrorBoundary';
+
 import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
 import EditorPage from './pages/EditorPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import HistoryPage from './pages/HistoryPage';
 import TemplatesPage from './pages/TemplatesPage';
-import SettingsLayout from './components/settings/SettingsLayout';
-import AccountPage from './pages/AccountPage';
 import ProfilePage from './pages/ProfilePage';
-import PreferencesSection from './components/preferences/PreferencesSection';
+import SettingsPage from './pages/SettingsPage';
+import AccountPage from './pages/AccountPage';
 import LibraryPage from './pages/LibraryPage';
 import StoriesPage from './pages/StoriesPage';
+import HelpPage from './pages/HelpPage';
 import ArticleViewPage from './pages/ArticleViewPage';
-import HelpPage from './pages/HelpPage'; // ✅ IMPORTADO
-import ErrorPage from './components/ErrorPage';
+
+import SettingsLayout from './components/settings/SettingsLayout';
+import PreferencesSection from './components/preferences/PreferencesSection';
 import Layout from './Layout';
-import ErrorBoundary from './components/ErrorBoundary';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import SettingsPage from './pages/SettingsPage';
+import HomePage from './pages/HomePage';
+import ErrorPage from './components/ErrorPage';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
-import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
-
-function RoutesWithAuth({ darkMode, toggleDarkMode }) {
-  const { isAuthenticated, loading } = useContext(AuthContext);
-
-  if (loading) return null;
-
-  const router = createBrowserRouter(
-    isAuthenticated()
-      ? [
-          {
-            path: '/',
-            element: <Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
-            errorElement: <ErrorPage />,
-            children: [
-              { index: true, element: <HomePage /> },
-              { path: 'dashboard', element: <Dashboard /> },
-              { path: 'editor', element: <EditorPage /> },
-              { path: 'editor/:id', element: <EditorPage /> },
-              { path: 'analytics', element: <AnalyticsPage /> },
-              { path: 'history', element: <HistoryPage /> },
-              { path: 'templates', element: <TemplatesPage /> },
-
-              { path: 'profile/:username', element: <ProfilePage /> },
-              {
-                path: 'settings',
-                element: <SettingsLayout />,
-                children: [
-                  { index: true, element: <PreferencesSection /> },
-                  { path: 'account', element: <AccountPage /> },
-                  { path: 'preferences', element: <PreferencesSection /> },
-                  { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
-                  { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
-                ]
-              },
-
-              { path: 'settings', element: <SettingsPage /> },
-              { path: 'account', element: <AccountPage /> },
-              { path: 'library', element: <LibraryPage /> },
-              { path: 'stories', element: <StoriesPage /> },
-              { path: 'help', element: <HelpPage /> }, // ✅ NUEVA RUTA
-              { path: 'article/:id', element: <ArticleViewPage /> }
-
-            ]
-          }
-        ]
-      : [
-          {
-            path: '/',
-            element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
-            errorElement: <ErrorPage />
-          },
-          { path: '/login', element: <LoginPage /> },
-          { path: '/register', element: <RegisterPage /> },
-          { path: '*', element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> }
-        ]
-  );
-
-  return <RouterProvider router={router} />;
-}
 
 function AppWrapper({ children }) {
   const { getFontSizeClass } = useFontSize();
@@ -123,6 +68,60 @@ function App() {
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
+  const router = createBrowserRouter([
+    // 🔓 Rutas públicas
+    {
+      path: '/',
+      element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+    },
+    {
+      path: '/register',
+      element: <RegisterPage />,
+    },
+  
+    // 🔐 Rutas privadas (requieren login)
+    {
+      path: '/',
+      element: (
+        <RequireAuth>
+          <Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        </RequireAuth>
+      ),
+      children: [
+        { path: 'dashboard', element: <Dashboard /> },
+        { path: 'home', element: <HomePage /> },
+        { path: 'editor', element: <EditorPage /> },
+        { path: 'editor/:id', element: <EditorPage /> },
+        { path: 'analytics', element: <AnalyticsPage /> },
+        { path: 'history', element: <HistoryPage /> },
+        { path: 'templates', element: <TemplatesPage /> },
+        { path: 'profile/:username', element: <ProfilePage /> },
+        { path: 'settings', element: <SettingsPage /> },
+        { path: 'account', element: <AccountPage /> },
+        { path: 'library', element: <LibraryPage /> },
+        { path: 'stories', element: <StoriesPage /> },
+        { path: 'help', element: <HelpPage /> },
+        { path: 'article/:id', element: <ArticleViewPage /> },
+        {
+          path: 'settings',
+          element: <SettingsLayout />,
+          children: [
+            { index: true, element: <PreferencesSection /> },
+            { path: 'account', element: <AccountPage /> },
+            { path: 'preferences', element: <PreferencesSection /> },
+            { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
+            { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
+          ]
+        }
+      ],
+    }
+  ]);
+
   return (
     <I18nextProvider i18n={i18n}>
       <AuthProvider>
@@ -130,7 +129,7 @@ function App() {
           <FontSizeProvider>
             <ErrorBoundary>
               <AppWrapper>
-                <RoutesWithAuth darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+                <RouterProvider router={router} />
               </AppWrapper>
             </ErrorBoundary>
           </FontSizeProvider>

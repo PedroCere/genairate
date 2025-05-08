@@ -1,19 +1,18 @@
-const apiClient = {
-  get: async (url) => {
+import axios from 'axios';
 
-    console.warn('apiClient.get called with url:', url);
-    return { data: {} };
+const apiClient = axios.create({
+  baseURL: 'http://localhost:8081/api',
+  headers: {
+    'Content-Type': 'application/json',
   },
-  post: async (url, body) => {
+});
 
-    console.warn('apiClient.post called with url:', url, 'body:', body);
-    return { data: { rewrittenText: 'Rewritten text placeholder' } };
-  },
-  patch: async (url, body) => {
-  
-    console.warn('apiClient.patch called with url:', url, 'body:', body);
-    return { data: {} };
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // ← ESTA línea fue corregida
   }
-};
+  return config;
+});
 
 export default apiClient;

@@ -1,32 +1,28 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { login as loginService } from '../services/authService';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const mockUsers = [
-    { email: 'demo@genairate.com', password: '123456', name: 'Demo User' },
-    { email: 'santi@genairate.com', password: 'qwerty', name: 'Santino' }
-  ];
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const foundUser = mockUsers.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (!foundUser) {
-      alert('Credenciales inválidas. Probá con: demo@genairate.com / 123456');
-      return;
+    setLoading(true);
+    try {
+      const { token, user } = await loginService(email, password);
+      login(user, token);
+      navigate('/dashboard'); // ✅ Ir directamente al dashboard
+    } catch (err) {
+      alert('Credenciales incorrectas');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-
-    login({ name: foundUser.name, email: foundUser.email }, 'demo-token');
-    navigate('/');
   };
 
   return (
@@ -56,9 +52,14 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-md bg-primary text-black dark:text-white font-semibold border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-md ${
+              loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-primary text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black'
+            } font-semibold border border-black dark:border-white transition`}
           >
-            Iniciar sesión
+            {loading ? 'Ingresando...' : 'Iniciar sesión'}
           </button>
         </form>
         <p className="text-sm text-center mt-4 text-gray-600 dark:text-gray-400">
