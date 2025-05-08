@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -123,6 +122,7 @@ export default function HomePage() {
       </div>
 
       <aside className="hidden lg:block space-y-8">
+        {/* Blogs de la comunidad */}
         <section>
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">{t("CommunityBlogs")}</h3>
           <div className="space-y-4">
@@ -135,10 +135,65 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300">{t("WriteInGenAirate")}</h4>
+        {/* Temas recomendados */}
+        <section>
+          <h4 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Recommended topics</h4>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {["Data Science", "Self Improvement", "Politics", "Writing", "Relationships", "Cryptocurrency", "Machine Learning"].map((topic) => (
+              <span key={topic} className="bg-gray-100 dark:bg-gray-700 text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                {topic}
+              </span>
+            ))}
           </div>
+          <button className="text-xs text-blue-600 hover:underline mb-6">See more topics</button>
+        </section>
+
+        {/* A quién seguir */}
+        <section>
+          <h4 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Who to follow</h4>
+          <div className="space-y-4 text-sm">
+            {[
+              { name: "Dr. Ashish Bamania", desc: "I simplify the latest advances in AI, Quantum...", avatar: profile1 },
+              { name: "Predict", desc: "Where the future is written", avatar: profile2 },
+              { name: "Muneeb Sikhani", desc: "MOON", avatar: profile3 },
+            ].map((user, idx) => (
+              <div key={idx} className="flex items-start gap-3">
+                <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full object-cover" />
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{user.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{user.desc}</p>
+                </div>
+                <button className="text-xs border border-gray-400 dark:border-gray-600 rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                  Follow
+                </button>
+              </div>
+            ))}
+          </div>
+          <button className="mt-3 text-xs text-blue-600 hover:underline">See more suggestions</button>
+        </section>
+
+        {/* Reading list */}
+        <section className="text-xs mt-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+          <h4 className="font-semibold mb-2 text-gray-700 dark:text-gray-300">Reading list</h4>
+          <p>
+            Click the <span className="border px-1 rounded text-xs font-mono">🔖</span> on any story to easily add it to your reading list or a custom list that you can share.
+          </p>
+          <div className="mt-4 text-[10px] flex flex-wrap gap-3">
+            <a href="#" className="hover:underline">Help</a>
+            <a href="#" className="hover:underline">Status</a>
+            <a href="#" className="hover:underline">About</a>
+            <a href="#" className="hover:underline">Careers</a>
+            <a href="#" className="hover:underline">Blog</a>
+            <a href="#" className="hover:underline">Privacy</a>
+            <a href="#" className="hover:underline">Rules</a>
+            <a href="#" className="hover:underline">Terms</a>
+            <a href="#" className="hover:underline">Text to speech</a>
+          </div>
+        </section>
+
+        {/* Guía de escritura */}
+        <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
+          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">{t("WriteInGenAirate")}</h4>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
             <li>✍️ {t("NewWritersGuide")}</li>
             <li>✍️ {t("WritingTips")}</li>
@@ -158,39 +213,51 @@ export default function HomePage() {
       </button>
 
       {showOptions && (
-        <Modal onClose={() => setShowOptions(false)}>
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold">Crear nuevo contenido</h2>
-            <button
-              onClick={() => {
-                setShowOptions(false);
-                navigate('/editor');
-              }}
-              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-            >
-              ✍️ Empezar desde cero
-            </button>
-            <button
-              onClick={() => {
-                setShowOptions(false);
-                setShowGenerateModal(true);
-              }}
-              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-            >
-              🤖 Generar con IA
-            </button>
-          </div>
-        </Modal>
-      )}
-
-      {showGenerateModal && (
-        <GenerateBlogModal
-          onGenerate={(article) => {
-            navigate(`/editor?id=${article.id}`);
+  <Modal onClose={() => setShowOptions(false)}>
+    <div className="space-y-6 text-left">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">¿Cómo querés comenzar?</h2>
+      <div className="grid sm:grid-cols-2 gap-4">
+        {/* Opción 1 */}
+        <div
+          onClick={() => {
+            setShowOptions(false);
+            navigate('/editor');
           }}
-          onClose={() => setShowGenerateModal(false)}
-        />
-      )}
+          className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-lg hover:shadow-md transition flex flex-col gap-2"
+        >
+          <div className="text-3xl">✍️</div>
+          <h3 className="font-semibold text-gray-900 dark:text-white">Desde cero</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Empezá a escribir desde un lienzo vacío con ayuda de IA en tiempo real.</p>
+        </div>
+
+        {/* Opción 2 */}
+        <div
+          onClick={() => {
+            setShowOptions(false);
+            setShowGenerateModal(true);
+          }}
+          className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-lg hover:shadow-md transition flex flex-col gap-2"
+        >
+          <div className="text-3xl">🤖</div>
+          <h3 className="font-semibold text-gray-900 dark:text-white">Generar con IA</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Respondé unas preguntas y dejá que GenAIrate cree un primer borrador automáticamente.</p>
+        </div>
+      </div>
+    </div>
+  </Modal>
+)}
+
+
+{showGenerateModal && (
+  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+    <GenerateBlogModal
+      onGenerate={(article) => {
+        navigate(`/editor?id=${article.id}`);
+      }}
+      onClose={() => setShowGenerateModal(false)}
+    />
+  </div>
+)}
     </div>
   );
 }

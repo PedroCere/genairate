@@ -25,8 +25,8 @@ const navLinks = [
   { icon: FaListUl, label: "Analytics", path: "/analytics" },
   { icon: FaFolderOpen, label: "History", path: "/history" },
   { icon: FaListUl, label: "Templates", path: "/templates" },
-  { icon: FaCogs, label: "Settings", path: "/settings" },
-  { icon: FaUser, label: "Account", path: "/account" }
+  { icon: FaUser, label: "Profile", path: "/profile/aguspaltrucci" },
+  { icon: FaCogs, label: "Settings", path: "/settings" }
 ];
 
 export default function Sidebar({ darkMode, toggleDarkMode }) {

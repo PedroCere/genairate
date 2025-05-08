@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import profile2 from "../assets/profile5.jpg";
+import DeactivateAccountModal from '../components/common/modals/DesactivateAccountModal.jsx';
+
 
 export default function AccountPage() {
   const { t } = useTranslation();
-  // Mock user data
+  
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+
+const handleDeactivate = () => {
+  console.log('Cuenta desactivada (mock)');
+};
+
+
   const initialUser = {
     name: 'Agustín Paltrucci',
     email: 'agus.perez@example.com',
@@ -12,32 +20,9 @@ export default function AccountPage() {
     joined: '2023-01-15',
   };
 
-  const userService = {
-    getPreferences: () =>
-      new Promise((resolve) => {
-        setTimeout(() => resolve(mockPreferences), 500);
-      }),
-    updatePreferences: (prefs) =>
-      new Promise((resolve) => {
-        setTimeout(() => resolve(prefs), 500);
-      }),
-      eliminateUser: (elim) => 
-        new Promise((resolve) => {
-          setTimeout(() => resolve(elim), 500);
-        })
-  };
-
   const [user, setUser] = useState(initialUser);
-  const [preferences, setPreferences] = useState({});
-  const [eliminated, setEliminated] = useState({});
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [eliminating, setEliminating] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [eliminateSuccess, setEliminatesuccess] = useState(false);
-
-
 
   const startEdit = (field) => {
     setEditField(field);
@@ -55,197 +40,80 @@ export default function AccountPage() {
     setTempValue('');
   };
 
-  const handleChange = (e) => {
-    setTempValue(e.target.value);
-  };
-
-  const handleSave = () => {
-    setSaving(true);
-    userService.updatePreferences(preferences).then(() => {
-      setSaving(false);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    });
-  };
-
-  const handleElimination = () => {
-    setEliminating(true);
-    userService.eliminateUser(eliminated).then(() => {
-      setEliminating(false);
-      setEliminatesuccess(true);
-      setTimeout(() => setEliminatesuccess(false), 3000);
-    });
-  };
-
-  return (
-    <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-serif font-semibold mb-6">{t('AccountTitle')}</h1>
-
-      <img src= {profile2} className="w-1/4 rounded-full mx-auto mb-6" alt="Profile" />
-
-
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6 space-y-6">
-        {/* Name */}
-        <div>
-          <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            {t('Name')}
-            {editField !== 'name' ? (
-              <button
-                onClick={() => startEdit('name')}
-                className="text-blue-600 hover:underline text-sm"
-              >
-                {t('Edit')}
-              </button>
-            ) : (
-              <div className="space-x-2">
-                <button
-                  onClick={saveEdit}
-                  className="text-green-600 hover:underline text-sm"
-                >
-                  {t('Save')}
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  {t('Cancel')}
-                </button>
-              </div>
-            )}
-          </h2>
-          {editField === 'name' ? (
+  const renderField = (label, field, description) => (
+    <div className="py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+      <div>
+        <h4 className="text-sm font-medium text-gray-900 dark:text-white">{label}</h4>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
+      </div>
+      <div className="mt-2 sm:mt-0 text-sm text-gray-800 dark:text-gray-200">
+        {editField === field ? (
+          <div className="flex items-center gap-2">
             <input
               type="text"
               value={tempValue}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+              onChange={(e) => setTempValue(e.target.value)}
+              className="border border-gray-300 dark:border-gray-600 px-2 py-1 rounded"
             />
-          ) : (
-            <p>{user.name}</p>
-          )}
-        </div>
-
-        {/* Email */}
-        <div>
-          <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            {t('Email')}
-            {editField !== 'email' ? (
-              <button
-                onClick={() => startEdit('email')}
-                className="text-blue-600 hover:underline text-sm"
-              >
-                {t('Edit')}
-              </button>
-            ) : (
-              <div className="space-x-2">
-                <button
-                  onClick={saveEdit}
-                  className="text-green-600 hover:underline text-sm"
-                >
-                  {t('Save')}
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  {t('Cancel')}
-                </button>
-              </div>
-            )}
-          </h2>
-          {editField === 'email' ? (
-            <input
-              type="email"
-              value={tempValue}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-            />
-          ) : (
-            <p>{user.email}</p>
-          )}
-        </div>
-
-        {/* Username */}
-        <div>
-          <h2 className="text-xl font-semibold mb-1 flex items-center justify-between">
-            {t('Username')}
-            {editField !== 'username' ? (
-              <button
-                onClick={() => startEdit('username')}
-                className="text-blue-600 hover:underline text-sm"
-              >
-                {t('Edit')}
-              </button>
-            ) : (
-              <div className="space-x-2">
-                <button
-                  onClick={saveEdit}
-                  className="text-green-600 hover:underline text-sm"
-                >
-                  {t('Save')}
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  {t('Cancel')}
-                </button>
-              </div>
-            )}
-          </h2>
-          {editField === 'username' ? (
-            <input
-              type="text"
-              value={tempValue}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-            />
-          ) : (
-            <p>{user.username}</p>
-          )}
-        </div>
-
-        {/* Joined */}
-        <div>
-          <h2 className="text-xl font-semibold mb-1">{t('Joined')}</h2>
-          <p>{user.joined}</p>
-        </div>
-
-          {/* Save */}
-        <div>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-black dark:bg-white text-white dark:text-black px-6 py-1.5 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition disabled:opacity-50"
-          >
-            {saving ? t('Saving') : t('SaveChanges')}
-          </button>
-          {saveSuccess && (
-            <p className="mt-2 text-green-600 dark:text-green-400 font-medium">
-              {t('PreferencesSaved')}
-            </p>
-          )}
-        </div>
-
-          {/* Eliminar */}
-          <div>
-          <button
-            onClick={handleElimination}
-            disabled={eliminating}
-            className="w-full bg-red-600 text-white px-10 py-1.5 rounded-full hover:bg-red-700 transition disabled:opacity-50"
-          >
-            {eliminating ? t('DeletingAccount') : t('DeleteAccount')}
-          </button>
-          {eliminateSuccess && (
-            <p className="mt-2 text-red-600 dark:text-red-400 font-medium">
-              {t('AccountDeleted')}
-            </p>
-          )}
-        </div>
-
+            <button onClick={saveEdit} className="text-blue-600 hover:underline">Guardar</button>
+            <button onClick={cancelEdit} className="text-red-600 hover:underline">Cancelar</button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span>{user[field] || '—'}</span>
+            <button onClick={() => startEdit(field)} className="text-blue-600 hover:underline">Editar</button>
+          </div>
+        )}
       </div>
     </div>
+  );
 
-    
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-10 text-gray-900 dark:text-gray-100 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12">
+      {/* Main settings */}
+      <div>
+        {/* Fields */}
+        {renderField('Email address', 'email', 'Tu dirección de correo')}
+        {renderField('Username and subdomain', 'username', 'Tu nombre de usuario visible')}
+        {renderField('Profile information', 'name', 'Edita tu nombre, bio y pronombres')}
+        {renderField('Profile design', '', 'Personaliza tu perfil visual')}
+        {renderField('Custom domain', '', 'Asocia un dominio personalizado')}
+        {renderField('Partner program', '', 'Programa de creadores de contenido')}
+
+        {/* Danger zone */}
+        <div className="mt-12 space-y-4 text-sm">
+        <div className="mt-12 space-y-4 text-sm">
+  <button
+    onClick={() => setShowDeactivateModal(true)}
+    className="text-orange-600 hover:underline"
+  >
+    Deactivate account
+  </button>
+
+</div>
+
+{showDeactivateModal && (
+  <DeactivateAccountModal
+    onClose={() => setShowDeactivateModal(false)}
+    onConfirm={handleDeactivate}
+  />
+)}
+
+          <button className="text-red-600 hover:underline">Delete account</button>
+        </div>
+      </div>
+
+      {/* Right column */}
+      <aside className="space-y-6">
+        <h3 className="text-sm font-semibold">Suggested help articles</h3>
+        <ul className="space-y-2 text-sm text-blue-600 dark:text-blue-400">
+          <li><a href="#" className="hover:underline">Sign in or sign up to GenAIrate</a></li>
+          <li><a href="#" className="hover:underline">Your profile page</a></li>
+          <li><a href="#" className="hover:underline">Publishing your first story</a></li>
+          <li><a href="#" className="hover:underline">Understanding writing rules</a></li>
+          <li><a href="#" className="hover:underline">What’s the Partner Program?</a></li>
+        </ul>
+      </aside>
+    </div>
   );
 }
