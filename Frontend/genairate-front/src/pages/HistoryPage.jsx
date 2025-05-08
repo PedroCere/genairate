@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import { useTranslation } from 'react-i18next';
+import img1 from '../assets/meme1.jpg';
+import img2 from '../assets/meme2.jpg';
+import img3 from '../assets/meme3.jpg';
+import img4 from '../assets/meme4.jpg';
 
 const mockedArticles = [
   {
     id: '1',
     title: 'Cómo aprender React rápidamente',
+    image: img1,
     date: '2024-04-20',
     wordCount: 1200,
     status: 'published',
@@ -16,6 +21,7 @@ const mockedArticles = [
   {
     id: '2',
     title: 'Los mejores consejos para productividad',
+    image: img3,
     date: '2024-04-18',
     wordCount: 800,
     status: 'draft',
@@ -26,6 +32,7 @@ const mockedArticles = [
   {
     id: '3',
     title: 'Análisis del mercado tecnológico 2024',
+    image: img2,
     date: '2024-04-15',
     wordCount: 1500,
     status: 'published',
@@ -36,6 +43,7 @@ const mockedArticles = [
   {
     id: '4',
     title: 'Guía para mejorar tu SEO',
+    image: img4,
     date: '2024-04-10',
     wordCount: 1000,
     status: 'published',

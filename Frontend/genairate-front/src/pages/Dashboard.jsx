@@ -1,145 +1,86 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import ArticleCard from '../components/ArticleCard';
-import EmptyState from '../components/EmptyState';
-import StatBox from '../components/StatBox';
-import { FaStar, FaPenFancy } from 'react-icons/fa';
-import Modal from '../components/common/modals/Modal';
-import GenerateBlogModal from '../components/common/modals/GenerateBlogModal';
-
-const articles = [
-  {
-    id: 1,
-    title: 'Cómo escribir contenido efectivo con IA',
-    date: '2024-05-05',
-    wordCount: 850,
-    status: 'published',
-  },
-  {
-    id: 2,
-    title: 'Guía completa de SEO para blogs',
-    date: '2024-05-10',
-    wordCount: 450,
-    status: 'draft',
-  },
-];
-
-const highlights = [
-  {
-    title: 'Cómo destacar en contenido web este mes',
-    author: 'Comunidad GenAirate',
-    date: '3/5/2024',
-  },
-  {
-    title: 'Técnicas de escritura más leídas',
-    author: 'Laura P.',
-    date: '30/4/2024',
-  },
-];
+import { useState } from 'react';
+import InspirationModal from '../components/common/modals/InspirationModal.jsx';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [showOptions, setShowOptions] = useState(false);
-  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [showInspo, setShowInspo] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
-      
-      <div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <StatBox title={t("TotalArticles")} value={3} change={15} isPositive={true} />
-          <StatBox title={t("TotalWords")} value={1500} change={-5} isPositive={false} />
-          <StatBox title={t("LastEdit")} value={'N/A'} change={0} isPositive={true} />
-        </div>
-
-        <h2 className="text-2xl font-serif font-semibold text-gray-800 dark:text-gray-200 mb-4">{t("RecentWorks")}</h2>
-        {articles.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="space-y-4">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        )}
+    <div className="max-w-5xl mx-auto px-6 py-12 text-gray-900 dark:text-white">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-extrabold mb-4">
+          {t('WelcomeTo')} <span className="text-primary">GenAIrate</span>
+        </h1>
+        <p className="text-lg text-gray-700 dark:text-gray-300">
+          {t('GenerateArticles')}
+        </p>
       </div>
 
-      
-      <aside className="hidden lg:block space-y-8">
-        <section>
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">{t("CommunityBlogs")}</h3>
-          <div className="space-y-4">
-            {highlights.map((item, idx) => (
-              <div key={idx}>
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.title}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{item.author} • {item.date}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
+        <button
+          className="bg-primary text-black dark:text-white border border-black dark:border-white font-semibold px-6 py-3 rounded-2xl shadow-lg transition hover:bg-cyan-600"
+          onClick={() => navigate('/editor')}
+        >
+          {t('NewArticle')}
+        </button>
 
-        <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-700 dark:text-gray-300">{t("WriteInGenAirate")}</h4>
-          </div>
+        <button
+          className="bg-primary text-black dark:text-white border border-black dark:border-white font-semibold px-6 py-3 rounded-2xl shadow-lg transition hover:bg-cyan-600"
+          onClick={() => alert(t('TemplatesComingSoon'))}
+        >
+          {t('ExploreTemplates')}
+        </button>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-6 mb-10">
+        {/* Card: Recent Works */}
+        <div className="bg-surface-card border border-gray-300 dark:border-gray-700 rounded-xl p-5 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">{t('RecentWorks')}</h3>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("NewWritersGuide")}</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("WritingTips")}</li>
-            <li><FaPenFancy className="inline mr-2 text-gray-500 dark:text-gray-400" /> {t("ExpandAudience")}</li>
+            <li>✍️ Cómo escribir mejor con IA</li>
+            <li>🧠 Guía de estructura para artículos de blog</li>
+            <li>📈 Tips de estilo SEO</li>
           </ul>
-          <button className="mt-4 w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition text-sm">
-            {t("StartWriting")}
-          </button>
-        </section>
-      </aside>
+        </div>
 
-   
-      <button
-        onClick={() => setShowOptions(true)}
-        className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10"
-      >
-        {t("NewArticle")}
-      </button>
+        {/* Card: Community Highlights */}
+        <div className="bg-surface-card border border-gray-300 dark:border-gray-700 rounded-xl p-5 shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">{t('CommunityBlogs')}</h3>
+          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li>📚 10 ideas para blog en mayo</li>
+            <li>👀 Lo más leído esta semana</li>
+            <li>🚀 Cómo conseguir más vistas</li>
+          </ul>
+        </div>
 
-      {showOptions && (
-        <Modal onClose={() => setShowOptions(false)}>
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold">Crear nuevo contenido</h2>
-            <button
-              onClick={() => {
-                setShowOptions(false);
-                navigate('/editor');
-              }}
-              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-            >
-              ✍️ Empezar desde cero
-            </button>
-            <button
-              onClick={() => {
-                setShowOptions(false);
-                setShowGenerateModal(true);
-              }}
-              className="w-full bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-            >
-              🤖 Generar con IA
-            </button>
+        {/* Card: Inspiration */}
+        <div className="bg-yellow-100 dark:bg-yellow-800 border border-yellow-300 dark:border-yellow-700 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-semibold mb-2">🧠 {t('NeedInspiration') || '¿Necesitás inspiración?'}</h3>
+            <p className="text-sm text-gray-700 dark:text-gray-100 mb-4">
+              Recibí ideas de escritura únicas con solo un clic.
+            </p>
           </div>
-        </Modal>
-      )}
+          <button
+            onClick={() => setShowInspo(true)}
+            className="mt-auto bg-yellow-400 text-black font-medium py-2 px-4 rounded-lg hover:bg-yellow-500 transition"
+          >
+            {t('InspireMe') || 'Inspírame'}
+          </button>
+        </div>
+      </div>
 
-      {showGenerateModal && (
-        <GenerateBlogModal
-          onGenerate={(article) => {
-            
-            navigate(`/editor?id=${article.id}`);
-          }}
-          onClose={() => setShowGenerateModal(false)}
-        />
-      )}
+      {showInspo && <InspirationModal onClose={() => setShowInspo(false)} />}
+
+      <footer className="mt-12 border-t border-gray-300 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
+        <p>© {new Date().getFullYear()} GenAIrate. {t('GenerativeAIOffline')}.</p>
+        <p className="mt-1">
+          {t('MadeWithLocal')} — <a href="#" className="underline hover:text-primary">v0.1.0</a>
+        </p>
+      </footer>
     </div>
   );
 }
-
