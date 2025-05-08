@@ -12,6 +12,10 @@ import HistoryPage from './pages/HistoryPage';
 import TemplatesPage from './pages/TemplatesPage';
 import SettingsPage from './pages/SettingsPage';
 import AccountPage from './pages/AccountPage';
+import LibraryPage from './pages/LibraryPage';
+import StoriesPage from './pages/StoriesPage';
+import ArticleViewPage from './pages/ArticleViewPage';
+import HelpPage from './pages/HelpPage'; // ✅ IMPORTADO
 import ErrorPage from './components/ErrorPage';
 import Layout from './Layout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -20,7 +24,6 @@ import RegisterPage from './pages/RegisterPage';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
-
 import { FontSizeProvider, useFontSize } from './components/FontSizeContext';
 
 function RoutesWithAuth({ darkMode, toggleDarkMode }) {
@@ -44,7 +47,11 @@ function RoutesWithAuth({ darkMode, toggleDarkMode }) {
               { path: 'history', element: <HistoryPage /> },
               { path: 'templates', element: <TemplatesPage /> },
               { path: 'settings', element: <SettingsPage /> },
-              { path: 'account', element: <AccountPage /> }
+              { path: 'account', element: <AccountPage /> },
+              { path: 'library', element: <LibraryPage /> },
+              { path: 'stories', element: <StoriesPage /> },
+              { path: 'help', element: <HelpPage /> }, // ✅ NUEVA RUTA
+              { path: 'article/:id', element: <ArticleViewPage /> }
             ]
           }
         ]
@@ -116,4 +123,3 @@ function App() {
 }
 
 export default App;
-

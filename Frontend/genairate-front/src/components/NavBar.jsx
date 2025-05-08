@@ -30,12 +30,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   };
 
   return (
-    <header
-      className="w-full sticky top-0 z-50 border-b bg-white dark:bg-gray-900"
-      style={{ borderColor: "var(--color-border)" }}
-    >
+    <header className="w-full sticky top-0 z-50 border-b bg-white dark:bg-gray-900">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-
         <div className="flex items-center space-x-4">
           <NavLink
             to="/"
@@ -54,7 +50,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         </div>
 
         <div className="flex items-center gap-5 ml-auto">
-
           <NavLink
             to="/editor"
             className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -122,16 +117,16 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-[var(--color-border)] dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
                 >
                   <button
-                    onClick={() => changeLanguage('en')}
+                    onClick={() => changeLanguage("en")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     {t("English")}
                   </button>
                   <button
-                    onClick={() => changeLanguage('es')}
+                    onClick={() => changeLanguage("es")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     {t("Spanish")}
@@ -141,6 +136,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             </AnimatePresence>
           </div>
 
+          {/* User dropdown */}
           <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center gap-2">
               <img
@@ -157,12 +153,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-[var(--color-border)] dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
                 >
                   <div className="px-4 py-2 text-sm text-muted text-gray-600 dark:text-gray-300">
                     {t("SignedInAs")} <strong>Santino</strong>
                   </div>
-                  <hr className="border-[var(--color-border)] dark:border-gray-700" />
+                  <hr className="border-gray-300 dark:border-gray-700" />
 
                   <NavLink to="/account" className="dropdown-item dark:text-gray-300">
                     <FiUser /> {t("Profile")}
@@ -173,17 +169,17 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   <NavLink to="/stories" className="dropdown-item dark:text-gray-300">
                     <FiEdit3 /> {t("Stories")}
                   </NavLink>
-                  <NavLink to="/stats" className="dropdown-item dark:text-gray-300">
+                  <NavLink to="/analytics" className="dropdown-item dark:text-gray-300">
                     <FiBarChart2 /> {t("Stats")}
                   </NavLink>
-                  <hr className="border-[var(--color-border)] dark:border-gray-700" />
+                  <hr className="border-gray-300 dark:border-gray-700" />
                   <NavLink to="/settings" className="dropdown-item dark:text-gray-300">
                     <FiSettings /> {t("Settings")}
                   </NavLink>
                   <NavLink to="/help" className="dropdown-item dark:text-gray-300">
                     <FiHelpCircle /> {t("Help")}
                   </NavLink>
-                  <hr className="border-[var(--color-border)] dark:border-gray-700" />
+                  <hr className="border-gray-300 dark:border-gray-700" />
                   <button className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
                     <FiLogOut /> {t("SignOut")}
                   </button>
