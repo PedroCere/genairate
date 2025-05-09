@@ -4,16 +4,12 @@ import { useTranslation } from 'react-i18next';
 export default function GenerateBlogModal({ onGenerate, onClose }) {
   const { t } = useTranslation();
   const [topic, setTopic] = useState('');
-  const [tone, setTone] = useState('Informal');
+  const [tone, setTone] = useState('profesional');
   const [language, setLanguage] = useState('es');
 
   const handleGenerate = () => {
-    const mockArticle = {
-      id: Date.now(),
-      title: topic,
-      content: `Artículo generado con tono ${tone} en ${language}`,
-    };
-    onGenerate(mockArticle);
+    if (topic.trim() === '') return;
+    onGenerate({ topic, tone, language });
   };
 
   return (
@@ -45,10 +41,10 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
             onChange={(e) => setTone(e.target.value)}
             className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
           >
-            <option value="Informal">Informal</option>
-            <option value="Formal">Formal</option>
-            <option value="Creativo">Creativo</option>
-            <option value="Profesional">Profesional</option>
+            <option value="profesional">Profesional</option>
+            <option value="creativo">Creativo</option>
+            <option value="seo">SEO</option>
+            <option value="informal">Informal</option>
           </select>
         </div>
 
@@ -71,7 +67,7 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
         {/* Botón */}
         <button
           onClick={handleGenerate}
-          disabled={!topic}
+          disabled={!topic.trim()}
           className="mt-4 w-full bg-primary text-black dark:text-white font-semibold px-6 py-3 rounded-full hover:bg-cyan-600 transition disabled:opacity-50"
         >
           🚀 Generar artículo

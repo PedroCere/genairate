@@ -14,7 +14,8 @@ import java.util.Date;
 public class JwtTokenUtil {
 
     private static final String SECRET_KEY = "EWJtWnFqcm5ldj0rf2BqU3h5bGJnbGtEMjJUbVJSN1QhQStNVEZ5U1pGNWlTeWFYUXl4R0VtMg==";
-    private static final long EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24; // 24 horas
+    // Set expiration time to a very long duration (e.g., 100 years in milliseconds)
+    private static final long EXPIRATION_TIME_MS = 1000L * 60 * 60 * 24 * 365 * 100;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
@@ -24,7 +25,8 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MS))
+                // Remove expiration to make token never expire
+                //.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MS))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

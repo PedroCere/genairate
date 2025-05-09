@@ -1,13 +1,20 @@
 import axios from 'axios';
 
-const apiClient = axios.create({
+const userServiceClient = axios.create({
   baseURL: 'http://localhost:8081/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-apiClient.interceptors.request.use((config) => {
+const blogContentClient = axios.create({
+  baseURL: 'http://localhost:8080/content',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+userServiceClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -15,10 +22,20 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-export const getUserProfile = () => apiClient.get('/user/profile').then(res => res.data);
-export const updateUserProfile = (profile) => apiClient.put('/user/profile', profile).then(res => res.data);
+blogContentClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-export const getUserPreferences = () => apiClient.get('/user/preferences').then(res => res.data);
-export const updateUserPreferences = (prefs) => apiClient.put('/user/preferences', prefs).then(res => res.data);
+export const getUserProfile = () => userServiceClient.get('/user/profile').then(res => res.data);
+export const updateUserProfile = (profile) => userServiceClient.put('/user/profile', profile).then(res => res.data);
 
-export default apiClient;
+export const getUserPreferences = () => userServiceClient.get('/user/preferences').then(res => res.data);
+export const updateUserPreferences = (prefs) => userServiceClient.put('/user/preferences', prefs).then(res => res.data);
+
+export { userServiceClient, blogContentClient };
+
+export default userServiceClient;

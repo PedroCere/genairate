@@ -101,6 +101,13 @@ public class OpenRouterClient {
             JsonNode root = objectMapper.readTree(json);
             String content = root.path("choices").get(0).path("message").path("content").asText();
 
+            // Extract JSON substring between first '{' and last '}'
+            int startIndex = content.indexOf('{');
+            int endIndex = content.lastIndexOf('}');
+            if (startIndex >= 0 && endIndex >= 0 && endIndex > startIndex) {
+                content = content.substring(startIndex, endIndex + 1);
+            }
+
             JsonNode jsonContent = objectMapper.readTree(content);
 
             return ContentResponse.builder()

@@ -251,8 +251,21 @@ export default function HomePage() {
 {showGenerateModal && (
   <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
     <GenerateBlogModal
-      onGenerate={(article) => {
-        navigate(`/editor?id=${article.id}`);
+      onGenerate={async ({ topic, tone, language }) => {
+        try {
+          // Import useEditor hook to get generateInitialArticle
+          const { generateInitialArticle } = await import('../context/EditorContext').then(mod => mod.useEditor());
+          const response = await generateInitialArticle({
+            userInput: topic,
+            tone,
+            language,
+            format: 'lista',
+            templateId: 1,
+          });
+          navigate(`/editor?id=${response.id}`);
+        } catch (error) {
+          console.error('Error generating article:', error);
+        }
       }}
       onClose={() => setShowGenerateModal(false)}
     />

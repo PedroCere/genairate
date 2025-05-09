@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:5174")  // Allow CORS from frontend origin
 public class UserController {
 
     private final UserService userService;

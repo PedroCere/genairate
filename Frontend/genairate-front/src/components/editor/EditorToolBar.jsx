@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useEditor } from '../../context/EditorContext';
 import GenerateBlogModal from '../common/modals/GenerateBlogModal';
 
-export default function EditorToolbar() {
+export default function EditorToolbar({ onGenerate }) {
   const {
     article,
     setTitle,
@@ -10,10 +10,31 @@ export default function EditorToolbar() {
     publishArticle,
     aiActions,
     updateArticle,
-    updateEditorFromGenerated
+    updateEditorFromGenerated,
+    generateInitialArticle
   } = useEditor();
 
   const [showBlogModal, setShowBlogModal] = useState(false);
+
+  // Use onGenerate prop if provided, else fallback to internal generateInitialArticle call
+  const handleGenerate = async ({ topic, tone, language }) => {
+    try {
+      if (onGenerate) {
+        await onGenerate({ topic, tone, language });
+      } else {
+        await generateInitialArticle({
+          userInput: topic,
+          tone,
+          language,
+          format: 'lista',
+          templateId: 1,
+        });
+      }
+      setShowBlogModal(false);
+    } catch (error) {
+      console.error('Error generating article:', error);
+    }
+  };
 
   return (
     <>
@@ -62,10 +83,7 @@ export default function EditorToolbar() {
 
       {showBlogModal && (
         <GenerateBlogModal
-          onGenerate={(article) => {
-            updateEditorFromGenerated(article);
-            setShowBlogModal(false);
-          }}
+          onGenerate={handleGenerate}
           onClose={() => setShowBlogModal(false)}
         />
       )}

@@ -47,7 +47,8 @@ public class BlogArticle {
     @ElementCollection
     private List<String> keywords;
 
-    @Column(name = "meta_description")
+    @Lob
+    @Column(name = "meta_description", columnDefinition = "TEXT")
     private String metaDescription;
 
     @Column(name = "is_draft")

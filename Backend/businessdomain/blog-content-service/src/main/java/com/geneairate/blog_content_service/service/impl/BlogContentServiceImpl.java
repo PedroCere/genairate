@@ -85,6 +85,7 @@ public class BlogContentServiceImpl implements BlogContentService {
                 .build();
 
         repository.save(article);
+        response.setId(article.getId());
         return response;
     }
 

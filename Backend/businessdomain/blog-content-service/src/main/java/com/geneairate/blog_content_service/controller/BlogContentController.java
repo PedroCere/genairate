@@ -21,6 +21,7 @@ public class BlogContentController {
 
     @PostMapping("/generate")
     public ResponseEntity<ContentResponse> generate(@RequestBody ContentRequest request) {
+        System.out.println("Received JSON for generate: " + request);
         return ResponseEntity.ok(service.generarContenido(request));
     }
 
