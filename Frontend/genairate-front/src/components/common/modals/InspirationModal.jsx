@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import inspImage from '../../../assets/insp.jpg';
+import inspImage from '../../../assets/insp.jpg'; // Ruta relativa corregida
+
 
 export default function InspirationModal({ onClose }) {
   const navigate = useNavigate();
@@ -32,15 +33,16 @@ export default function InspirationModal({ onClose }) {
     }
   ];
 
+  // Temporarily disable localStorage loading to test image display
   const [inspo, setInspo] = useState(() => {
-    const saved = localStorage.getItem('savedInspiration');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return {
-        ...parsed,
-        image: parsed.image || inspImage, // fallback si es null
-      };
-    }
+    // const saved = localStorage.getItem('savedInspiration');
+    // if (saved) {
+    //   const parsed = JSON.parse(saved);
+    //   return {
+    //     ...parsed,
+    //     image: parsed.image || inspImage, // fallback si es null
+    //   };
+    // }
     return inspirationData[Math.floor(Math.random() * inspirationData.length)];
   });
 

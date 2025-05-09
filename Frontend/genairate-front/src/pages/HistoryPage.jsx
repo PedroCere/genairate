@@ -3,14 +3,28 @@ import ArticleCard from '../components/ArticleCard';
 import { useTranslation } from 'react-i18next';
 import { getRecentArticles } from '../services/ContentService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
+
+import meme1 from '../assets/meme1.jpg';
+import meme2 from '../assets/meme2.jpg';
+import meme3 from '../assets/meme3.jpg';
+import meme4 from '../assets/meme4.jpg';
 
 const tones = ['informativo', 'motivacional', 'analítico'];
 const types = ['guía', 'lista', 'análisis'];
 const languages = ['es', 'en'];
 
+const memeImages = [meme1, meme2, meme3, meme4];
+
 export default function HistoryPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    i18n.changeLanguage('es');
+  }, [i18n]);
+
   const [filters, setFilters] = useState({
     dateFrom: '',
     dateTo: '',
@@ -71,7 +85,7 @@ export default function HistoryPage() {
   }
 
   function handleEdit(id) {
-    console.log('Edit article', id);
+    navigate(`/editor/${id}`);
   }
 
   function handleDuplicate(id) {
@@ -88,78 +102,7 @@ export default function HistoryPage() {
         {t('HistoryPageTitle')}
       </h1>
 
-      <section className="mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div>
-          <label className="block mb-1 font-medium">{t('DateFrom')}</label>
-          <input
-            type="date"
-            name="dateFrom"
-            value={filters.dateFrom}
-            onChange={handleFilterChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">{t('DateTo')}</label>
-          <input
-            type="date"
-            name="dateTo"
-            value={filters.dateTo}
-            onChange={handleFilterChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">{t('Tone')}</label>
-          <select
-            name="tone"
-            value={filters.tone}
-            onChange={handleFilterChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
-          >
-            <option value="">{t('All')}</option>
-            {tones.map((tone) => (
-              <option key={tone} value={tone}>
-                {tone.charAt(0).toUpperCase() + tone.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">{t('Type')}</label>
-          <select
-            name="type"
-            value={filters.type}
-            onChange={handleFilterChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
-          >
-            <option value="">{t('All')}</option>
-            {types.map((type) => (
-              <option key={type} value={type}>
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">{t('Language')}</label>
-          <select
-            name="language"
-            value={filters.language}
-            onChange={handleFilterChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
-          >
-            <option value="">{t('All')}</option>
-            {languages.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang.toUpperCase()}
-              </option>
-            ))}
-          </select>
-        </div>
-      </section>
-
-      <section>
+      <section className="mb-8 flex flex-col gap-4">
         {loading ? (
           <div className="flex justify-center py-10">
             <LoadingSpinner size="lg" />
@@ -169,37 +112,43 @@ export default function HistoryPage() {
             {t('NoArticlesFound')}
           </p>
         ) : (
-          filteredArticles.map((article) => (
-            <div key={article.id} className="mb-4 border rounded-md p-4 bg-white dark:bg-gray-800 shadow-sm">
-              <ArticleCard article={article} />
-              <div className="mt-2 flex gap-4 text-sm">
-                <button
-                  onClick={() => handleView(article.id)}
-                  className="text-blue-600 hover:underline"
-                >
-                  {t('View')}
-                </button>
-                <button
-                  onClick={() => handleEdit(article.id)}
-                  className="text-green-600 hover:underline"
-                >
-                  {t('Edit')}
-                </button>
-                <button
-                  onClick={() => handleDuplicate(article.id)}
-                  className="text-yellow-600 hover:underline"
-                >
-                  {t('Duplicate')}
-                </button>
-                <button
-                  onClick={() => handleDelete(article.id)}
-                  className="text-red-600 hover:underline"
-                >
-                  {t('Delete')}
-                </button>
+          filteredArticles.map((article, index) => {
+            const articleWithMeme = {
+              ...article,
+              image: memeImages[index % memeImages.length],
+            };
+            return (
+              <div key={article.id} className="border rounded-md p-4 bg-white dark:bg-gray-800 shadow-sm">
+                <ArticleCard article={articleWithMeme} />
+                <div className="mt-2 flex gap-4 text-sm">
+                  <button
+                    onClick={() => handleView(article.id)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {t('View')}
+                  </button>
+                  <button
+                    onClick={() => handleEdit(article.id)}
+                    className="text-green-600 hover:underline"
+                  >
+                    {t('Edit')}
+                  </button>
+                  <button
+                    onClick={() => handleDuplicate(article.id)}
+                    className="text-yellow-600 hover:underline"
+                  >
+                    {t('Duplicate')}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(article.id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    {t('Delete')}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </section>
     </div>
