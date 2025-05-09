@@ -1,5 +1,6 @@
 package com.geneairate.blog_content_service.service.impl;
 
+import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
 import com.geneairate.blog_content_service.dto.PromptStyleTemplate;
@@ -173,5 +174,26 @@ public class BlogContentServiceImpl implements BlogContentService {
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
+    @Override
+    public void partialUpdate(Long id, BlogArticlePatchRequest patch) {
+        BlogArticle article = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+
+        if (patch.getTitle() != null) article.setTitle(patch.getTitle());
+        if (patch.getIntroduction() != null) article.setIntroduction(patch.getIntroduction());
+        if (patch.getSubtitle1() != null) article.setSubtitle1(patch.getSubtitle1());
+        if (patch.getContent1() != null) article.setContent1(patch.getContent1());
+        if (patch.getSubtitle2() != null) article.setSubtitle2(patch.getSubtitle2());
+        if (patch.getContent2() != null) article.setContent2(patch.getContent2());
+        if (patch.getSubtitle3() != null) article.setSubtitle3(patch.getSubtitle3());
+        if (patch.getContent3() != null) article.setContent3(patch.getContent3());
+        if (patch.getConclusion() != null) article.setConclusion(patch.getConclusion());
+        if (patch.getKeywords() != null) article.setKeywords(patch.getKeywords());
+        if (patch.getMetaDescription() != null) article.setMetaDescription(patch.getMetaDescription());
+
+        repository.save(article);
+    }
+
+
 
 }

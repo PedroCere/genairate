@@ -1,5 +1,6 @@
 package com.geneairate.blog_content_service.service;
 
+import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
 import com.geneairate.blog_content_service.model.BlogArticle;
@@ -27,4 +28,7 @@ public interface BlogContentService {
     List<ContentResponse> obtenerRecientes();
 
     List<ContentResponse> getAll();
+
+    void partialUpdate(Long id, BlogArticlePatchRequest patch);
+
 }

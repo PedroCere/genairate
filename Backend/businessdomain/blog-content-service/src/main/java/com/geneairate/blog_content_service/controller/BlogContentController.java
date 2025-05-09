@@ -1,5 +1,6 @@
 package com.geneairate.blog_content_service.controller;
 
+import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
 import com.geneairate.blog_content_service.model.BlogArticle;
@@ -72,4 +73,12 @@ public class BlogContentController {
         List<ContentResponse> blogs = service.getAll();
         return ResponseEntity.ok(blogs);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> patchBlog(@PathVariable Long id, @RequestBody BlogArticlePatchRequest patch) {
+        service.partialUpdate(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
