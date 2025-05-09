@@ -57,4 +57,7 @@ public class BlogArticle {
     @Column(name = "created_at")
     private long createdAt;
 
+    @Column(name = "user_id")
+    private Long userId;
+
 }

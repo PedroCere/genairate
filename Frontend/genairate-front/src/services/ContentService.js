@@ -18,3 +18,6 @@ export const saveDraft = async (id, data) => saveArticle(data);
 
 // Implement publishArticle assuming POST /content/publish/{id} endpoint
 export const publishArticle = async (id) => blogContentClient.post(`${BASE}/publish/${id}`).then(r => r.data);
+
+// New method to get blogs by user
+export const getBlogsByUser = async (userId) => blogContentClient.get(`${BASE}/user/${userId}/blogs`).then(r => r.data);

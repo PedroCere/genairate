@@ -1,57 +1,7 @@
 import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import { useTranslation } from 'react-i18next';
-import img1 from '../assets/meme1.jpg';
-import img2 from '../assets/meme2.jpg';
-import img3 from '../assets/meme3.jpg';
-import img4 from '../assets/meme4.jpg';
-
-const mockedArticles = [
-  {
-    id: '1',
-    title: 'Cómo aprender React rápidamente',
-    image: img1,
-    date: '2024-04-20',
-    wordCount: 1200,
-    status: 'published',
-    tone: 'informativo',
-    type: 'guía',
-    language: 'es',
-  },
-  {
-    id: '2',
-    title: 'Los mejores consejos para productividad',
-    image: img3,
-    date: '2024-04-18',
-    wordCount: 800,
-    status: 'draft',
-    tone: 'motivacional',
-    type: 'lista',
-    language: 'es',
-  },
-  {
-    id: '3',
-    title: 'Análisis del mercado tecnológico 2024',
-    image: img2,
-    date: '2024-04-15',
-    wordCount: 1500,
-    status: 'published',
-    tone: 'analítico',
-    type: 'análisis',
-    language: 'es',
-  },
-  {
-    id: '4',
-    title: 'Guía para mejorar tu SEO',
-    image: img4,
-    date: '2024-04-10',
-    wordCount: 1000,
-    status: 'published',
-    tone: 'informativo',
-    type: 'guía',
-    language: 'es',
-  },
-];
+import { getRecentArticles } from '../services/ContentService';
 
 const tones = ['informativo', 'motivacional', 'analítico'];
 const types = ['guía', 'lista', 'análisis'];
@@ -70,7 +20,14 @@ export default function HistoryPage() {
   const [filteredArticles, setFilteredArticles] = useState([]);
 
   useEffect(() => {
-    setArticles(mockedArticles);
+    getRecentArticles()
+      .then((data) => {
+        setArticles(data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch recent blogs:', error);
+        setArticles([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -78,22 +35,22 @@ export default function HistoryPage() {
 
     if (filters.dateFrom) {
       filtered = filtered.filter(
-        (a) => new Date(a.date) >= new Date(filters.dateFrom)
+        (a) => new Date(a.createdAt) >= new Date(filters.dateFrom)
       );
     }
     if (filters.dateTo) {
       filtered = filtered.filter(
-        (a) => new Date(a.date) <= new Date(filters.dateTo)
+        (a) => new Date(a.createdAt) <= new Date(filters.dateTo)
       );
     }
     if (filters.tone) {
-      filtered = filtered.filter((a) => a.tone === filters.tone);
+      filtered = filtered.filter((a) => a.tone && a.tone === filters.tone);
     }
     if (filters.type) {
-      filtered = filtered.filter((a) => a.type === filters.type);
+      filtered = filtered.filter((a) => a.type && a.type === filters.type);
     }
     if (filters.language) {
-      filtered = filtered.filter((a) => a.language === filters.language);
+      filtered = filtered.filter((a) => a.language && a.language === filters.language);
     }
 
     setFilteredArticles(filtered);

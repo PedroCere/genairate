@@ -19,6 +19,12 @@ public class BlogContentController {
         this.service = blogContentService;
     }
 
+    @GetMapping("/user/{userId}/blogs")
+    public ResponseEntity<List<ContentResponse>> getBlogsByUser(@PathVariable Long userId) {
+        List<ContentResponse> blogs = service.getByUserId(userId);
+        return ResponseEntity.ok(blogs);
+    }
+
     @PostMapping("/generate")
     public ResponseEntity<ContentResponse> generate(@RequestBody ContentRequest request) {
         System.out.println("Received JSON for generate: " + request);

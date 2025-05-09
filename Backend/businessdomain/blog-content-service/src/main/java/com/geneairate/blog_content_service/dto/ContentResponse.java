@@ -23,4 +23,5 @@ public class ContentResponse {
     private String conclusion;
     private List<String> keywords;
     private String metaDescription;
+
 }

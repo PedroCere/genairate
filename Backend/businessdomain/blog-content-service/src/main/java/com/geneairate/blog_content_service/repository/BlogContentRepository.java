@@ -11,4 +11,6 @@ public interface BlogContentRepository extends JpaRepository<BlogArticle,Long> {
 
     List<BlogArticle> findTop3ByOrderByCreatedAtDesc();
 
+    List<BlogArticle> findByUserId(Long userId);
+
 }

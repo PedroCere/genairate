@@ -27,4 +27,6 @@ public interface BlogContentService {
     List<ContentResponse> obtenerRecientes();
 
     List<ContentResponse> getAll();
+
+    List<ContentResponse> getByUserId(Long userId);
 }

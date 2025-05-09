@@ -26,6 +26,14 @@ public class BlogContentServiceImpl implements BlogContentService {
     }
 
     @Override
+    public List<ContentResponse> getByUserId(Long userId) {
+        return repository.findByUserId(userId)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ContentResponse generarContenido(ContentRequest request) {
         PromptStyleTemplate template = templateClient.getTemplateById(request.getTemplateId());
 
