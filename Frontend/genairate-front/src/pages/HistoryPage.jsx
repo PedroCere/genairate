@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import { useTranslation } from 'react-i18next';
 import { getRecentArticles } from '../services/ContentService';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const tones = ['informativo', 'motivacional', 'analítico'];
 const types = ['guía', 'lista', 'análisis'];
@@ -18,15 +19,19 @@ export default function HistoryPage() {
     language: '',
   });
   const [filteredArticles, setFilteredArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     getRecentArticles()
       .then((data) => {
         setArticles(data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Failed to fetch recent blogs:', error);
         setArticles([]);
+        setLoading(false);
       });
   }, []);
 
@@ -155,7 +160,11 @@ export default function HistoryPage() {
       </section>
 
       <section>
-        {filteredArticles.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : filteredArticles.length === 0 ? (
           <p className="text-center text-gray-500 dark:text-gray-400">
             {t('NoArticlesFound')}
           </p>

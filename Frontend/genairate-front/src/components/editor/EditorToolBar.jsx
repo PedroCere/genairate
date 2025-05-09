@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useEditor } from '../../context/EditorContext';
 import GenerateBlogModal from '../common/modals/GenerateBlogModal';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function EditorToolbar({ onGenerate }) {
   const {
@@ -13,9 +14,12 @@ export default function EditorToolbar({ onGenerate }) {
   } = useEditor();
 
   const [showBlogModal, setShowBlogModal] = useState(false);
+  const [loadingGenerate, setLoadingGenerate] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const handleGenerate = async ({ topic, tone, language }) => {
     try {
+      setLoadingGenerate(true);
       const userInput = topic;
 
       if (onGenerate && topic) {
@@ -33,6 +37,18 @@ export default function EditorToolbar({ onGenerate }) {
       setShowBlogModal(false);
     } catch (error) {
       console.error('Error generating article:', error);
+    } finally {
+      setLoadingGenerate(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    try {
+      await saveDraft();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (error) {
+      console.error('Error saving draft:', error);
     }
   };
 
@@ -61,8 +77,13 @@ export default function EditorToolbar({ onGenerate }) {
 
         <div className="flex items-center space-x-4">
           <button
-            onClick={saveDraft}
-            className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
+            onClick={handleSaveDraft}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              saved
+                ? 'bg-green-500 text-white animate-pulse'
+                : 'bg-primary/10 text-primary hover:bg-primary/20'
+            }`}
+            disabled={saved}
           >
             Guardar
           </button>
@@ -74,9 +95,14 @@ export default function EditorToolbar({ onGenerate }) {
           </button>
           <button
             onClick={() => setShowBlogModal(true)}
-            className="bg-secondary text-background px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors"
+            className="flex items-center justify-center bg-secondary text-background px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors"
+            disabled={loadingGenerate}
           >
-            🤖 Blog automático
+            {loadingGenerate ? (
+              <LoadingSpinner size="sm" />
+            ) : (
+              '🤖 Blog automático'
+            )}
           </button>
         </div>
       </div>

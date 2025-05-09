@@ -13,9 +13,9 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const MOCK_DATA = {
-  views: 0,
-  reads: 0,
-  timeline: [0, 0, 0, 0, 0], 
+  views: 42,
+  reads: 10,
+  timeline: [12, 18, 16, 28, 40], 
 };
 
 export default function AnalyticsPage() {
