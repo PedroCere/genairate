@@ -55,4 +55,10 @@ public class TemplateService {
         if (!template.getUserId().equals(userId)) throw new SecurityException("No autorizado");
         repository.delete(template);
     }
+
+    public PromptStyleTemplate getDefaultTemplateForUser(String userId) {
+        return repository.findByUserIdAndIsDefaultTrue(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no tiene plantilla por defecto"));
+    }
+
 }

@@ -34,4 +34,8 @@ public class PromptStyleTemplate {
 
     @Column(nullable = false)
     private String userId;
+
+    @Column(name = "is_default")
+    private boolean isDefault;
+
 }
