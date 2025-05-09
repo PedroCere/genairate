@@ -6,9 +6,14 @@ export default function TipTapEditor({ content, onUpdate }) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content || '',
+    editorProps: {
+      attributes: {
+        class: 'prose max-w-none w-full min-h-[65vh] p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none',
+      },
+    },
     onUpdate: ({ editor }) => {
       if (onUpdate) {
-        onUpdate(editor.getJSON());
+        onUpdate(editor.getHTML());
       }
     },
   });
@@ -19,13 +24,7 @@ export default function TipTapEditor({ content, onUpdate }) {
     }
   }, [content, editor]);
 
-  if (!editor) {
-    return null;
-  }
+  if (!editor) return null;
 
-  return (
-    <div className="p-4 text-text bg-surface-card rounded-xl shadow-subtle min-h-[500px] border border-border">
-      <EditorContent editor={editor} />
-    </div>
-  );
+  return <EditorContent editor={editor} />;
 }
