@@ -3,6 +3,7 @@ package com.geneairate.blog_content_service.controller;
 import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
 import com.geneairate.blog_content_service.dto.ContentRequest;
 import com.geneairate.blog_content_service.dto.ContentResponse;
+import com.geneairate.blog_content_service.dto.TranslateRequest;
 import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.service.BlogContentService;
 import jakarta.validation.Valid;
@@ -41,8 +42,8 @@ public class BlogContentController {
         return ResponseEntity.ok(service.corrigirTexto(request));
     }
 
-    @PostMapping("/translate")
-    public ResponseEntity<ContentResponse> translate(@Valid @RequestBody ContentRequest request) {
+    @PutMapping("/translate")
+    public ResponseEntity<ContentResponse> traducir(@RequestBody TranslateRequest request) {
         return ResponseEntity.ok(service.traducirContenido(request));
     }
 

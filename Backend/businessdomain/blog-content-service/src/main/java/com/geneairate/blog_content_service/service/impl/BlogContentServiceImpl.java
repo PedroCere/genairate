@@ -1,15 +1,14 @@
 package com.geneairate.blog_content_service.service.impl;
 
-import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
-import com.geneairate.blog_content_service.dto.ContentRequest;
-import com.geneairate.blog_content_service.dto.ContentResponse;
-import com.geneairate.blog_content_service.dto.PromptStyleTemplate;
+import com.geneairate.blog_content_service.dto.*;
 import com.geneairate.blog_content_service.gateway.OpenRouterClient;
 import com.geneairate.blog_content_service.gateway.TemplateClient;
 import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.repository.BlogContentRepository;
 import com.geneairate.blog_content_service.service.BlogContentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -106,8 +105,52 @@ public class BlogContentServiceImpl implements BlogContentService {
     }
 
     @Override
-    public ContentResponse traducirContenido(ContentRequest request) {
-        return predictorGateway.traducirContenido(request);
+    public ContentResponse traducirContenido(TranslateRequest request) {
+        BlogArticle article = repository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+
+        String prompt = String.format("""
+    [INST]
+    Traduce el siguiente artículo completo al idioma: %s.
+
+    Artículo:
+    {
+      "title": "%s",
+      "introduction": "%s",
+      "subtitle1": "%s",
+      "content1": "%s",
+      "subtitle2": "%s",
+      "content2": "%s",
+      "subtitle3": "%s",
+      "content3": "%s",
+      "conclusion": "%s",
+      "keywords": [%s],
+      "metaDescription": "%s"
+    }
+
+    IMPORTANTE: Devolveme solo el mismo JSON anterior pero traducido completamente.
+    [/INST]
+    """,
+                request.getTargetLanguage(),
+                article.getTitle(),
+                article.getIntroduction(),
+                article.getSubtitle1(),
+                article.getContent1(),
+                article.getSubtitle2(),
+                article.getContent2(),
+                article.getSubtitle3(),
+                article.getContent3(),
+                article.getConclusion(),
+                article.getKeywords() != null ? article.getKeywords().stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", ")) : "",
+                article.getMetaDescription());
+
+
+
+
+        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
+        fullUpdate(request.getId(), response);
+        return response;
+
     }
 
     @Override
@@ -116,6 +159,26 @@ public class BlogContentServiceImpl implements BlogContentService {
                 .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
         return mapToDto(article);
     }
+    @Override
+    public void fullUpdate(Long id, ContentResponse content) {
+        BlogArticle article = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+
+        article.setTitle(content.getTitle());
+        article.setIntroduction(content.getIntroduction());
+        article.setSubtitle1(content.getSubtitle1());
+        article.setContent1(content.getContent1());
+        article.setSubtitle2(content.getSubtitle2());
+        article.setContent2(content.getContent2());
+        article.setSubtitle3(content.getSubtitle3());
+        article.setContent3(content.getContent3());
+        article.setConclusion(content.getConclusion());
+        article.setKeywords(content.getKeywords());
+        article.setMetaDescription(content.getMetaDescription());
+
+        repository.save(article);
+    }
+
 
     @Override
     public void guardarArticulo(ContentResponse content) {
@@ -178,7 +241,8 @@ public class BlogContentServiceImpl implements BlogContentService {
     @Override
     public void partialUpdate(Long id, BlogArticlePatchRequest patch) {
         BlogArticle article = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
 
         if (patch.getTitle() != null) article.setTitle(patch.getTitle());
         if (patch.getIntroduction() != null) article.setIntroduction(patch.getIntroduction());
