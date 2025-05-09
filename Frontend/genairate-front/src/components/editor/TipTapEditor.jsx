@@ -1,9 +1,9 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect } from 'react';
+import { useEffect, forwardRef, useImperativeHandle } from 'react';
 import './editor.css';
 
-export default function TipTapEditor({ content, onUpdate }) {
+const TipTapEditor = forwardRef(({ content, onUpdate }, ref) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content || '',
@@ -13,11 +13,15 @@ export default function TipTapEditor({ content, onUpdate }) {
       },
     },
     onUpdate: ({ editor }) => {
-      if (onUpdate) {
-        onUpdate(editor.getHTML());
-      }
+      if (onUpdate) onUpdate(editor.getHTML());
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    get instance() {
+      return editor;
+    },
+  }));
 
   useEffect(() => {
     if (editor && content) {
@@ -28,4 +32,6 @@ export default function TipTapEditor({ content, onUpdate }) {
   if (!editor) return null;
 
   return <EditorContent editor={editor} />;
-}
+});
+
+export default TipTapEditor;

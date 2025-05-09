@@ -191,6 +191,11 @@ export const EditorProvider = ({ children }) => {
     }
   };
 
+  const setTitle = (newTitle) => {
+    if (!currentArticle) return;
+    setCurrentArticle({ ...currentArticle, title: newTitle });
+  };
+
   return (
     <EditorContext.Provider
       value={{
@@ -208,6 +213,7 @@ export const EditorProvider = ({ children }) => {
         fetchAllArticles,
         updateArticle,
         updateSectionContent,
+        setTitle,
       }}
     >
       {children}

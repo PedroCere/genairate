@@ -4,10 +4,10 @@ import GenerateBlogModal from '../common/modals/GenerateBlogModal';
 
 export default function EditorToolbar({ onGenerate }) {
   const {
-    article,
+    currentArticle: article,
     setTitle,
-    saveDraft,
-    publishArticle,
+    saveCurrentAsDraft: saveDraft,
+    publishCurrentArticle: publishArticle,
     updateArticle,
     generateInitialArticle,
   } = useEditor();
@@ -18,7 +18,7 @@ export default function EditorToolbar({ onGenerate }) {
     try {
       const userInput = topic;
 
-      if (onGenerate) {
+      if (onGenerate && topic) {
         await onGenerate({ userInput, tone, language });
       } else {
         await generateInitialArticle({
