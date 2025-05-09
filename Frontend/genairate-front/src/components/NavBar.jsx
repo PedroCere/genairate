@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import profile2 from "../assets/profile1.jpg";
+import profile2 from "../assets/profile6.jpg";
 import {
   FiSearch,
   FiBell,

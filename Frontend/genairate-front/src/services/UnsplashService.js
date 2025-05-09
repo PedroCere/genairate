@@ -1,5 +1,5 @@
 // services/unsplashService.js
-const UNSPLASH_ACCESS_KEY = ''; // <-- ponelo en .env si querés
+const UNSPLASH_ACCESS_KEY = '';
 
 export const getImagesByKeyword = async (keyword) => {
   const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(keyword)}&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);

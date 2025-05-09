@@ -39,7 +39,7 @@ export default function ProfilePage() {
           name: data.username || '',
           username: data.username || '',
           bio: data.description || '',
-          avatar: '/src/assets/profile1.jpg',
+          avatar: '/src/assets/profile6.jpg',
           location: data.location || '',
           profession: '',
           twitter: '',
