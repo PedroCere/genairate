@@ -58,7 +58,9 @@ public class TemplateService {
 
     public PromptStyleTemplate getDefaultTemplateForUser(String userId) {
         return repository.findByUserIdAndIsDefaultTrue(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no tiene plantilla por defecto"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No se encontró plantilla por defecto para el usuario " + userId));
     }
+
 
 }

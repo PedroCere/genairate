@@ -36,6 +36,7 @@ public class PromptStyleTemplate {
     private String userId;
 
     @Column(name = "is_default")
-    private boolean isDefault;
+    private Boolean isDefault;
+
 
 }
