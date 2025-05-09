@@ -65,15 +65,19 @@ export default function EditorPage() {
     } = article;
 
     return `
-      <h1>${title}</h1>
-      <p>${introduction}</p>
-      <h2>${subtitle1}</h2>
-      <p>${content1}</p>
-      <h2>${subtitle2}</h2>
-      <p>${content2}</p>
-      <h2>${subtitle3}</h2>
-      <p>${content3}</p>
-      <p><strong>${conclusion}</strong></p>
+      <h1 class="text-3xl font-bold mb-4">${title}</h1>
+      <p class="text-base mb-4">${introduction}</p>
+
+      <h2 class="text-2xl font-semibold mt-6 mb-2">${subtitle1}</h2>
+      <p class="text-base mb-4">${content1}</p>
+
+      <h2 class="text-2xl font-semibold mt-6 mb-2">${subtitle2}</h2>
+      <p class="text-base mb-4">${content2}</p>
+
+      <h2 class="text-2xl font-semibold mt-6 mb-2">${subtitle3}</h2>
+      <p class="text-base mb-4">${content3}</p>
+
+      <p class="text-base font-semibold mt-6">${conclusion}</p>
     `;
   };
 
@@ -99,10 +103,12 @@ export default function EditorPage() {
         <AiSideBar />
 
         <div className="bg-surface-card rounded-xl shadow-subtle p-6 min-h-[600px]">
-          <TipTapEditor
-            content={editorContent}
-            onUpdate={(newContent) => setEditorContent(newContent)}
-          />
+      <div className="tiptap">
+        <TipTapEditor
+          content={editorContent}
+          onUpdate={(newContent) => setEditorContent(newContent)}
+        />
+      </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,9 @@
+.tiptap h1 {
+  @apply text-3xl font-bold mt-4 mb-2;
+}
+.tiptap h2 {
+  @apply text-2xl font-semibold mt-6 mb-2;
+}
+.tiptap p {
+  @apply text-base leading-relaxed mb-4;
+}
