@@ -38,12 +38,12 @@ export default function EditorPage() {
     }
   }, [id, updateArticle]);
 
-  const handleGenerateInitial = async () => {
+  const handleGenerateInitial = async ({ userInput, tone, language }) => {
     try {
       const response = await generateInitialArticle({
-        userInput: currentArticle?.title || 'Tema del artículo',
-        tone: 'profesional',
-        language: 'es',
+        userInput,
+        tone,
+        language,
         format: 'lista',
         templateId: 1,
       });
@@ -88,15 +88,13 @@ export default function EditorPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
       <EditorToolbar onGenerate={handleGenerateInitial} />
-      
-      {/* Imagen sugerida basada en palabras clave */}
+
       {currentArticle?.keywords && (
         <div className="mb-6">
           <ImageSuggestions keywords={currentArticle.keywords} />
         </div>
       )}
 
-      {/* Layout con editor + sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-[280px_2fr_1fr] gap-6 mt-6 overflow-auto">
         <AiSideBar />
 

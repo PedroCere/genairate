@@ -14,10 +14,11 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 max-w-xl w-full mx-auto">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">🧠 Generar artículo con IA</h2>
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        🧠 Generar artículo con IA
+      </h2>
 
       <div className="space-y-4">
-        {/* Tópico */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Tópico / Idea principal
@@ -31,7 +32,6 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
           />
         </div>
 
-        {/* Tono */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Tono
@@ -48,7 +48,6 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
           </select>
         </div>
 
-        {/* Idioma */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Idioma
@@ -64,7 +63,6 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
           </select>
         </div>
 
-        {/* Botón */}
         <button
           onClick={handleGenerate}
           disabled={!topic.trim()}

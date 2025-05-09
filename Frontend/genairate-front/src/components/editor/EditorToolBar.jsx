@@ -8,28 +8,28 @@ export default function EditorToolbar({ onGenerate }) {
     setTitle,
     saveDraft,
     publishArticle,
-    aiActions,
     updateArticle,
-    updateEditorFromGenerated,
-    generateInitialArticle
+    generateInitialArticle,
   } = useEditor();
 
   const [showBlogModal, setShowBlogModal] = useState(false);
 
-  // Use onGenerate prop if provided, else fallback to internal generateInitialArticle call
   const handleGenerate = async ({ topic, tone, language }) => {
     try {
+      const userInput = topic;
+
       if (onGenerate) {
-        await onGenerate({ topic, tone, language });
+        await onGenerate({ userInput, tone, language });
       } else {
         await generateInitialArticle({
-          userInput: topic,
+          userInput,
           tone,
           language,
           format: 'lista',
           templateId: 1,
         });
       }
+
       setShowBlogModal(false);
     } catch (error) {
       console.error('Error generating article:', error);
@@ -47,10 +47,10 @@ export default function EditorToolbar({ onGenerate }) {
             placeholder="Título del artículo"
             className="bg-transparent text-2xl font-bold text-text placeholder-muted focus:outline-none"
           />
-          
+
           <select
             value={article?.tone || 'profesional'}
-            onChange={(e) => updateArticle({ tone: e.target.value })}
+            onChange={(e) => updateArticle({ ...article, tone: e.target.value })}
             className="bg-white dark:bg-white text-dark dark:text-black px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
           >
             <option value="profesional">Profesional</option>
@@ -58,9 +58,9 @@ export default function EditorToolbar({ onGenerate }) {
             <option value="seo">SEO</option>
           </select>
         </div>
-        
+
         <div className="flex items-center space-x-4">
-          <button 
+          <button
             onClick={saveDraft}
             className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
           >
