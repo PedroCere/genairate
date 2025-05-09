@@ -90,8 +90,57 @@ public class BlogContentServiceImpl implements BlogContentService {
     }
 
     @Override
-    public ContentResponse reescribirTexto(ContentRequest request) {
-        return predictorGateway.reescribirTexto(request);
+    public ContentResponse reescribirTexto(ModifyContentRequest request) {
+        BlogArticle article = repository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+
+        String prompt = String.format("""
+                [INST]
+                Reescribe el siguiente blog siguiendo estas instrucciones: %s
+                
+                IMPORTANTE: Respondé en el mismo idioma en que está escrito el artículo original.
+                
+                Devuélvelo en formato JSON plano con los mismos campos exactos (sin cambios estructurales, solo texto).
+                
+                NO uses markdown, no agregues ```json, ni explicaciones. Solo devolvé el objeto JSON puro.
+                
+                No lo traduzcas ni cambies el idioma, solo reescribilo respetando el idioma original.
+                
+                Artículo original:
+                {
+                  "title": "%s",
+                  "introduction": "%s",
+                  "subtitle1": "%s",
+                  "content1": "%s",
+                  "subtitle2": "%s",
+                  "content2": "%s",
+                  "subtitle3": "%s",
+                  "content3": "%s",
+                  "conclusion": "%s",
+                  "keywords": [%s],
+                  "metaDescription": "%s"
+                }
+                [/INST]
+                """,
+                request.getExtraInstructions(),
+                article.getTitle(),
+                article.getIntroduction(),
+                article.getSubtitle1(),
+                article.getContent1(),
+                article.getSubtitle2(),
+                article.getContent2(),
+                article.getSubtitle3(),
+                article.getContent3(),
+                article.getConclusion(),
+                article.getKeywords() != null ? article.getKeywords().stream().map(k -> "\"" + k + "\"").collect(Collectors.joining(", ")) : "",
+                article.getMetaDescription()
+        );
+
+
+
+        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
+        fullUpdate(request.getId(), response);
+        return response;
     }
 
     @Override

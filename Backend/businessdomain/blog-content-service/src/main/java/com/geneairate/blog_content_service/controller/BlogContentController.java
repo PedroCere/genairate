@@ -1,9 +1,6 @@
 package com.geneairate.blog_content_service.controller;
 
-import com.geneairate.blog_content_service.dto.BlogArticlePatchRequest;
-import com.geneairate.blog_content_service.dto.ContentRequest;
-import com.geneairate.blog_content_service.dto.ContentResponse;
-import com.geneairate.blog_content_service.dto.TranslateRequest;
+import com.geneairate.blog_content_service.dto.*;
 import com.geneairate.blog_content_service.model.BlogArticle;
 import com.geneairate.blog_content_service.service.BlogContentService;
 import jakarta.validation.Valid;
@@ -27,8 +24,8 @@ public class BlogContentController {
         return ResponseEntity.ok(service.generarContenido(request));
     }
 
-    @PostMapping("/rewrite")
-    public ResponseEntity<ContentResponse> rewrite(@Valid @RequestBody ContentRequest request) {
+    @PutMapping("/rewrite")
+    public ResponseEntity<ContentResponse> rewrite(@Valid @RequestBody ModifyContentRequest request) {
         return ResponseEntity.ok(service.reescribirTexto(request));
     }
 
