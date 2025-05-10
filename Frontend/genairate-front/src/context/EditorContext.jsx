@@ -1,203 +1,226 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { contentService, aiService } from '../services';
+import React, { createContext, useContext, useState } from 'react';
+import {
+  generateArticle,
+  rewriteText,
+  summarizeText,
+  translateText,
+  correctText,
+  saveArticle,
+  getById,
+  deleteArticle,
+  getRecentArticles,
+  getAllArticles,
+  saveDraft,
+  publishArticle
+} from '../services/ContentService';
 
 const EditorContext = createContext();
 
-export function EditorProvider({ children }) {
-  const [article, setArticle] = useState({
-    id: null,
-    title: '',
-    sections: [], 
-    tone: 'profesional',
-    language: 'es',
-    format: 'blog',
-    status: 'draft',
-    aiSuggestions: [],
-    images: [],
-    lastSaved: null,
-    isLoading: false
-  });
+export const EditorProvider = ({ children }) => {
+  const [currentArticle, setCurrentArticle] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [activeSectionId, setActiveSectionId] = useState(null);
-  const [selectedText, setSelectedText] = useState('');
-
-  const updateArticle = useCallback((updates) => {
-    setArticle(prev => ({
-      ...prev,
-      ...updates,
-      lastSaved: new Date().toISOString()
-    }));
-  }, []);
-
-  const setTitle = useCallback((title) => {
-    updateArticle({ title });
-  }, [updateArticle]);
-
-  const updateSectionContent = useCallback((sectionId, content) => {
-    setArticle(prev => ({
-      ...prev,
-      sections: (prev.sections || []).map(section => 
-        section.id === sectionId ? { ...section, content } : section
-      )
-    }));
-  }, []);
-
-  const addSection = useCallback((type = 'text') => {
-    const newSection = {
-      id: uuidv4(),
-      heading: '',
-      content: ''
-    };
-    
-    setArticle(prev => ({
-      ...prev,
-      sections: [...(prev.sections || []), newSection]
-    }));
-    setActiveSectionId(newSection.id);
-  }, []);
-
-  const generateInitialArticle = useCallback(async (topic) => {
-    try {
-      updateArticle({ isLoading: true });
-      const generatedContent = await contentService.generateArticle({
-        topic,
-        tone: article.tone,
-        language: article.language
-      });
-      
-      setArticle(prev => ({
-        ...prev,
-        title: generatedContent.title,
-        sections: generatedContent.sections || [],
-        isLoading: false
-      }));
-    } catch (error) {
-      console.error('Error generating article:', error);
-      updateArticle({ isLoading: false });
-    }
-  }, [article.tone, article.language, updateArticle]);
-
-  const rewriteText = useCallback(async (text, tone) => {
-    try {
-      updateArticle({ isLoading: true });
-      const rewritten = await contentService.rewriteText(text, tone);
-      
-      // Reemplazar el texto seleccionado
-      const currentSection = article.sections?.find(s => s.id === activeSectionId);
-      if (currentSection) {
-        const updatedContent = currentSection.content.replace(selectedText, rewritten);
-        updateSectionContent(activeSectionId, updatedContent);
-      }
-    } finally {
-      updateArticle({ isLoading: false });
-    }
-  }, [activeSectionId, selectedText, article.sections, updateArticle, updateSectionContent]);
-
-  const translateText = useCallback(async (text, targetLanguage) => {
-    try {
-      updateArticle({ isLoading: true });
-      // Mocked translation for now
-      const translated = await contentService.translateText(text, targetLanguage);
-      
-      const currentSection = article.sections?.find(s => s.id === activeSectionId);
-      if (currentSection) {
-        const updatedContent = currentSection.content.replace(selectedText, translated);
-        updateSectionContent(activeSectionId, updatedContent);
-      }
-    } finally {
-      updateArticle({ isLoading: false });
-    }
-  }, [activeSectionId, selectedText, article.sections, updateArticle, updateSectionContent]);
-
-  const speechSynthesis = useCallback((text) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(utterance);
-    } else {
-      console.warn('Speech synthesis not supported in this browser.');
-    }
-  }, []);
-
-  const exportAsPDF = useCallback(() => {
-    // Mocked export PDF functionality
-    console.log('Exporting article as PDF...');
-  }, []);
-
-  const exportAsMarkdown = useCallback(() => {
-    // Mocked export Markdown functionality
-    console.log('Exporting article as Markdown...');
-  }, []);
-
+  // IA actions encapsuladas
   const aiActions = {
-    summarizeText: useCallback(async () => {
-      const content = (article.sections || []).find(s => s.id === activeSectionId)?.content || '';
-      return await contentService.summarizeText(content);
-    }, [activeSectionId, article.sections]),
-    
-    correctGrammar: useCallback(async () => {
-      const content = (article.sections || []).find(s => s.id === activeSectionId)?.content || '';
-      return await contentService.correctText(content);
-    }, [activeSectionId, article.sections]),
-    
-    generateImage: useCallback(async (prompt) => {
-      const imageUrl = await aiService.generateImage(prompt);
-      setArticle(prev => ({
-        ...prev,
-        images: [...(prev.images || []), { url: imageUrl, prompt }]
-      }));
-      return imageUrl;
-    }, []),
+    rewriteText: async (input, tone = 'profesional') =>
+      await rewriteText({ userInput: input, tone }),
 
-    translateText,
-    speechSynthesis,
-    exportAsPDF,
-    exportAsMarkdown
+    summarizeText: async (input) =>
+      await summarizeText({ userInput: input }),
+
+    translateText: async (input, language = 'en') =>
+      await translateText({ userInput: input, language }),
+
+    correctGrammar: async (input) =>
+      await correctText({ userInput: input }),
+
+    generateImage: async (title) =>
+      alert(`🖼️ Generar imagen IA para: "${title}" (a implementar)`),
+
+    exportAsPDF: () =>
+      alert('📄 Exportación como PDF no implementada aún.'),
+
+    exportAsMarkdown: () =>
+      alert('📝 Exportación como Markdown no implementada aún.'),
+
+    speechSynthesis: (text) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      speechSynthesis.speak(utterance);
+    },
   };
 
-  const updateEditorFromGenerated = (article) => {
-    setArticle(prev => ({
-      ...prev,
-      title: article.title,
-      tone: article.tone,
-      language: article.language,
-      sections: article.sections
-    }));
+  // Generar artículo base
+  const generateInitialArticle = async ({ userInput, tone = 'profesional', format = 'lista', language = 'es', templateId = 1 }) => {
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await generateArticle({
+      userInput,
+      tone,
+      format,
+      language,
+      templateId,
+    });
+    setCurrentArticle(response);
+    return response;
+  } catch (err) {
+    setError(err);
+    console.error('❌ Error generating article:', err);
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const fetchArticleById = async (id) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const article = await getById(id);
+      setCurrentArticle(article);
+      return article;
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al cargar artículo:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const value = {
-    article,
-    activeSectionId,
-    selectedText,
-    setTitle,
-    updateSectionContent,
-    addSection,
-    setActiveSectionId,
-    setSelectedText,
-    generateInitialArticle,
-    rewriteText,
-    aiActions,
-    updateEditorFromGenerated,
-    saveDraft: useCallback(async () => {
-      await contentService.saveDraft(article.id, article);
-    }, [article]),
-    publishArticle: useCallback(async () => {
-      await contentService.publishArticle(article.id);
-      updateArticle({ status: 'published' });
-    }, [article.id, updateArticle])
+  // New function to update the whole article
+  const updateArticle = (updatedArticle) => {
+    setCurrentArticle(updatedArticle);
+  };
+
+  // New function to update a section content by id
+  const updateSectionContent = (sectionId, newContent) => {
+    if (!currentArticle || !currentArticle.sections) return;
+    const updatedSections = currentArticle.sections.map(section => {
+      if (section.id === sectionId) {
+        return { ...section, content: newContent };
+      }
+      return section;
+    });
+    setCurrentArticle({ ...currentArticle, sections: updatedSections });
+  };
+
+  const saveCurrentArticle = async (article) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await saveArticle(article);
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al guardar artículo:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveCurrentAsDraft = async (article) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await saveDraft(article.id, article);
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al guardar como borrador:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const publishCurrentArticle = async (id) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await publishArticle(id);
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al publicar artículo:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteArticleById = async (id) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await deleteArticle(id);
+      setCurrentArticle(null);
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al eliminar artículo:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRecentArticles = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      return await getRecentArticles();
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al cargar artículos recientes:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllArticles = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      return await getAllArticles();
+    } catch (err) {
+      setError(err);
+      console.error('❌ Error al cargar todos los artículos:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setTitle = (newTitle) => {
+    if (!currentArticle) return;
+    setCurrentArticle({ ...currentArticle, title: newTitle });
   };
 
   return (
-    <EditorContext.Provider value={value}>
+    <EditorContext.Provider
+      value={{
+        currentArticle,
+        loading,
+        error,
+        aiActions,
+        generateInitialArticle,
+        fetchArticleById,
+        saveCurrentArticle,
+        saveCurrentAsDraft,
+        publishCurrentArticle,
+        deleteArticleById,
+        fetchRecentArticles,
+        fetchAllArticles,
+        updateArticle,
+        updateSectionContent,
+        setTitle,
+      }}
+    >
       {children}
     </EditorContext.Provider>
   );
-}
-
-export const useEditor = () => {
-  const context = useContext(EditorContext);
-  if (!context) {
-    throw new Error('useEditor must be used within an EditorProvider');
-  }
-  return context;
 };
+
+export const useEditor = () => useContext(EditorContext);
+
+

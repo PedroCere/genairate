@@ -4,24 +4,21 @@ import { useTranslation } from 'react-i18next';
 export default function GenerateBlogModal({ onGenerate, onClose }) {
   const { t } = useTranslation();
   const [topic, setTopic] = useState('');
-  const [tone, setTone] = useState('Informal');
+  const [tone, setTone] = useState('profesional');
   const [language, setLanguage] = useState('es');
 
   const handleGenerate = () => {
-    const mockArticle = {
-      id: Date.now(),
-      title: topic,
-      content: `Artículo generado con tono ${tone} en ${language}`,
-    };
-    onGenerate(mockArticle);
+    if (topic.trim() === '') return;
+    onGenerate({ topic, tone, language });
   };
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-6 max-w-xl w-full mx-auto">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">🧠 Generar artículo con IA</h2>
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        🧠 Generar artículo con IA
+      </h2>
 
       <div className="space-y-4">
-        {/* Tópico */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Tópico / Idea principal
@@ -35,7 +32,6 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
           />
         </div>
 
-        {/* Tono */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Tono
@@ -45,14 +41,13 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
             onChange={(e) => setTone(e.target.value)}
             className="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
           >
-            <option value="Informal">Informal</option>
-            <option value="Formal">Formal</option>
-            <option value="Creativo">Creativo</option>
-            <option value="Profesional">Profesional</option>
+            <option value="profesional">Profesional</option>
+            <option value="creativo">Creativo</option>
+            <option value="seo">SEO</option>
+            <option value="informal">Informal</option>
           </select>
         </div>
 
-        {/* Idioma */}
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
             Idioma
@@ -68,10 +63,9 @@ export default function GenerateBlogModal({ onGenerate, onClose }) {
           </select>
         </div>
 
-        {/* Botón */}
         <button
           onClick={handleGenerate}
-          disabled={!topic}
+          disabled={!topic.trim()}
           className="mt-4 w-full bg-primary text-black dark:text-white font-semibold px-6 py-3 rounded-full hover:bg-cyan-600 transition disabled:opacity-50"
         >
           🚀 Generar artículo

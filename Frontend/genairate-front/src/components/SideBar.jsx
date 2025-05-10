@@ -19,7 +19,7 @@ import {
 } from "react-icons/fa";
 
 const navLinks = [
-  { icon: FaHome, label: "Inicio", path: "/" },
+  { icon: FaHome, label: "Inicio", path: "/home" },
   { icon: FaChartLine, label: "Dashboard", path: "/dashboard" },
   { icon: FaFeatherAlt, label: "Editor", path: "/editor" },
   { icon: FaListUl, label: "Analytics", path: "/analytics" },

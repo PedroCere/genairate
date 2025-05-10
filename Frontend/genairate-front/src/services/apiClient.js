@@ -1,19 +1,41 @@
-const apiClient = {
-  get: async (url) => {
+import axios from 'axios';
 
-    console.warn('apiClient.get called with url:', url);
-    return { data: {} };
+const userServiceClient = axios.create({
+  baseURL: 'http://localhost:8081/api',
+  headers: {
+    'Content-Type': 'application/json',
   },
-  post: async (url, body) => {
+});
 
-    console.warn('apiClient.post called with url:', url, 'body:', body);
-    return { data: { rewrittenText: 'Rewritten text placeholder' } };
+const blogContentClient = axios.create({
+  baseURL: 'http://localhost:8080/content',
+  headers: {
+    'Content-Type': 'application/json',
   },
-  patch: async (url, body) => {
-  
-    console.warn('apiClient.patch called with url:', url, 'body:', body);
-    return { data: {} };
+});
+
+userServiceClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-};
+  return config;
+});
 
-export default apiClient;
+blogContentClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const getUserProfile = () => userServiceClient.get('/user/profile').then(res => res.data);
+export const updateUserProfile = (profile) => userServiceClient.put('/user/profile', profile).then(res => res.data);
+
+export const getUserPreferences = () => userServiceClient.get('/user/preferences').then(res => res.data);
+export const updateUserPreferences = (prefs) => userServiceClient.put('/user/preferences', prefs).then(res => res.data);
+
+export { userServiceClient, blogContentClient };
+
+export default userServiceClient;

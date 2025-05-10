@@ -1,0 +1,19 @@
+
+.tiptap h1 {
+  @apply text-3xl font-bold mt-6 mb-4;
+}
+
+.tiptap h2 {
+  @apply text-2xl font-semibold mt-5 mb-3;
+}
+
+.tiptap p {
+  @apply text-base leading-relaxed mb-4;
+}
+
+.tiptap strong {
+  @apply font-semibold;
+}
+.btn-format {
+  @apply text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition;
+}
