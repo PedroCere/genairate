@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -14,6 +15,7 @@ export function AuthProvider({ children }) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
+        setIsOffline(parsedUser.offline === true);
       } catch (err) {
         console.error('Error parsing user from localStorage:', err);
         localStorage.removeItem('user');
@@ -35,12 +37,14 @@ export function AuthProvider({ children }) {
         tone: 'profesional',
       },
     });
+    setIsOffline(safeUserData.offline === true);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    setIsOffline(false);
   };
 
   const isAuthenticated = () => {
@@ -70,6 +74,7 @@ export function AuthProvider({ children }) {
         logout,
         isAuthenticated,
         updateUserPreferences,
+        isOffline,
       }}
     >
       {children}

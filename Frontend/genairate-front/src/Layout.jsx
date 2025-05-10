@@ -5,10 +5,13 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 import { useFontSize } from './components/FontSizeContext';
+import OfflineBanner from './components/OfflineBanner';
+import { useAuth } from './context/AuthContext';
 
 export default function Layout() {
   const { getFontSizeClass } = useFontSize();
   const [darkMode, setDarkMode] = useState(false);
+  const { isOffline } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
@@ -46,8 +49,8 @@ export default function Layout() {
       <Sidebar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       <div className="flex-1 flex flex-col">
-      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-
+        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        {isOffline && <OfflineBanner />}
         <motion.main
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
