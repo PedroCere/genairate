@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getRecentArticles } from '../services/ContentService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 import meme1 from '../assets/meme1.jpg';
 import meme2 from '../assets/meme2.jpg';
@@ -16,9 +17,31 @@ const languages = ['es', 'en'];
 
 const memeImages = [meme1, meme2, meme3, meme4];
 
+const mockedArticles = [
+  {
+    id: 'offline-1',
+    title: 'Artículo de ejemplo 1',
+    createdAt: new Date().toISOString(),
+    tone: 'informativo',
+    type: 'guía',
+    language: 'es',
+    image: meme1,
+  },
+  {
+    id: 'offline-2',
+    title: 'Artículo de ejemplo 2',
+    createdAt: new Date().toISOString(),
+    tone: 'motivacional',
+    type: 'lista',
+    language: 'es',
+    image: meme2,
+  },
+];
+
 export default function HistoryPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { isOffline } = useAuth();
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
@@ -37,17 +60,22 @@ export default function HistoryPage() {
 
   useEffect(() => {
     setLoading(true);
-    getRecentArticles()
-      .then((data) => {
-        setArticles(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch recent blogs:', error);
-        setArticles([]);
-        setLoading(false);
-      });
-  }, []);
+    if (isOffline) {
+      setArticles(mockedArticles);
+      setLoading(false);
+    } else {
+      getRecentArticles()
+        .then((data) => {
+          setArticles(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch recent blogs:', error);
+          setArticles([]);
+          setLoading(false);
+        });
+    }
+  }, [isOffline]);
 
   useEffect(() => {
     let filtered = articles;
@@ -115,7 +143,7 @@ export default function HistoryPage() {
           filteredArticles.map((article, index) => {
             const articleWithMeme = {
               ...article,
-              image: memeImages[index % memeImages.length],
+              image: article.image || memeImages[index % memeImages.length],
             };
             return (
               <div key={article.id} className="border rounded-md p-4 bg-white dark:bg-gray-800 shadow-sm">

@@ -14,8 +14,14 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { token, user } = await loginService(email, password);
-      login(user, token);
+      const result = await loginService(email, password);
+      // Handle offline user object without token
+      if (result.offline) {
+        login(result, null);
+      } else {
+        const { token, user } = result;
+        login(user, token);
+      }
       navigate('/dashboard'); // ✅ Ir directamente al dashboard
     } catch (err) {
       alert('Credenciales incorrectas');
