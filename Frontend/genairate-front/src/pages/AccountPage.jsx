@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DeactivateAccountModal from '../components/common/modals/DesactivateAccountModal.jsx';
 import { useAuth } from '../context/AuthContext';
+import { getUserProfile } from '../services/authService';
 
 export default function AccountPage() {
   const { t } = useTranslation();
@@ -25,9 +26,16 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (!isOffline) {
-      // TODO: Fetch real user profile data from backend and update user state
-      // Example:
-      // fetchUserProfile().then(data => setUser(data));
+      getUserProfile()
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((error) => {
+          console.error('Failed to load user profile:', error);
+          setUser(initialUser);
+        });
+    } else {
+      setUser(initialUser);
     }
   }, [isOffline]);
 
