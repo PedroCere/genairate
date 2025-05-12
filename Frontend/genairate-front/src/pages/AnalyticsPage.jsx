@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,38 +10,33 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { Eye, BookOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const MOCK_DATA = {
-  views: 42,
-  reads: 10,
-  timeline: [12, 18, 16, 28, 40],
+  views: 124,
+  reads: 42,
+  timeline: [10, 24, 18, 35, 37],
 };
 
 export default function AnalyticsPage() {
+  const { t, i18n } = useTranslation();
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setTimeout(() => setStats(MOCK_DATA), 500); // Simulación
-    };
-    fetchData();
+    setTimeout(() => setStats(MOCK_DATA), 500);
   }, []);
-
-  if (!stats) {
-    return <div className="text-center py-10 text-gray-700 dark:text-gray-300">📊 Cargando métricas...</div>;
-  }
 
   const barData = {
     labels: ['1 May', '2 May', '3 May', '4 May', '5 May'],
     datasets: [
       {
-        label: 'Vistas',
-        data: stats.timeline,
-        backgroundColor: 'rgba(59, 130, 246, 0.8)', // Blue
+        label: t('Views'),
+        data: stats?.timeline || [],
+        backgroundColor: '#60A5FA', // Tailwind blue-400
         borderRadius: 6,
-        barPercentage: 0.6,
+        barThickness: 32,
       },
     ],
   };
@@ -50,6 +45,13 @@ export default function AnalyticsPage() {
     responsive: true,
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.parsed.y} ${t('views').toLowerCase()}`;
+          },
+        },
+      },
     },
     scales: {
       y: {
@@ -68,36 +70,35 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 text-gray-900 dark:text-gray-100">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">📈 Estadísticas de tus artículos</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">
-          Período: 1–5 de Mayo, 2025 (UTC) ・ Actualizado cada hora
+    <div className="max-w-3xl mx-auto px-6 py-10 text-gray-900 dark:text-gray-100">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-semibold">{t('YourAnalytics')}</h1>
+        <p className="text-sm text-gray-400">
+          {t('LastUpdated')} · {new Date().toLocaleDateString(i18n.language)}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-md flex items-center gap-4 border border-gray-200 dark:border-gray-700">
-          <Eye size={28} className="text-blue-500" />
-          <div>
-            <p className="text-4xl font-bold">{stats.views}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Visualizaciones totales</p>
-          </div>
+      <div className="flex justify-between gap-4 text-center mb-6">
+        <div className="flex-1 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+          <Eye className="mx-auto mb-1 text-blue-500" size={24} />
+          <p className="text-2xl font-bold">{stats?.views || 0}</p>
+          <p className="text-sm text-gray-500">{t('TotalViews')}</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-md flex items-center gap-4 border border-gray-200 dark:border-gray-700">
-          <BookOpen size={28} className="text-green-500" />
-          <div>
-            <p className="text-4xl font-bold">{stats.reads}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Lecturas completas</p>
-          </div>
+        <div className="flex-1 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+          <BookOpen className="mx-auto mb-1 text-green-500" size={24} />
+          <p className="text-2xl font-bold">{stats?.reads || 0}</p>
+          <p className="text-sm text-gray-500">{t('TotalReads')}</p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold mb-4">Tendencia diaria de vistas</h3>
-        <Bar data={barData} options={options} height={300} />
-        <div className="text-right text-xs text-gray-400 mt-2">● Vistas por día</div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+        <h3 className="text-sm font-medium mb-2">{t('ViewsOverTime')}</h3>
+        {stats ? (
+          <Bar data={barData} options={options} height={220} />
+        ) : (
+          <p className="text-center text-gray-400">{t('Loading')}...</p>
+        )}
       </div>
     </div>
   );
