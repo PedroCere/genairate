@@ -29,6 +29,7 @@ import PreferencesSection from './components/preferences/PreferencesSection';
 import Layout from './Layout';
 import HomePage from './pages/HomePage';
 import ErrorPage from './components/ErrorPage';
+import NotificationsSection from './components/preferences/NotificationsSection';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
@@ -114,7 +115,7 @@ function App() {
             { index: true, element: <PreferencesSection /> },
             { path: 'account', element: <AccountPage /> },
             { path: 'preferences', element: <PreferencesSection /> },
-            { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
+            { path: 'notifications', element: <NotificationsSection /> },
             { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
           ]
         }

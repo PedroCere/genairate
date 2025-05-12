@@ -65,5 +65,15 @@
   "articlesByType": "Artículos por tipo",
   "avgWordsPerArticle": "Palabras promedio por artículo",
   "mostUsedTone": "Tono más usado"
-  }
+  },
+  "Notifications": {
+"Notifications": "Notificaciones",
+"EmailNotifications": "Notificaciones por correo electrónico",
+"PushNotifications": "Notificaciones push",
+"NewsletterSubscription": "Suscripción al boletín",
+"SaveNotificationPreferences": "Guardar preferencias de notificación",
+"NotificationPreferencesSaved": "Preferencias de notificación guardadas",
+"LoadingNotificationPreferences": "Cargando preferencias de notificación",
+"SettingsTitle": "Configuración"
+}
   }

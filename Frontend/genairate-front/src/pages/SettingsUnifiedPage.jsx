@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AccountPage from './AccountPage';
 import PreferencesSection from '../components/preferences/PreferencesSection';
+import NotificationsSection from '../components/preferences/NotificationsSection';
 import { useTranslation } from 'react-i18next';
 
 const tabs = ['Account', 'Preferences', 'Notifications', 'Security'];
@@ -15,6 +16,8 @@ export default function SettingsUnifiedPage() {
         return <AccountPage embedded />;
       case 'Preferences':
         return <PreferencesSection />;
+      case 'Notifications':
+        return <NotificationsSection />;
       default:
         return <div className="text-gray-600 dark:text-gray-400 p-6">Próximamente</div>;
     }
