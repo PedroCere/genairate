@@ -14,6 +14,14 @@ const blogContentClient = axios.create({
   },
 });
 
+const templateServiceClient = axios.create({
+  baseURL: import.meta.env.VITE_BLOG_CONTENT_URL || 'http://localhost:8082/',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+
 userServiceClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -36,6 +44,8 @@ export const updateUserProfile = (profile) => userServiceClient.put('/user/profi
 export const getUserPreferences = () => userServiceClient.get('/user/preferences').then(res => res.data);
 export const updateUserPreferences = (prefs) => userServiceClient.put('/user/preferences', prefs).then(res => res.data);
 
-export { userServiceClient, blogContentClient };
+export { userServiceClient, blogContentClient, templateServiceClient };
 
 export default userServiceClient;
+
+
