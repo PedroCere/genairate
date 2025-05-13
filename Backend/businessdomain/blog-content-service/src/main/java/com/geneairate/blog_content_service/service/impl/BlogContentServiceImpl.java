@@ -35,8 +35,13 @@ public class BlogContentServiceImpl implements BlogContentService {
 
     @Override
     public ContentResponse generarContenido(ContentRequest request) {
-        String userId = "user-dev-001";
-        PromptStyleTemplate template = templateClient.getDefaultTemplate(userId);
+        PromptStyleTemplate template;
+        if (request.getTemplateId() != null) {
+            template = templateClient.getTemplateById(request.getTemplateId());
+        } else {
+            String userId = "user-dev-001";
+            template = templateClient.getDefaultTemplate(userId);
+        }
 
         String prompt = String.format("""
                                         [INST]
