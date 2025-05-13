@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getImagesByKeyword } from '../services/unsplashService';
+import { getImagesByKeyword } from '../services/UnsplashService';
 
 const ImageSuggestions = ({ keywords = [] }) => {
   const [images, setImages] = useState([]);
