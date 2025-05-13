@@ -11,12 +11,12 @@ import lombok.*;
 @Builder
 public class ContentRequest {
 
-    @NotBlank
+    @NotBlank(message = "User input cannot be blank")
     @Column(name = "user_input")
     private String userInput;
 
-    private String tone = "profesional";
-    private String format = "lista";
-    private String language = "es";
-    private Long templateId;
+    private String tone;     // opcional si usás template
+    private String format;   // idem
+    private String language; // idem
+    private Long templateId; // opcional si se usa por defecto
 }

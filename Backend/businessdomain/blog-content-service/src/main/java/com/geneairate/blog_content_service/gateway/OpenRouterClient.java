@@ -64,17 +64,6 @@ public class OpenRouterClient {
         return generarPrediccionConPrompt(prompt);
     }
 
-    public ContentResponse traducirContenido(ContentRequest request) {
-        String prompt = String.format("""
-            [INST]
-            Traducí el siguiente texto al idioma %s:
-            \"%s\"
-            IMPORTANTE: Respondé solo en JSON.
-            [/INST]
-        """, request.getLanguage(), request.getUserInput());
-        return generarPrediccionConPrompt(prompt);
-    }
-
     private String generarRawRespuesta(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
