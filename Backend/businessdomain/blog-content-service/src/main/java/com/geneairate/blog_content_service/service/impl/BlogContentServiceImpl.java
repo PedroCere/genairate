@@ -96,6 +96,7 @@ public class BlogContentServiceImpl implements BlogContentService {
                 .metaDescription(response.getMetaDescription())
                 .isDraft(true)
                 .createdAt(System.currentTimeMillis())
+                .userId(1L) // Set default userId for now
                 .build();
 
         repository.save(article);
@@ -245,23 +246,46 @@ public class BlogContentServiceImpl implements BlogContentService {
 
     @Override
     public void guardarArticulo(ContentResponse content) {
-        BlogArticle article = BlogArticle.builder()
-                .title(content.getTitle())
-                .introduction(content.getIntroduction())
-                .subtitle1(content.getSubtitle1())
-                .content1(content.getContent1())
-                .subtitle2(content.getSubtitle2())
-                .content2(content.getContent2())
-                .subtitle3(content.getSubtitle3())
-                .content3(content.getContent3())
-                .conclusion(content.getConclusion())
-                .keywords(content.getKeywords())
-                .metaDescription(content.getMetaDescription())
-                .isDraft(false)
-                .createdAt(System.currentTimeMillis())
-                .build();
+        if (content.getId() != null) {
+            BlogArticle article = repository.findById(content.getId())
+                    .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
 
-        repository.save(article);
+            article.setTitle(content.getTitle());
+            article.setIntroduction(content.getIntroduction());
+            article.setSubtitle1(content.getSubtitle1());
+            article.setContent1(content.getContent1());
+            article.setSubtitle2(content.getSubtitle2());
+            article.setContent2(content.getContent2());
+            article.setSubtitle3(content.getSubtitle3());
+            article.setContent3(content.getContent3());
+            article.setConclusion(content.getConclusion());
+            article.setKeywords(content.getKeywords());
+            article.setMetaDescription(content.getMetaDescription());
+            article.setDraft(false);
+            // Do not update createdAt on edit
+            article.setUserId(1L); // Set default userId for now
+
+            repository.save(article);
+        } else {
+            BlogArticle article = BlogArticle.builder()
+                    .title(content.getTitle())
+                    .introduction(content.getIntroduction())
+                    .subtitle1(content.getSubtitle1())
+                    .content1(content.getContent1())
+                    .subtitle2(content.getSubtitle2())
+                    .content2(content.getContent2())
+                    .subtitle3(content.getSubtitle3())
+                    .content3(content.getContent3())
+                    .conclusion(content.getConclusion())
+                    .keywords(content.getKeywords())
+                    .metaDescription(content.getMetaDescription())
+                    .isDraft(false)
+                    .createdAt(System.currentTimeMillis())
+                    .userId(1L) // Set default userId for now
+                    .build();
+
+            repository.save(article);
+        }
     }
 
     @Override

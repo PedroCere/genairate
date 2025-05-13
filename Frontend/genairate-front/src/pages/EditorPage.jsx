@@ -42,14 +42,17 @@ export default function EditorPage() {
     }
   }, [user]);
 
+  const hasSetInitialContent = useRef(false);
+
   useEffect(() => {
-    if (id) {
+    if (id && !hasSetInitialContent.current) {
       const loadArticle = async () => {
         try {
           const articleData = await getById(id);
           updateArticle(articleData);
           const html = combineArticleContent(articleData);
           setEditorContent(html);
+          hasSetInitialContent.current = true;
         } catch (error) {
           console.error('Error loading article:', error);
         } finally {
@@ -145,7 +148,12 @@ export default function EditorPage() {
           <TipTapEditor
             ref={editorRef}
             content={editorContent}
-            onUpdate={(newContent) => setEditorContent(newContent)}
+            onUpdate={(newContent) => {
+              setEditorContent(newContent);
+              if (currentArticle?.sections?.length > 0) {
+                updateSectionContent(currentArticle.sections[0].id, newContent);
+              }
+            }}
           />
         </div>
         <FormatSidebar editor={editorRef} />

@@ -115,7 +115,7 @@ export default function HistoryPage() {
           </select>
           <select name="language" value={filters.language} onChange={handleChange} className="input">
             <option value="">{t('Idioma')}</option>
-            {languages.map((l) => <option key={l} value={l}>{l.toUpperCase()}</option>)}
+            {languages.map((l) => <option key={l} value={l}>{(l || '').toUpperCase()}</option>)}
           </select>
         </div>
       </details>
@@ -136,7 +136,7 @@ export default function HistoryPage() {
               <div className="p-4 flex flex-col justify-between flex-grow">
                 <h2 className="text-lg font-semibold mb-1">{article.title}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  {new Date(article.createdAt).toLocaleDateString()} · {article.tone} · {article.language.toUpperCase()}
+                  {new Date(article.createdAt).toLocaleDateString()} · {article.tone} · {(article.language || '').toUpperCase()}
                 </p>
                 <div className="mt-auto flex justify-between gap-2 text-sm">
                   <button onClick={() => handleEdit(article.id)} className="text-green-600 hover:underline">✏️ Editar</button>

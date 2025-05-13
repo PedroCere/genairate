@@ -44,7 +44,7 @@ export default function EditorToolbar({ onGenerate, selectedTemplateId }) {
 
   const handleSaveDraft = async () => {
     try {
-      await saveDraft();
+      await saveDraft(article);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (error) {

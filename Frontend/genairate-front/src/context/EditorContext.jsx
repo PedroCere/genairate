@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from 'react';
 import {
   generateArticle,
@@ -15,6 +16,25 @@ import {
 } from '../services/ContentService';
 
 const EditorContext = createContext();
+
+const mapToContentResponse = (article) => {
+  if (!article) return null;
+
+  return {
+    id: article.id,
+    title: article.title || '',
+    introduction: article.sections?.[0]?.content || '',
+    subtitle1: article.sections?.[1]?.heading || '',
+    content1: article.sections?.[1]?.content || '',
+    subtitle2: article.sections?.[2]?.heading || '',
+    content2: article.sections?.[2]?.content || '',
+    subtitle3: article.sections?.[3]?.heading || '',
+    content3: article.sections?.[3]?.content || '',
+    conclusion: article.sections?.[4]?.content || '',
+    keywords: article.keywords ?? [],
+    metaDescription: article.metaDescription || ''
+  };
+};
 
 export const EditorProvider = ({ children }) => {
   const [currentArticle, setCurrentArticle] = useState(null);
@@ -106,11 +126,25 @@ export const EditorProvider = ({ children }) => {
     setCurrentArticle({ ...currentArticle, sections: updatedSections });
   };
 
-  const saveCurrentArticle = async (article) => {
+  // Example handler to sync editor content with currentArticle sections
+  const handleContentChange = (newContent) => {
+    setEditorContent(newContent);
+    if (currentArticle?.sections?.length > 0) {
+      updateSectionContent(currentArticle.sections[0].id, newContent);
+    }
+  };
+
+  const saveCurrentArticle = async () => {
     setLoading(true);
     setError(null);
     try {
-      await saveArticle(article);
+      if (!currentArticle || !currentArticle.id) {
+        throw new Error('Artículo inválido o sin ID');
+      }
+      const content = mapToContentResponse(currentArticle);
+      if (!content) throw new Error('Artículo vacío o malformado');
+      console.log('Artículo que se va a guardar:', content);
+      await saveArticle(content);
     } catch (err) {
       setError(err);
       console.error('❌ Error al guardar artículo:', err);
@@ -124,7 +158,13 @@ export const EditorProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      await saveDraft(article.id, article);
+      const content = mapToContentResponse(article);
+      // Removed strict validation to allow saving incomplete drafts
+      // if (!content.title || !content.introduction || !content.subtitle1) {
+      //   throw new Error('❌ Contenido incompleto antes de guardar.');
+      // }
+      console.log("📤 Enviando artículo como draft:", content);
+      await saveDraft(article.id, content);
     } catch (err) {
       setError(err);
       console.error('❌ Error al guardar como borrador:', err);
@@ -138,6 +178,9 @@ export const EditorProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
+      if (!currentArticle?.title?.trim() || !currentArticle?.conclusion?.trim()) {
+        throw new Error("⚠️ Completa título y conclusión antes de publicar.");
+      }
       await publishArticle(id);
     } catch (err) {
       setError(err);
@@ -147,6 +190,7 @@ export const EditorProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
 
   const deleteArticleById = async (id) => {
     setLoading(true);
