@@ -34,7 +34,7 @@ export default function OnboardingPage() {
   const handleContinue = () => {
     // Aquí podrías enviar al backend o contexto
     console.log("Temas seleccionados:", selected);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
