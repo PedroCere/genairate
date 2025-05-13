@@ -24,6 +24,8 @@ import StoriesPage from './pages/StoriesPage';
 import HelpPage from './pages/HelpPage';
 import ArticleViewPage from './pages/ArticleViewPage';
 
+import OnboardingPage from './components/OnboardingPage';
+
 import SettingsLayout from './components/settings/SettingsLayout';
 import PreferencesSection from './components/preferences/PreferencesSection';
 import Layout from './Layout';
@@ -108,6 +110,7 @@ function App() {
         { path: 'stories', element: <StoriesPage /> },
         { path: 'help', element: <HelpPage /> },
         { path: 'article/:id', element: <ArticleViewPage /> },
+        { path: 'onboarding', element: <OnboardingPage /> },
         {
           path: 'settings',
           element: <SettingsLayout />,
