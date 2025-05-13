@@ -2,75 +2,95 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PlusCircle } from 'lucide-react';
 
-const mockedTemplates = [
-  {
-    id: '1',
-    name: 'Guía Básica',
-    sectionsCount: 3,
-    articleType: 'guía',
-    textStyle: 'formal',
-  },
-  {
-    id: '2',
-    name: 'Lista de Consejos',
-    sectionsCount: 5,
-    articleType: 'lista',
-    textStyle: 'informal',
-  },
-  {
-    id: '3',
-    name: 'Análisis Profundo',
-    sectionsCount: 4,
-    articleType: 'análisis',
-    textStyle: 'analítico',
-  },
-];
+import { useAuth } from '../context/AuthContext';
+import * as TemplateService from '../services/TemplateService';
 
-const articleTypes = ['guía', 'lista', 'análisis'];
+
+const articleLengths = ['corto', 'mediano', 'largo'];
 const textStyles = ['formal', 'informal', 'analítico'];
+const languages = ['español', 'ingles'];
 
 export default function TemplatesPage() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [templates, setTemplates] = useState([]);
-  const [form, setForm] = useState({
+
+  const emptyForm = {
     id: null,
     name: '',
-    sectionsCount: 1,
-    articleType: '',
-    textStyle: '',
-  });
+    tone: '',
+    language: '',
+    length: '',
+    extraInstructions: '',
+  };
+
+  const [form, setForm] = useState(emptyForm);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setTemplates(mockedTemplates);
-  }, []);
+    if (user?.id) {
+      setLoading(true);
+      TemplateService.getTemplatesByUser(user.id)
+        .then((data) => setTemplates(data))
+        .catch((err) => {
+          console.error('Error loading templates:', err);
+          alert(t('ErrorLoadingTemplates'));
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [user, t]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === 'sectionsCount' ? Number(value) : value,
+      [name]: value,
     }));
   };
 
   const handleEdit = (template) => {
-    setForm(template);
+    setForm({
+      id: template.id || null,
+      name: template.name || '',
+      tone: template.tone || '',
+      language: template.language || '',
+      length: template.length || '',
+      extraInstructions: template.extraInstructions || '',
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSave = () => {
-    if (!form.name || !form.articleType || !form.textStyle || form.sectionsCount < 1) {
+    if (!form.name || !form.tone || !form.language || !form.length) {
       alert(t('PleaseCompleteAllFields'));
       return;
     }
-
-    if (form.id) {
-      setTemplates((prev) => prev.map((t) => (t.id === form.id ? { ...form } : t)));
-    } else {
-      const newTemplate = { ...form, id: Date.now().toString() };
-      setTemplates((prev) => [...prev, newTemplate]);
+    if (!user?.id) {
+      alert(t('UserNotLoggedIn'));
+      return;
     }
 
-    setForm({ id: null, name: '', sectionsCount: 1, articleType: '', textStyle: '' });
+    setLoading(true);
+    const action = form.id
+      ? TemplateService.updateTemplate(form.id, user.id, form)
+      : TemplateService.createTemplate(user.id, form);
+
+    action
+      .then((result) => {
+        if (!form.id) {
+          setTemplates((prev) => [...prev, { ...form, id: result }]);
+        } else {
+          setTemplates((prev) =>
+            prev.map((t) => (t.id === form.id ? { ...form } : t))
+          );
+        }
+        setForm(emptyForm);
+      })
+      .catch((err) => {
+        console.error('Error saving template:', err);
+        alert(form.id ? t('ErrorUpdatingTemplate') : t('ErrorCreatingTemplate'));
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -80,9 +100,11 @@ export default function TemplatesPage() {
         {t('TemplatesPageTitle')}
       </h1>
 
-      {/* Editor de Plantilla */}
+      {/* Template Form */}
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 mb-10 shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">{form.id ? t('EditTemplate') : t('CreateTemplate')}</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {form.id ? t('EditTemplate') : t('CreateTemplate')}
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             type="text"
@@ -90,57 +112,96 @@ export default function TemplatesPage() {
             placeholder={t('TemplateName')}
             value={form.name}
             onChange={handleInputChange}
-            className="input"
+            disabled={loading}
+            className="input bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded px-4 py-2"
           />
-          <input
-            type="number"
-            name="sectionsCount"
-            min={1}
-            placeholder={t('SectionsCount')}
-            value={form.sectionsCount}
+          <select
+            name="tone"
+            value={form.tone}
             onChange={handleInputChange}
-            className="input"
-          />
-          <select name="articleType" value={form.articleType} onChange={handleInputChange} className="input">
-            <option value="">{t('SelectType')}</option>
-            {articleTypes.map((type) => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-          <select name="textStyle" value={form.textStyle} onChange={handleInputChange} className="input">
+            disabled={loading}
+            className="input bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded px-4 py-2"
+          >
             <option value="">{t('SelectStyle')}</option>
             {textStyles.map((style) => (
               <option key={style} value={style}>{style}</option>
             ))}
           </select>
+          <select
+            name="language"
+            value={form.language}
+            onChange={handleInputChange}
+            disabled={loading}
+            className="input bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded px-4 py-2"
+          >
+            <option value="">{t('SelectLanguage')}</option>
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>{lang}</option>
+            ))}
+          </select>
+          <select
+            name="length"
+            value={form.length}
+            onChange={handleInputChange}
+            disabled={loading}
+            className="input bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded px-4 py-2"
+          >
+            <option value="">{t('SelectLength')}</option>
+            {articleLengths.map((len) => (
+              <option key={len} value={len}>{len}</option>
+            ))}
+          </select>
+          <input
+            type="text"
+            name="extraInstructions"
+            placeholder={t('ExtraInstructions')}
+            value={form.extraInstructions}
+            onChange={handleInputChange}
+            disabled={loading}
+            className="input bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 col-span-1 sm:col-span-2"
+          />
         </div>
 
         <button
           onClick={handleSave}
-          className="mt-6 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition"
+          className="mt-6 bg-primary bg-white dark:bg-gray-900 border px-6 py-2 rounded-lg hover:bg-primary/90 transition"
+          disabled={loading}
         >
           {form.id ? t('UpdateTemplate') : t('SaveTemplate')}
         </button>
       </div>
 
-      {/* Lista de Plantillas */}
+      {/* Template List */}
       <div>
         <h2 className="text-xl font-semibold mb-4">{t('TemplatesList')}</h2>
-        {templates.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-400">{t('NoTemplatesAvailable')}</p>
+        {loading ? (
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            {t('LoadingTemplates')}
+          </p>
+        ) : templates.length === 0 ? (
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            {t('NoTemplatesAvailable')}
+          </p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map((template) => (
-              <div key={template.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow hover:shadow-md transition">
-                <h3 className="text-lg font-semibold mb-2">{template.name}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  📄 {t('Sections')}: {template.sectionsCount}<br />
-                  ✏️ {t('Type')}: {template.articleType}<br />
-                  🧠 {t('TextStyle')}: {template.textStyle}
+              <div
+                key={template.id}
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow hover:shadow-md transition"
+              >
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                  {template.name}
+                </h3>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                  🧠 {t('TextStyle')}: {template.tone || '—'} <br />
+                  ✏️ {t('Length')}: {template.length || '—'} <br />
+                  🌍 {t('Language')}: {template.language || '—'} <br />
+                  💬 {t('Instructions')}: {template.extraInstructions || t('None')}
                 </p>
                 <button
                   onClick={() => handleEdit(template)}
                   className="mt-3 text-blue-600 hover:underline text-sm"
+                  disabled={loading}
                 >
                   ✏️ {t('Edit')}
                 </button>

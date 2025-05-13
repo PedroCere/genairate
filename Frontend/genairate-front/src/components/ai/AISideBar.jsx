@@ -7,9 +7,19 @@ export default function AISideBar() {
   const { t } = useTranslation();
   const [targetLanguage, setTargetLanguage] = useState('en');
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     if (selectedText) {
-      aiActions.translateText(selectedText, targetLanguage);
+      try {
+        const translated = await aiActions.translateText(selectedText, targetLanguage);
+        if (translated && activeSectionId) {
+          updateSectionContent(activeSectionId, translated);
+        } else {
+          alert(t('TranslationFailed'));
+        }
+      } catch (error) {
+        console.error('Translation error:', error);
+        alert(t('TranslationFailed'));
+      }
     } else {
       alert(t('SelectTextToTranslate'));
     }

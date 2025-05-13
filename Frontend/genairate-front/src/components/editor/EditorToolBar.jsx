@@ -3,7 +3,7 @@ import { useEditor } from '../../context/EditorContext';
 import GenerateBlogModal from '../common/modals/GenerateBlogModal';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-export default function EditorToolbar({ onGenerate }) {
+export default function EditorToolbar({ onGenerate, selectedTemplateId }) {
   const {
     currentArticle: article,
     setTitle,
@@ -23,14 +23,14 @@ export default function EditorToolbar({ onGenerate }) {
       const userInput = topic;
 
       if (onGenerate && topic) {
-        await onGenerate({ userInput, tone, language });
+        await onGenerate({ userInput, tone, language, templateId: selectedTemplateId });
       } else {
         await generateInitialArticle({
           userInput,
           tone,
           language,
           format: 'lista',
-          templateId: 1,
+          templateId: selectedTemplateId,
         });
       }
 
@@ -44,7 +44,7 @@ export default function EditorToolbar({ onGenerate }) {
 
   const handleSaveDraft = async () => {
     try {
-      await saveDraft();
+      await saveDraft(article);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (error) {
@@ -63,7 +63,6 @@ export default function EditorToolbar({ onGenerate }) {
             placeholder="Título del artículo"
             className="bg-transparent text-2xl font-bold text-text placeholder-muted focus:outline-none"
           />
-
           <select
             value={article?.tone || 'profesional'}
             onChange={(e) => updateArticle({ ...article, tone: e.target.value })}
@@ -98,11 +97,7 @@ export default function EditorToolbar({ onGenerate }) {
             className="flex items-center justify-center bg-secondary text-background px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors"
             disabled={loadingGenerate}
           >
-            {loadingGenerate ? (
-              <LoadingSpinner size="sm" />
-            ) : (
-              '🤖 Blog automático'
-            )}
+            {loadingGenerate ? <LoadingSpinner size="sm" /> : '🤖 Blog automático'}
           </button>
         </div>
       </div>

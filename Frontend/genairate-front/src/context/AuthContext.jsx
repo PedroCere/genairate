@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 
-    if (storedToken && storedUser) {
+    if (storedToken && storedUser && storedUser !== 'undefined') {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
@@ -20,7 +20,15 @@ export function AuthProvider({ children }) {
         console.error('Error parsing user from localStorage:', err);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        setUser(null);
+        setIsOffline(false);
       }
+    } else {
+      // Clear invalid or missing user/token data
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsOffline(false);
     }
 
     setLoading(false);
