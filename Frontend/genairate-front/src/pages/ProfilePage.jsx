@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import fondoVideo from '../assets/fondo2.mp4';
 import { getUserProfile, updateUserProfile } from '../services/apiClient';
+import { AuthContext } from '../context/AuthContext';
 
 const userStories = [
   { id: 1, title: 'Cómo escribir mejor con IA', date: '2024-05-01', views: 300, cover: '/src/assets/blog1.jpg', type: 'blog' },
@@ -23,6 +24,7 @@ const testimonials = [
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { isOffline } = useContext(AuthContext);
   const [sortBy, setSortBy] = useState('recent');
   const [filterBy, setFilterBy] = useState('all');
   const [profile, setProfile] = useState(null);
@@ -33,14 +35,14 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        const data = await getUserProfile();
+      if (isOffline) {
+        // Provide mock profile data when offline
         setProfile({
-          name: data.username || '',
-          username: data.username || '',
-          bio: data.description || '',
+          name: 'Modo Offline',
+          username: 'offline_user',
+          bio: 'Estás en modo sin conexión',
           avatar: '/src/assets/profile6.jpg',
-          location: data.location || '',
+          location: '',
           profession: '',
           twitter: '',
           linkedin: '',
@@ -48,16 +50,36 @@ export default function ProfilePage() {
           following: 0,
           isCurrentUser: true
         });
-        setEditDescription(data.description || '');
-        setEditLocation(data.location || '');
-      } catch (error) {
-        console.error('Failed to fetch user profile:', error);
-      } finally {
+        setEditDescription('Estás en modo sin conexión');
+        setEditLocation('');
         setLoading(false);
+      } else {
+        try {
+          const data = await getUserProfile();
+          setProfile({
+            name: data.username || '',
+            username: data.username || '',
+            bio: data.description || '',
+            avatar: '/src/assets/profile6.jpg',
+            location: data.location || '',
+            profession: '',
+            twitter: '',
+            linkedin: '',
+            followers: 0,
+            following: 0,
+            isCurrentUser: true
+          });
+          setEditDescription(data.description || '');
+          setEditLocation(data.location || '');
+        } catch (error) {
+          console.error('Failed to fetch user profile:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
     fetchProfile();
-  }, []);
+  }, [isOffline]);
 
   const handleSave = async () => {
     try {

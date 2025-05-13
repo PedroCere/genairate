@@ -10,11 +10,24 @@ export const register = async (name, email, password) => {
 };
 
 export const login = async (email, password) => {
-  const res = await apiClient.post('/auth/login', {
-    email,
-    password,
-  });
-  return res.data;
+  try {
+    const res = await apiClient.post('/auth/login', {
+      email,
+      password,
+    });
+    return res.data;
+  } catch (error) {
+    if (error.message.includes('Network Error') || error.code === 'ECONNABORTED') {
+      return {
+        id: 'offline',
+        name: 'Modo Offline',
+        email: 'offline@genairate.com',
+        token: null,
+        offline: true,
+      };
+    }
+    throw error;
+  }
 };
 
 export const getUserProfile = async () => {

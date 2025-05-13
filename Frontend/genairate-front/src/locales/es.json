@@ -64,6 +64,25 @@
   "lengthPerWeek": "Longitud por semana (palabras)",
   "articlesByType": "Artículos por tipo",
   "avgWordsPerArticle": "Palabras promedio por artículo",
-  "mostUsedTone": "Tono más usado"
-  }
+  "mostUsedTone": "Tono más usado",
+  "YourAnalytics": "Tus estadísticas",
+  "TotalViews": "Visualizaciones",
+  "TotalReads": "Lecturas",
+  "Views": "Vistas",
+  "views": "vistas",
+  "ViewsOverTime": "Vistas a lo largo del tiempo",
+  "Loading": "Cargando",
+  "LastUpdated": "Última actualización"
+
+  },
+  "Notifications": {
+"Notifications": "Notificaciones",
+"EmailNotifications": "Notificaciones por correo electrónico",
+"PushNotifications": "Notificaciones push",
+"NewsletterSubscription": "Suscripción al boletín",
+"SaveNotificationPreferences": "Guardar preferencias de notificación",
+"NotificationPreferencesSaved": "Preferencias de notificación guardadas",
+"LoadingNotificationPreferences": "Cargando preferencias de notificación",
+"SettingsTitle": "Configuración"
+}
   }

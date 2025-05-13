@@ -17,7 +17,7 @@ export default function RegisterPage() {
     try {
       const { token, user } = await registerService(name, email, password);
       login(user, token);
-      navigate('/dashboard'); // 🔁 Redirige directamente a dashboard
+      navigate('/onboarding'); 
     } catch (err) {
       alert('Error al registrarse. Revisa los datos o intenta más tarde.');
       console.error(err);

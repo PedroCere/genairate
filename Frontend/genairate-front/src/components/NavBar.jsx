@@ -22,20 +22,30 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const { logout } = useContext(AuthContext);
+  const { logout, isOffline } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    getUserProfile()
-      .then((profile) => {
-        setUserProfile(profile);
-      })
-      .catch((error) => {
-        console.error("Failed to load user profile:", error);
+    if (!isOffline) {
+      getUserProfile()
+        .then((profile) => {
+          setUserProfile(profile);
+        })
+        .catch((error) => {
+          console.error("Failed to load user profile:", error);
+          setUserProfile(null);
+        });
+    } else {
+      // Provide mock user profile data when offline
+      setUserProfile({
+        username: "offline_user",
+        name: "Modo Offline",
+        email: "offline@genairate.com",
       });
-  }, []);
+    }
+  }, [isOffline]);
 
   const toggleDropdown = () => setMenuOpen(!menuOpen);
   const toggleLangDropdown = () => setLangMenuOpen(!langMenuOpen);

@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 const userServiceClient = axios.create({
-  baseURL: 'http://localhost:8081/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 const blogContentClient = axios.create({
-  baseURL: 'http://localhost:8080/content',
+  baseURL: import.meta.env.VITE_BLOG_CONTENT_URL || 'http://localhost:8080/content',
   headers: {
     'Content-Type': 'application/json',
   },

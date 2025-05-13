@@ -24,11 +24,14 @@ import StoriesPage from './pages/StoriesPage';
 import HelpPage from './pages/HelpPage';
 import ArticleViewPage from './pages/ArticleViewPage';
 
+import OnboardingPage from './components/OnboardingPage';
+
 import SettingsLayout from './components/settings/SettingsLayout';
 import PreferencesSection from './components/preferences/PreferencesSection';
 import Layout from './Layout';
 import HomePage from './pages/HomePage';
 import ErrorPage from './components/ErrorPage';
+import NotificationsSection from './components/preferences/NotificationsSection';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
@@ -107,6 +110,7 @@ function App() {
         { path: 'stories', element: <StoriesPage /> },
         { path: 'help', element: <HelpPage /> },
         { path: 'article/:id', element: <ArticleViewPage /> },
+        { path: 'onboarding', element: <OnboardingPage /> },
         {
           path: 'settings',
           element: <SettingsLayout />,
@@ -114,7 +118,7 @@ function App() {
             { index: true, element: <PreferencesSection /> },
             { path: 'account', element: <AccountPage /> },
             { path: 'preferences', element: <PreferencesSection /> },
-            { path: 'notifications', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
+            { path: 'notifications', element: <NotificationsSection /> },
             { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
           ]
         }

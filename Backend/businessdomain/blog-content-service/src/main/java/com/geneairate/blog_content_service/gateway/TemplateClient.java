@@ -10,4 +10,7 @@ public interface TemplateClient {
 
     @GetMapping("/api/v1/templates/{id}")
     PromptStyleTemplate getTemplateById(@PathVariable("id") Long id);
+
+    @GetMapping("/api/v1/templates/default/{userId}")
+    PromptStyleTemplate getDefaultTemplate(@PathVariable("userId") String userId);
 }
