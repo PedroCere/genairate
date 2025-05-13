@@ -1,8 +1,10 @@
 package com.geneairate.template_service.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class PromptStyleTemplateRequest {
 
     private String name;

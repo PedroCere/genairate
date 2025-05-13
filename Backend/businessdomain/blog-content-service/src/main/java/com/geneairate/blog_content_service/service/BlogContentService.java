@@ -1,7 +1,6 @@
 package com.geneairate.blog_content_service.service;
 
-import com.geneairate.blog_content_service.dto.ContentRequest;
-import com.geneairate.blog_content_service.dto.ContentResponse;
+import com.geneairate.blog_content_service.dto.*;
 import com.geneairate.blog_content_service.model.BlogArticle;
 
 import java.util.List;
@@ -10,13 +9,13 @@ public interface BlogContentService {
 
     ContentResponse generarContenido(ContentRequest request);
 
-    ContentResponse reescribirTexto(ContentRequest request);
+    ContentResponse reescribirTexto(ModifyContentRequest request);
 
     ContentResponse resumirContenido(ContentRequest request);
 
     ContentResponse corrigirTexto(ContentRequest request);
 
-    ContentResponse traducirContenido(ContentRequest request);
+    ContentResponse traducirContenido(TranslateRequest request);
 
     ContentResponse obtenerPorId(Long id);
 
@@ -27,4 +26,9 @@ public interface BlogContentService {
     List<ContentResponse> obtenerRecientes();
 
     List<ContentResponse> getAll();
+
+    void partialUpdate(Long id, BlogArticlePatchRequest patch);
+
+    public void fullUpdate(Long id, ContentResponse content);
+
 }

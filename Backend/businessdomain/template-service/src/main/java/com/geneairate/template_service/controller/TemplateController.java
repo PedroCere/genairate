@@ -45,4 +45,10 @@ public class TemplateController {
         templateService.deleteTemplate(id, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/default/{userId}")
+    public ResponseEntity<PromptStyleTemplate> getDefaultTemplate(@PathVariable String userId) {
+        return ResponseEntity.ok(templateService.getDefaultTemplateForUser(userId));
+    }
+
 }
