@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PlusCircle } from 'lucide-react';
+
 import { useAuth } from '../context/AuthContext';
 import * as TemplateService from '../services/TemplateService';
+
 
 const articleLengths = ['corto', 'mediano', 'largo'];
 const textStyles = ['formal', 'informal', 'analítico'];

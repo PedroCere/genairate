@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEditor } from '../context/EditorContext';
 import EditorToolbar from '../components/editor/EditorToolBar';
-import AiSideBar from '../components/ai/AiSideBar';
+import AISideBar from '../components/ai/AISideBar';
 import TipTapEditor from '../components/editor/TipTapEditor';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ImageSuggestions from '../components/ImageSuggestions';
@@ -143,7 +143,7 @@ export default function EditorPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[280px_2fr_1fr] gap-6 mt-6 overflow-auto">
-        <AiSideBar />
+        <AISideBar />
         <div className="bg-surface-card rounded-xl shadow-subtle p-6 min-h-[600px]">
           <TipTapEditor
             ref={editorRef}
