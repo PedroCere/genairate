@@ -97,7 +97,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.geneairate.blogservice.BlogServiceApplication</mainClass>
+					<mainClass>com.geneairate.blogcontentservice.BlogContentServiceApplication</mainClass>
 				</configuration>
 				<executions>
 					<execution>
