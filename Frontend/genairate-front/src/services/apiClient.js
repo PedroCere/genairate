@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const userServiceClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://cozy-courage-production-5997.up.railway.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -47,5 +47,3 @@ export const updateUserPreferences = (prefs) => userServiceClient.put('/user/pre
 export { userServiceClient, blogContentClient, templateServiceClient };
 
 export default userServiceClient;
-
-
