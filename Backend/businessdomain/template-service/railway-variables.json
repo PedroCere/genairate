@@ -1,0 +1,19 @@
+{
+  "APP_NAME": "template-service",
+  "SERVER_PORT": "8082",
+  "MYSQLHOST": "mysql.railway.internal",
+  "MYSQLPORT": "3306",
+  "MYSQLDATABASE": "railway",
+  "MYSQLUSER": "root",
+  "MYSQLPASSWORD": "RLWmNsBZigjeFSgigMgKfigBVfFXnFll",
+  "HIKARI_TIMEOUT": "10000",
+  "HIKARI_POOL_SIZE": "5",
+  "JPA_DDL": "update",
+  "JPA_SHOW_SQL": "true",
+  "HIBERNATE_FORMAT_SQL": "true",
+  "SWAGGER_PATH": "/swagger-ui.html",
+  "SWAGGER_ENABLED": "true",
+  "API_DOCS_PATH": "/v3/api-docs",
+  "API_MEDIA_TYPE": "application/json",
+  "ACTUATOR_ENDPOINTS": "health,info,metrics"
+}
