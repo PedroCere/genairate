@@ -1,4 +1,4 @@
-package com.geneairate.user_service.config;
+package com.geneairate.userservice.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

@@ -1,11 +1,11 @@
-package com.geneairate.user_service.services;
+package com.geneairate.userservice.services;
 
-import com.geneairate.user_service.dtos.AuthResponse;
-import com.geneairate.user_service.dtos.LoginRequest;
-import com.geneairate.user_service.dtos.RegisterRequest;
-import com.geneairate.user_service.model.User;
-import com.geneairate.user_service.respository.UserRepository;
-import com.geneairate.user_service.security.JwtTokenUtil;
+import com.geneairate.userservice.dtos.AuthResponse;
+import com.geneairate.userservice.dtos.LoginRequest;
+import com.geneairate.userservice.dtos.RegisterRequest;
+import com.geneairate.userservice.model.User;
+import com.geneairate.userservice.respository.UserRepository;
+import com.geneairate.userservice.security.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,6 +1,6 @@
-package com.geneairate.user_service.respository;
+package com.geneairate.userservice.respository;
 
-import com.geneairate.user_service.model.User;
+import com.geneairate.userservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

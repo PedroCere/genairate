@@ -1,6 +1,6 @@
-package com.geneairate.user_service.dtos;
+package com.geneairate.userservice.dtos;
 
-public class UpdateUserPreferencesRequest {
+public class UserPreferencesResponse {
     public String defaultTone;
     public String defaultFormat;
     public String defaultLanguage;

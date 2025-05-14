@@ -2,10 +2,13 @@ FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-COPY src ./src
+# Copia solo los archivos del user-service
+COPY ./user-service/mvnw .
+COPY ./user-service/pom.xml .
+COPY ./user-service/.mvn ./.mvn
+COPY ./user-service/src ./src
 
+# Construye el proyecto
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 EXPOSE 8081

@@ -1,9 +1,9 @@
-package com.geneairate.user_service.controllers;
+package com.geneairate.userservice.controllers;
 
-import com.geneairate.user_service.dtos.AuthResponse;
-import com.geneairate.user_service.dtos.LoginRequest;
-import com.geneairate.user_service.dtos.RegisterRequest;
-import com.geneairate.user_service.services.AuthService;
+import com.geneairate.userservice.dtos.AuthResponse;
+import com.geneairate.userservice.dtos.LoginRequest;
+import com.geneairate.userservice.dtos.RegisterRequest;
+import com.geneairate.userservice.services.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

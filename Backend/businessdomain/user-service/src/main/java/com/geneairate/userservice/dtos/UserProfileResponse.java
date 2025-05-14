@@ -1,4 +1,4 @@
-package com.geneairate.user_service.dtos;
+package com.geneairate.userservice.dtos;
 
 import java.time.LocalDateTime;
 

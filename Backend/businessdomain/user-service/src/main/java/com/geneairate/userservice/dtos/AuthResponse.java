@@ -1,6 +1,6 @@
-package com.geneairate.user_service.dtos;
+package com.geneairate.userservice.dtos;
 
-import com.geneairate.user_service.model.User;
+import com.geneairate.userservice.model.User;
 
 public class AuthResponse {
     public String token;

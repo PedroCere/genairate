@@ -121,13 +121,12 @@
 
 	<build>
 		<plugins>
-			<!-- Plugin esencial para Spring Boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot.version}</version>
 				<configuration>
-					<mainClass>com.geneairate.UserServiceApplication</mainClass>
+					<!-- Asegúrate que el paquete coincida -->
+					<mainClass>com.geneairate.userservice.UserServiceApplication</mainClass>
 				</configuration>
 				<executions>
 					<execution>

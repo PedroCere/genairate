@@ -1,6 +1,6 @@
-package com.geneairate.user_service.security;
+package com.geneairate.userservice.security;
 
-import com.geneairate.user_service.respository.UserRepository;
+import com.geneairate.userservice.respository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

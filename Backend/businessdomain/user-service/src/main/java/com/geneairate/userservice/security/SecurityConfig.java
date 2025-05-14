@@ -1,4 +1,4 @@
-package com.geneairate.user_service.security;
+package com.geneairate.userservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

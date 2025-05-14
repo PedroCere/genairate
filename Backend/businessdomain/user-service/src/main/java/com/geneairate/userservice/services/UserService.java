@@ -1,12 +1,10 @@
-package com.geneairate.user_service.services;
+package com.geneairate.userservice.services;
 
-import com.geneairate.user_service.dtos.*;
-import com.geneairate.user_service.model.User;
-import com.geneairate.user_service.respository.UserRepository;
+import com.geneairate.userservice.dtos.*;
+import com.geneairate.userservice.model.User;
+import com.geneairate.userservice.respository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {

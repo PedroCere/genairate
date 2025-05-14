@@ -1,7 +1,7 @@
-package com.geneairate.user_service.controllers;
+package com.geneairate.userservice.controllers;
 
-import com.geneairate.user_service.dtos.*;
-import com.geneairate.user_service.services.UserService;
+import com.geneairate.userservice.dtos.*;
+import com.geneairate.userservice.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

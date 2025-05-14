@@ -1,4 +1,4 @@
-package com.geneairate.user_service.dtos;
+package com.geneairate.userservice.dtos;
 
 public class UpdateUserProfileRequest {
     public String description;

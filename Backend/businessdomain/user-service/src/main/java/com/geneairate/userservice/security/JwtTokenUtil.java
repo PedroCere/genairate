@@ -1,4 +1,4 @@
-package com.geneairate.user_service.security;
+package com.geneairate.userservice.security;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

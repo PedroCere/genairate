@@ -1,4 +1,4 @@
-package com.geneairate.user_service.model;
+package com.geneairate.userservice.model;
 
 import jakarta.persistence.*;
 
