@@ -1,5 +1,7 @@
 # GenAIrate — Generador Inteligente de Contenido para Blogs
 
+Demo: https://genairate-36wftizok-pedro-cereghettis-projects.vercel.app/
+
 GenAIrate es una plataforma AI-powered para crear artículos de blog completos en español, con estilo personalizable y generación conectada a modelos remotos mediante OpenRouter. Ideal para bloggers, equipos de marketing y proyectos SEO que buscan contenido de calidad asistido por IA.
 
 ## Características Principales
