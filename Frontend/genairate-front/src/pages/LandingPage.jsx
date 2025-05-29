@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Particles from "react-tsparticles";
 import { loadTrianglesPreset } from "tsparticles-preset-triangles";
-import { loadLinksPreset } from "tsparticles-preset-links";
 import ScrollReveal from "scrollreveal";
 
 export default function LandingPage({ darkMode, toggleDarkMode }) {
@@ -26,42 +25,83 @@ export default function LandingPage({ darkMode, toggleDarkMode }) {
 
   const particlesInit = async (engine) => {
     await loadTrianglesPreset(engine);
-    await loadLinksPreset(engine);
   };
 
   const particlesOptions = {
-    preset: darkMode ? "triangles" : "links",
-    background: {
-      color: { value: "transparent" },
-    },
+    preset: "triangles",
+    background: { color: { value: "transparent" } },
     fullScreen: { enable: false },
+    style: {
+      position: "absolute",
+      zIndex: 0,
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      pointerEvents: "none",
+    },
+    particles: {
+      color: {
+        value: darkMode ? "#ffffff" : "#1f2937",
+      },
+      opacity: {
+        value: 0.4,
+      },
+    },
   };
 
   return (
     <div className="relative flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors overflow-hidden">
-      {/* Fondo animado siempre */}
-      <Particles
-        id="bg-anim"
-        init={particlesInit}
-        options={particlesOptions}
-        className="absolute inset-0 z-0"
+      {/* Fondo animado */}
+      <Particles id="bg-anim" init={particlesInit} options={particlesOptions} />
+      <div
+        className={`absolute inset-0 z-0 backdrop-blur-sm transition-colors duration-500 ${
+          darkMode ? "bg-black/40" : "bg-white/10"
+        }`}
       />
-      <div className="absolute inset-0 z-0 bg-white/60 dark:bg-black/40 backdrop-blur-sm" />
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header */}
+        {/* Navbar */}
         <header className="w-full px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
           <h1 className="text-2xl font-bold font-serif tracking-tight">
             <Link to="/">GenAIrate</Link>
           </h1>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="border border-black dark:border-white text-black dark:text-white font-semibold px-4 py-2 rounded-xl transition hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">Iniciar sesión</Link>
-            <Link to="/register" className="bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white font-semibold px-4 py-2 rounded-xl shadow-md transition hover:bg-gray-800 dark:hover:bg-gray-100">Registrarse</Link>
-            <button onClick={handleToggle} aria-label="Toggle Dark Mode" className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white transition">
+            <Link
+              to="/login"
+              className="border border-black dark:border-white text-black dark:text-white font-semibold px-4 py-2 rounded-xl transition hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
+            >
+              Iniciar sesión
+            </Link>
+            <Link
+              to="/register"
+              className="bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white font-semibold px-4 py-2 rounded-xl shadow-md transition hover:bg-gray-800 dark:hover:bg-gray-100"
+            >
+              Registrarse
+            </Link>
+            <button
+              onClick={handleToggle}
+              className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white transition"
+              aria-label="Toggle Dark Mode"
+            >
               {themeIcon === "moon" ? (
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
               ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m8.485-8.485l-.707.707M4.222 4.222l-.707.707M21 12h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14a7 7 0 000-14z" /></svg>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 3v1m0 16v1m8.485-8.485l-.707.707M4.222 4.222l-.707.707M21 12h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14a7 7 0 000-14z"
+                  />
+                </svg>
               )}
             </button>
           </div>
@@ -70,7 +110,10 @@ export default function LandingPage({ darkMode, toggleDarkMode }) {
         {/* Hero */}
         <main className="flex flex-col items-center justify-center text-center px-6 py-20 gap-8">
           <h2 className="text-5xl sm:text-6xl font-extrabold leading-tight tracking-tight max-w-3xl reveal">
-            Escribí mejor. Más rápido. Con <span className="underline decoration-pink-500 decoration-4 underline-offset-4">ayuda de inteligencia artificial</span>
+            Escribí mejor. Más rápido. Con{" "}
+            <span className="underline decoration-pink-500 decoration-4 underline-offset-4">
+              ayuda de inteligencia artificial
+            </span>
           </h2>
           <p className="text-xl text-gray-700 dark:text-gray-300 max-w-xl reveal">
             GenAIrate es tu asistente para crear textos increíbles en segundos.
@@ -88,13 +131,22 @@ export default function LandingPage({ darkMode, toggleDarkMode }) {
         <section className="px-6 py-20 bg-gray-50 dark:bg-gray-800 text-center reveal">
           <h3 className="text-3xl font-bold mb-10">¿Por qué GenAIrate?</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
-            <FeatureCard title="✍️ Escribí sin bloqueo" desc="Inspirate con prompts inteligentes y sugerencias contextuales." />
-            <FeatureCard title="🚀 Acelerá tu proceso" desc="Desde ideas hasta artículos completos en cuestión de segundos." />
-            <FeatureCard title="🔍 Personalización total" desc="Adaptá el tono, estilo y enfoque según tu audiencia." />
+            <FeatureCard
+              title="✍️ Escribí sin bloqueo"
+              desc="Inspirate con prompts inteligentes y sugerencias contextuales."
+            />
+            <FeatureCard
+              title="🚀 Acelerá tu proceso"
+              desc="Desde ideas hasta artículos completos en cuestión de segundos."
+            />
+            <FeatureCard
+              title="🔍 Personalización total"
+              desc="Adaptá el tono, estilo y enfoque según tu audiencia."
+            />
           </div>
         </section>
 
-        {/* How it works - Mejorado visualmente */}
+        {/* Cómo funciona */}
         <section className="px-6 py-20 text-center bg-white dark:bg-gray-900 reveal">
           <h3 className="text-3xl font-bold mb-10">¿Cómo te ayuda?</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto text-left text-lg">
@@ -105,11 +157,18 @@ export default function LandingPage({ darkMode, toggleDarkMode }) {
           </div>
         </section>
 
-        {/* Final Call To Action */}
+        {/* CTA final */}
         <section className="px-6 py-20 text-center reveal">
           <h3 className="text-3xl font-bold mb-6">Tu próxima gran idea empieza acá</h3>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">Probalo gratis y descubrí lo que podés crear.</p>
-          <Link to="/register" className="inline-block bg-black dark:bg-white text-white dark:text-black font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-gray-900 dark:hover:bg-gray-200 transition">Crear cuenta</Link>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
+            Probalo gratis y descubrí lo que podés crear.
+          </p>
+          <Link
+            to="/register"
+            className="inline-block bg-black dark:bg-white text-white dark:text-black font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-gray-900 dark:hover:bg-gray-200 transition"
+          >
+            Crear cuenta
+          </Link>
         </section>
 
         {/* Footer */}
@@ -136,3 +195,4 @@ const Step = ({ num, text }) => (
     <p className="text-gray-700 dark:text-gray-300">{text}</p>
   </div>
 );
+
