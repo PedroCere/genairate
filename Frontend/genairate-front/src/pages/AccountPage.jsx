@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DeactivateAccountModal from '../components/common/modals/DesactivateAccountModal.jsx';
-
+import { useAuth } from '../context/AuthContext';
+import { getUserProfile } from '../services/authService';
 
 export default function AccountPage() {
   const { t } = useTranslation();
-  
+  const { isOffline } = useAuth();
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
-const handleDeactivate = () => {
-  console.log('Cuenta desactivada (mock)');
-};
-
+  const handleDeactivate = () => {
+    console.log('Cuenta desactivada (mock)');
+  };
 
   const initialUser = {
     name: 'Agustín Paltrucci',
@@ -23,6 +23,21 @@ const handleDeactivate = () => {
   const [user, setUser] = useState(initialUser);
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState('');
+
+  useEffect(() => {
+    if (!isOffline) {
+      getUserProfile()
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((error) => {
+          console.error('Failed to load user profile:', error);
+          setUser(initialUser);
+        });
+    } else {
+      setUser(initialUser);
+    }
+  }, [isOffline]);
 
   const startEdit = (field) => {
     setEditField(field);
@@ -82,22 +97,19 @@ const handleDeactivate = () => {
 
         {/* Danger zone */}
         <div className="mt-12 space-y-4 text-sm">
-        <div className="mt-12 space-y-4 text-sm">
-  <button
-    onClick={() => setShowDeactivateModal(true)}
-    className="text-orange-600 hover:underline"
-  >
-    Deactivate account
-  </button>
+          <button
+            onClick={() => setShowDeactivateModal(true)}
+            className="text-orange-600 hover:underline"
+          >
+            Deactivate account
+          </button>
 
-</div>
-
-{showDeactivateModal && (
-  <DeactivateAccountModal
-    onClose={() => setShowDeactivateModal(false)}
-    onConfirm={handleDeactivate}
-  />
-)}
+          {showDeactivateModal && (
+            <DeactivateAccountModal
+              onClose={() => setShowDeactivateModal(false)}
+              onConfirm={handleDeactivate}
+            />
+          )}
 
           <button className="text-red-600 hover:underline">Delete account</button>
         </div>

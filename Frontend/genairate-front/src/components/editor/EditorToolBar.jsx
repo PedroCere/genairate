@@ -1,19 +1,56 @@
 import { useState } from 'react';
 import { useEditor } from '../../context/EditorContext';
 import GenerateBlogModal from '../common/modals/GenerateBlogModal';
+import LoadingSpinner from '../common/LoadingSpinner';
 
-export default function EditorToolbar() {
+export default function EditorToolbar({ onGenerate, selectedTemplateId }) {
   const {
-    article,
+    currentArticle: article,
     setTitle,
-    saveDraft,
-    publishArticle,
-    aiActions,
+    saveCurrentAsDraft: saveDraft,
+    publishCurrentArticle: publishArticle,
     updateArticle,
-    updateEditorFromGenerated
+    generateInitialArticle,
   } = useEditor();
 
   const [showBlogModal, setShowBlogModal] = useState(false);
+  const [loadingGenerate, setLoadingGenerate] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleGenerate = async ({ topic, tone, language }) => {
+    try {
+      setLoadingGenerate(true);
+      const userInput = topic;
+
+      if (onGenerate && topic) {
+        await onGenerate({ userInput, tone, language, templateId: selectedTemplateId });
+      } else {
+        await generateInitialArticle({
+          userInput,
+          tone,
+          language,
+          format: 'lista',
+          templateId: selectedTemplateId,
+        });
+      }
+
+      setShowBlogModal(false);
+    } catch (error) {
+      console.error('Error generating article:', error);
+    } finally {
+      setLoadingGenerate(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    try {
+      await saveDraft(article);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+    }
+  };
 
   return (
     <>
@@ -26,10 +63,9 @@ export default function EditorToolbar() {
             placeholder="Título del artículo"
             className="bg-transparent text-2xl font-bold text-text placeholder-muted focus:outline-none"
           />
-          
           <select
             value={article?.tone || 'profesional'}
-            onChange={(e) => updateArticle({ tone: e.target.value })}
+            onChange={(e) => updateArticle({ ...article, tone: e.target.value })}
             className="bg-white dark:bg-white text-dark dark:text-black px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
           >
             <option value="profesional">Profesional</option>
@@ -37,11 +73,16 @@ export default function EditorToolbar() {
             <option value="seo">SEO</option>
           </select>
         </div>
-        
+
         <div className="flex items-center space-x-4">
-          <button 
-            onClick={saveDraft}
-            className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
+          <button
+            onClick={handleSaveDraft}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              saved
+                ? 'bg-green-500 text-white animate-pulse'
+                : 'bg-primary/10 text-primary hover:bg-primary/20'
+            }`}
+            disabled={saved}
           >
             Guardar
           </button>
@@ -53,19 +94,17 @@ export default function EditorToolbar() {
           </button>
           <button
             onClick={() => setShowBlogModal(true)}
-            className="bg-secondary text-background px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors"
+            className="flex items-center justify-center bg-secondary text-background px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors"
+            disabled={loadingGenerate}
           >
-            🤖 Blog automático
+            {loadingGenerate ? <LoadingSpinner size="sm" /> : '🤖 Blog automático'}
           </button>
         </div>
       </div>
 
       {showBlogModal && (
         <GenerateBlogModal
-          onGenerate={(article) => {
-            updateEditorFromGenerated(article);
-            setShowBlogModal(false);
-          }}
+          onGenerate={handleGenerate}
           onClose={() => setShowBlogModal(false)}
         />
       )}

@@ -1,17 +1,27 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect } from 'react';
+import { useEffect, forwardRef, useImperativeHandle } from 'react';
+import './editor.css';
 
-export default function TipTapEditor({ content, onUpdate }) {
+const TipTapEditor = forwardRef(({ content, onUpdate }, ref) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content || '',
+    editorProps: {
+      attributes: {
+        class: 'max-w-none w-full min-h-[65vh] p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl border border-gray-300 dark:border-gray-700 focus:outline-none',
+      },
+    },
     onUpdate: ({ editor }) => {
-      if (onUpdate) {
-        onUpdate(editor.getJSON());
-      }
+      if (onUpdate) onUpdate(editor.getHTML());
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    get instance() {
+      return editor;
+    },
+  }));
 
   useEffect(() => {
     if (editor && content) {
@@ -19,13 +29,9 @@ export default function TipTapEditor({ content, onUpdate }) {
     }
   }, [content, editor]);
 
-  if (!editor) {
-    return null;
-  }
+  if (!editor) return null;
 
-  return (
-    <div className="p-4 text-text bg-surface-card rounded-xl shadow-subtle min-h-[500px] border border-border">
-      <EditorContent editor={editor} />
-    </div>
-  );
-}
+  return <EditorContent editor={editor} />;
+});
+
+export default TipTapEditor;

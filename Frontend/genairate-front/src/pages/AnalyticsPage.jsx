@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,37 +9,34 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { Eye, BookOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const MOCK_DATA = {
-  views: 0,
-  reads: 0,
-  timeline: [0, 0, 0, 0, 0], 
+  views: 124,
+  reads: 42,
+  timeline: [10, 24, 18, 35, 37],
 };
 
 export default function AnalyticsPage() {
+  const { t, i18n } = useTranslation();
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setStats(MOCK_DATA);
-    }, 500);
+    setTimeout(() => setStats(MOCK_DATA), 500);
   }, []);
 
-  if (!stats) {
-    return <div className="text-center py-10 text-gray-700 dark:text-gray-300">Cargando métricas...</div>;
-  }
-
   const barData = {
-    labels: ['May 1', 'May 2', 'May 3', 'May 4', 'May 5'],
+    labels: ['1 May', '2 May', '3 May', '4 May', '5 May'],
     datasets: [
       {
-        label: 'Views',
-        data: stats.timeline,
-        backgroundColor: 'rgba(34, 197, 94, 0.9)',
-        borderRadius: 4,
-        barPercentage: 0.6,
+        label: t('Views'),
+        data: stats?.timeline || [],
+        backgroundColor: '#60A5FA', // Tailwind blue-400
+        borderRadius: 6,
+        barThickness: 32,
       },
     ],
   };
@@ -48,35 +45,60 @@ export default function AnalyticsPage() {
     responsive: true,
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.parsed.y} ${t('views').toLowerCase()}`;
+          },
+        },
+      },
     },
     scales: {
-      y: { beginAtZero: true, ticks: { stepSize: 1 } },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#9CA3AF', // gray-400
+          stepSize: 10,
+        },
+        grid: { color: '#E5E7EB' }, // gray-200
+      },
+      x: {
+        ticks: { color: '#9CA3AF' },
+        grid: { display: false },
+      },
     },
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12 text-center text-gray-900 dark:text-gray-100">
-      <h1 className="text-3xl font-semibold mb-6">Your story stats</h1>
+    <div className="max-w-3xl mx-auto px-6 py-10 text-gray-900 dark:text-gray-100">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-semibold">{t('YourAnalytics')}</h1>
+        <p className="text-sm text-gray-400">
+          {t('LastUpdated')} · {new Date().toLocaleDateString(i18n.language)}
+        </p>
+      </div>
 
-      <p className="text-lg text-gray-500 dark:text-gray-400 mb-1">Monthly</p>
-      <p className="text-sm text-gray-400 mb-8">May 1, 2025 – May 5, 2025 (UTC) ・ Updated hourly</p>
-
-      <div className="flex justify-center gap-20 mb-10">
-        <div>
-          <p className="text-4xl font-bold">{stats.views}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Views</p>
+      <div className="flex justify-between gap-4 text-center mb-6">
+        <div className="flex-1 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+          <Eye className="mx-auto mb-1 text-blue-500" size={24} />
+          <p className="text-2xl font-bold">{stats?.views || 0}</p>
+          <p className="text-sm text-gray-500">{t('TotalViews')}</p>
         </div>
-        <div>
-          <p className="text-4xl font-bold">{stats.reads}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Reads</p>
+
+        <div className="flex-1 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+          <BookOpen className="mx-auto mb-1 text-green-500" size={24} />
+          <p className="text-2xl font-bold">{stats?.reads || 0}</p>
+          <p className="text-sm text-gray-500">{t('TotalReads')}</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto border-t border-gray-200 dark:border-gray-700 pt-6">
-        <Bar data={barData} options={options} height={200} />
-        <div className="flex justify-end text-xs text-gray-400 mt-2 pr-2">
-          <span className="mr-4">● Views</span>
-        </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+        <h3 className="text-sm font-medium mb-2">{t('ViewsOverTime')}</h3>
+        {stats ? (
+          <Bar data={barData} options={options} height={220} />
+        ) : (
+          <p className="text-center text-gray-400">{t('Loading')}...</p>
+        )}
       </div>
     </div>
   );

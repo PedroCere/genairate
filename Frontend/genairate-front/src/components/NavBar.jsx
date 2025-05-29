@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import profile2 from "../assets/profile1.jpg";
+import React, { useState, useContext, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import profile2 from "../assets/profile6.jpg";
 import {
   FiSearch,
   FiBell,
@@ -15,11 +15,37 @@ import {
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "../context/AuthContext";
+import { getUserProfile } from "../services/apiClient";
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { logout, isOffline } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [userProfile, setUserProfile] = useState(null);
+
+  useEffect(() => {
+    if (!isOffline) {
+      getUserProfile()
+        .then((profile) => {
+          setUserProfile(profile);
+        })
+        .catch((error) => {
+          console.error("Failed to load user profile:", error);
+          setUserProfile(null);
+        });
+    } else {
+      // Provide mock user profile data when offline
+      setUserProfile({
+        username: "offline_user",
+        name: "Modo Offline",
+        email: "offline@genairate.com",
+      });
+    }
+  }, [isOffline]);
 
   const toggleDropdown = () => setMenuOpen(!menuOpen);
   const toggleLangDropdown = () => setLangMenuOpen(!langMenuOpen);
@@ -27,6 +53,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     setLangMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -156,11 +187,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden"
                 >
                   <div className="px-4 py-2 text-sm text-muted text-gray-600 dark:text-gray-300">
-                    {t("SignedInAs")} <strong>Santino</strong>
+                    {t("SignedInAs")} <strong>{userProfile ? userProfile.username : "..."}</strong>
                   </div>
                   <hr className="border-gray-300 dark:border-gray-700" />
 
-                  <NavLink to="/profile/aguspaltrucci" className="dropdown-item dark:text-gray-300">
+                  <NavLink to={`/profile/${userProfile ? userProfile.username : ""}`} className="dropdown-item dark:text-gray-300">
                     <FiUser /> {t("Profile")}
                   </NavLink>
                   <NavLink to="/library" className="dropdown-item dark:text-gray-300">
@@ -180,7 +211,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     <FiHelpCircle /> {t("Help")}
                   </NavLink>
                   <hr className="border-gray-300 dark:border-gray-700" />
-                  <button className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
+                  <button onClick={handleLogout} className="dropdown-item text-red-500 hover:bg-red-100 dark:hover:bg-red-700">
                     <FiLogOut /> {t("SignOut")}
                   </button>
                 </motion.div>

@@ -1,22 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import fondoVideo from '../assets/fondo2.mp4';
-
-const profile = {
-  name: 'Agustín Paltrucci',
-  username: 'aguspaltrucci',
-  bio: 'Apasionado por la IA y la escritura creativa.',
-  avatar: '/src/assets/profile1.jpg',
-  location: 'Buenos Aires',
-  profession: 'Escritor técnico',
-  twitter: 'https://twitter.com/aguspaltrucci',
-  linkedin: 'https://linkedin.com/in/aguspaltrucci',
-  followers: 1200,
-  following: 180,
-  isCurrentUser: true
-};
+import { getUserProfile, updateUserProfile } from '../services/apiClient';
+import { AuthContext } from '../context/AuthContext';
 
 const userStories = [
   { id: 1, title: 'Cómo escribir mejor con IA', date: '2024-05-01', views: 300, cover: '/src/assets/blog1.jpg', type: 'blog' },
@@ -36,8 +24,76 @@ const testimonials = [
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { isOffline } = useContext(AuthContext);
   const [sortBy, setSortBy] = useState('recent');
   const [filterBy, setFilterBy] = useState('all');
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editDescription, setEditDescription] = useState('');
+  const [editLocation, setEditLocation] = useState('');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (isOffline) {
+        // Provide mock profile data when offline
+        setProfile({
+          name: 'Modo Offline',
+          username: 'offline_user',
+          bio: 'Estás en modo sin conexión',
+          avatar: '/src/assets/profile6.jpg',
+          location: '',
+          profession: '',
+          twitter: '',
+          linkedin: '',
+          followers: 0,
+          following: 0,
+          isCurrentUser: true
+        });
+        setEditDescription('Estás en modo sin conexión');
+        setEditLocation('');
+        setLoading(false);
+      } else {
+        try {
+          const data = await getUserProfile();
+          setProfile({
+            name: data.username || '',
+            username: data.username || '',
+            bio: data.description || '',
+            avatar: '/src/assets/profile6.jpg',
+            location: data.location || '',
+            profession: '',
+            twitter: '',
+            linkedin: '',
+            followers: 0,
+            following: 0,
+            isCurrentUser: true
+          });
+          setEditDescription(data.description || '');
+          setEditLocation(data.location || '');
+        } catch (error) {
+          console.error('Failed to fetch user profile:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchProfile();
+  }, [isOffline]);
+
+  const handleSave = async () => {
+    try {
+      await updateUserProfile({ description: editDescription, location: editLocation });
+      setProfile((prev) => ({
+        ...prev,
+        bio: editDescription,
+        location: editLocation,
+      }));
+      setEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
 
   const filteredStories = useMemo(() => {
     let filtered = userStories;
@@ -64,12 +120,18 @@ export default function ProfilePage() {
     alert(t('LinkCopied'));
   };
 
+  if (loading) {
+    return <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">{t('LoadingProfile')}...</div>;
+  }
+
+  if (!profile) {
+    return <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">{t('ProfileNotFound')}</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 text-gray-900 dark:text-gray-100">
 
-    
-<div className="relative h-64 md:h-80 rounded-lg overflow-hidden mb-6">
-
+      <div className="relative h-64 md:h-80 rounded-lg overflow-hidden mb-6">
         <video
           src={fondoVideo}
           autoPlay
@@ -84,38 +146,76 @@ export default function ProfilePage() {
         </div>
       </div>
 
-    
       <div className="flex items-center gap-6 mb-6">
         <img src={profile.avatar} alt={profile.name} className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-900" />
         <div className="flex-1">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             📍 {profile.location} · 🧠 {profile.profession} ·{' '}
-            <a href={profile.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">@{profile.username}</a>
+            {profile.twitter ? (
+              <a href={profile.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">@{profile.username}</a>
+            ) : (
+              <span>@{profile.username}</span>
+            )}
           </p>
-          <p className="mt-2">{profile.bio}</p>
+          {editing ? (
+            <>
+              <textarea
+                className="w-full mt-2 p-2 border rounded"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder={t('EditDescription')}
+              />
+              <input
+                type="text"
+                className="w-full mt-2 p-2 border rounded"
+                value={editLocation}
+                onChange={(e) => setEditLocation(e.target.value)}
+                placeholder={t('EditLocation')}
+              />
+              <div className="mt-2 flex gap-2">
+                <button
+                  onClick={handleSave}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  {t('Save')}
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                >
+                  {t('Cancel')}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2">{profile.bio}</p>
+              {profile.isCurrentUser && (
+                <button
+                  className="ml-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 mt-2"
+                  onClick={() => setEditing(true)}
+                >
+                  {t('EditProfile')}
+                </button>
+              )}
+            </>
+          )}
           <div className="flex gap-6 mt-3 text-sm text-gray-600 dark:text-gray-400">
             <p><strong>{profile.followers}</strong> {t('Followers')}</p>
             <p><strong>{profile.following}</strong> {t('Following')}</p>
           </div>
         </div>
-        {profile.isCurrentUser && (
-          <button className="ml-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
-            {t('EditProfile')}
-          </button>
-        )}
         <button onClick={shareProfile} className="ml-4 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
           {t('ShareProfile')}
         </button>
       </div>
 
-     
       <div className="flex gap-6 text-sm text-gray-500 dark:text-gray-400 mb-6">
         <p>📝 {userStories.length} {t('Posts')}</p>
         <p>👀 {totalViews} {t('TotalViews')}</p>
         <p>📅 {t('Last')}: {lastPublication.toLocaleDateString()}</p>
       </div>
 
-    
       <div className="flex gap-4 mb-4">
         <select
           className="rounded border p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 transition"
@@ -139,7 +239,6 @@ export default function ProfilePage() {
         </select>
       </div>
 
-     
       <div className="space-y-4">
         <AnimatePresence>
           {filteredStories.map((story) => (
@@ -161,7 +260,6 @@ export default function ProfilePage() {
         </AnimatePresence>
       </div>
 
-   
       <aside className="mt-10">
         <h3 className="text-md font-semibold mb-3">{t('RecommendedForYou')}</h3>
         <div className="space-y-4">
@@ -179,7 +277,6 @@ export default function ProfilePage() {
         </div>
       </aside>
 
-    
       <section className="mt-10">
         <h3 className="text-md font-semibold mb-3">{t('Testimonials')}</h3>
         <div className="space-y-4">

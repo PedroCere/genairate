@@ -152,7 +152,7 @@ export default function HomePage() {
         <section>
           <h4 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Who to follow</h4>
           <div className="space-y-4 text-sm">
-            {[
+            {[ 
               { name: "Dr. Ashish Bamania", desc: "I simplify the latest advances in AI, Quantum...", avatar: profile1 },
               { name: "Predict", desc: "Where the future is written", avatar: profile2 },
               { name: "Muneeb Sikhani", desc: "MOON", avatar: profile3 },
@@ -205,59 +205,9 @@ export default function HomePage() {
         </section>
       </aside>
 
-      <button
-        onClick={() => setShowOptions(true)}
-        className="fixed bottom-6 right-6 bg-black dark:bg-white text-white dark:text-black px-5 py-3 rounded-full hover:bg-gray-800 dark:hover:bg-gray-300 transition z-10"
-      >
-        {t("NewArticle")}
-      </button>
+     
 
-      {showOptions && (
-  <Modal onClose={() => setShowOptions(false)}>
-    <div className="space-y-6 text-left">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">¿Cómo querés comenzar?</h2>
-      <div className="grid sm:grid-cols-2 gap-4">
-        {/* Opción 1 */}
-        <div
-          onClick={() => {
-            setShowOptions(false);
-            navigate('/editor');
-          }}
-          className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-lg hover:shadow-md transition flex flex-col gap-2"
-        >
-          <div className="text-3xl">✍️</div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">Desde cero</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Empezá a escribir desde un lienzo vacío con ayuda de IA en tiempo real.</p>
-        </div>
-
-        {/* Opción 2 */}
-        <div
-          onClick={() => {
-            setShowOptions(false);
-            setShowGenerateModal(true);
-          }}
-          className="cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-lg hover:shadow-md transition flex flex-col gap-2"
-        >
-          <div className="text-3xl">🤖</div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">Generar con IA</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Respondé unas preguntas y dejá que GenAIrate cree un primer borrador automáticamente.</p>
-        </div>
-      </div>
-    </div>
-  </Modal>
-)}
-
-
-{showGenerateModal && (
-  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
-    <GenerateBlogModal
-      onGenerate={(article) => {
-        navigate(`/editor?id=${article.id}`);
-      }}
-      onClose={() => setShowGenerateModal(false)}
-    />
-  </div>
-)}
+     
     </div>
   );
 }

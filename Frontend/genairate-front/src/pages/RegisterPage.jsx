@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { register as registerService } from '../services/authService';
 
 export default function RegisterPage() {
   const { login } = useAuth();
@@ -8,17 +9,21 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-
-    const finalName = name || 'Nuevo Usuario';
-    const finalEmail = email || 'nuevo@genairate.com';
-    const finalPassword = password || '123456';
-
-    const userData = { name: finalName, email: finalEmail };
-    login(userData, 'demo-token');
-    navigate('/onboarding');
+    setLoading(true);
+    try {
+      const { token, user } = await registerService(name, email, password);
+      login(user, token);
+      navigate('/onboarding'); 
+    } catch (err) {
+      alert('Error al registrarse. Revisa los datos o intenta más tarde.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,9 +63,14 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-md bg-primary text-black dark:text-white font-semibold border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-md ${
+              loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-primary text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black'
+            } font-semibold border border-black dark:border-white transition`}
           >
-            Registrarse
+            {loading ? 'Registrando...' : 'Registrarse'}
           </button>
         </form>
         <p className="text-sm text-center mt-4 text-gray-600 dark:text-gray-400">

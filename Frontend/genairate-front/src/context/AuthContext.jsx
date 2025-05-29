@@ -5,51 +5,72 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('genairate_token');
-    if (token) {
-     
-      setUser({
-        id: 'dummy-user',
-        name: 'Dummy User',
-        preferences: {
-          language: 'es',
-          tone: 'profesional'
-        }
-      });
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (storedToken && storedUser && storedUser !== 'undefined') {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsOffline(parsedUser.offline === true);
+      } catch (err) {
+        console.error('Error parsing user from localStorage:', err);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setUser(null);
+        setIsOffline(false);
+      }
+    } else {
+      // Clear invalid or missing user/token data
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsOffline(false);
     }
+
     setLoading(false);
   }, []);
 
-  const login = async (userData, token) => {
-    localStorage.setItem('genairate_token', token);
+  const login = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    const safeUserData = userData || {};
     setUser({
-      ...userData,
-      preferences: userData.preferences || {
+      ...safeUserData,
+      preferences: safeUserData.preferences || {
         language: 'es',
-        tone: 'profesional'
-      }
+        tone: 'profesional',
+      },
     });
+    setIsOffline(safeUserData.offline === true);
   };
 
   const logout = () => {
-    localStorage.removeItem('genairate_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
+    setIsOffline(false);
   };
 
   const isAuthenticated = () => {
-    return !!user && !!localStorage.getItem('genairate_token');
+    return !!user && !!localStorage.getItem('token');
   };
 
   const updateUserPreferences = (newPreferences) => {
-    setUser(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        ...newPreferences
-      }
-    }));
+    setUser((prev) => {
+      const updated = {
+        ...prev,
+        preferences: {
+          ...prev.preferences,
+          ...newPreferences,
+        },
+      };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -60,7 +81,8 @@ export function AuthProvider({ children }) {
         login,
         logout,
         isAuthenticated,
-        updateUserPreferences
+        updateUserPreferences,
+        isOffline,
       }}
     >
       {children}
