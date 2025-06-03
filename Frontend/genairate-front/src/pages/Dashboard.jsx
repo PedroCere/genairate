@@ -9,73 +9,70 @@ export default function Dashboard() {
   const [showInspo, setShowInspo] = useState(false);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12 text-gray-900 dark:text-white">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold mb-4">
+    <div className="max-w-6xl mx-auto px-6 py-16 text-gray-900 dark:text-white">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-extrabold mb-4 tracking-tight leading-tight">
           {t('WelcomeTo')} <span className="text-primary">GenAIrate</span>
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300">
+        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
           {t('GenerateArticles')}
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-5 mb-14">
         <button
-          className="bg-primary text-black dark:text-white border border-black dark:border-white font-semibold px-6 py-3 rounded-2xl shadow-lg transition hover:bg-cyan-600"
+          className="bg-primary text-black dark:text-black font-semibold px-8 py-3 rounded-full shadow-md hover:scale-105 hover:bg-cyan-700 transition duration-200"
           onClick={() => navigate('/editor')}
         >
-          {t('NewArticle')}
+          ✍️ {t('NewArticle')}
         </button>
 
         <button
-          className="bg-primary text-black dark:text-white border border-black dark:border-white font-semibold px-6 py-3 rounded-2xl shadow-lg transition hover:bg-cyan-600"
+          className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 font-semibold px-8 py-3 rounded-full shadow-md hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200"
           onClick={() => alert(t('TemplatesComingSoon'))}
         >
-          {t('ExploreTemplates')}
+          🧩 {t('ExploreTemplates')}
         </button>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-6 mb-10">
-        {/* Card: Recent Works */}
-        <div className="bg-surface-card border border-gray-300 dark:border-gray-700 rounded-xl p-5 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">{t('RecentWorks')}</h3>
-          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+      <div className="grid sm:grid-cols-3 gap-8 mb-20">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition duration-200">
+          <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">{t('RecentWorks')}</h3>
+          <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3">
             <li>✍️ Cómo escribir mejor con IA</li>
             <li>🧠 Guía de estructura para artículos de blog</li>
             <li>📈 Tips de estilo SEO</li>
           </ul>
         </div>
 
-        {/* Card: Community Highlights */}
-        <div className="bg-surface-card border border-gray-300 dark:border-gray-700 rounded-xl p-5 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">{t('CommunityBlogs')}</h3>
-          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition duration-200">
+          <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">{t('CommunityBlogs')}</h3>
+          <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-3">
             <li>📚 10 ideas para blog en mayo</li>
             <li>👀 Lo más leído esta semana</li>
             <li>🚀 Cómo conseguir más vistas</li>
           </ul>
         </div>
 
-        {/* Card: Inspiration */}
-        <div className="bg-yellow-100 dark:bg-yellow-800 border border-yellow-300 dark:border-yellow-700 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+        <div className="bg-yellow-100 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-semibold mb-2">🧠 {t('NeedInspiration') || '¿Necesitás inspiración?'}</h3>
-            <p className="text-sm text-gray-700 dark:text-gray-100 mb-4">
+            <h3 className="text-xl font-bold mb-3 text-yellow-900 dark:text-yellow-100">🧠 {t('NeedInspiration') || '¿Necesitás inspiración?'}</h3>
+            <p className="text-sm text-yellow-900 dark:text-yellow-100 mb-5">
               Recibí ideas de escritura únicas con solo un clic.
             </p>
           </div>
           <button
             onClick={() => setShowInspo(true)}
-            className="mt-auto bg-yellow-400 text-black font-medium py-2 px-4 rounded-lg hover:bg-yellow-500 transition"
+            className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-2 px-4 rounded-full transition duration-200"
           >
-            {t('InspireMe') || 'Inspírame'}
+            ✨ {t('InspireMe') || 'Inspírame'}
           </button>
         </div>
       </div>
 
       {showInspo && <InspirationModal onClose={() => setShowInspo(false)} />}
 
-      <footer className="mt-12 border-t border-gray-300 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
+      <footer className="mt-20 border-t border-gray-200 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
         <p>© {new Date().getFullYear()} GenAIrate. {t('GenerativeAIOffline')}.</p>
         <p className="mt-1">
           {t('MadeWithLocal')} — <a href="#" className="underline hover:text-primary">v0.1.0</a>

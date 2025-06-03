@@ -104,14 +104,14 @@ export default function HomePage() {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py--6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
+    <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
       <div>
         <ArticleTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {articles.filter(article => activeTab === "For you" || article.tab === activeTab).length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {articles
               .filter(article => activeTab === "For you" || article.tab === activeTab)
               .map(article => (
@@ -121,36 +121,33 @@ export default function HomePage() {
         )}
       </div>
 
-      <aside className="hidden lg:block space-y-8">
-        {/* Blogs de la comunidad */}
+      <aside className="hidden lg:block space-y-10">
         <section>
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">{t("CommunityBlogs")}</h3>
+          <h3 className="text-xl font-bold mb-4">{t("CommunityBlogs")}</h3>
           <div className="space-y-4">
             {highlights.map((item, idx) => (
-              <div key={idx}>
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.title}</p>
+              <div key={idx} className="border-l-4 border-blue-500 pl-3">
+                <p className="text-sm font-semibold">{item.title}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{item.author} • {item.date}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Temas recomendados */}
         <section>
-          <h4 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Recommended topics</h4>
-          <div className="flex flex-wrap gap-2 mb-4">
+          <h4 className="text-sm font-semibold mb-3 uppercase tracking-wide">Recommended topics</h4>
+          <div className="flex flex-wrap gap-2">
             {["Data Science", "Self Improvement", "Politics", "Writing", "Relationships", "Cryptocurrency", "Machine Learning"].map((topic) => (
               <span key={topic} className="bg-gray-100 dark:bg-gray-700 text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition">
                 {topic}
               </span>
             ))}
           </div>
-          <button className="text-xs text-blue-600 hover:underline mb-6">See more topics</button>
+          <button className="mt-3 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium">See more topics</button>
         </section>
 
-        {/* A quién seguir */}
         <section>
-          <h4 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">Who to follow</h4>
+          <h4 className="text-sm font-semibold mb-3 uppercase tracking-wide">Who to follow</h4>
           <div className="space-y-4 text-sm">
             {[ 
               { name: "Dr. Ashish Bamania", desc: "I simplify the latest advances in AI, Quantum...", avatar: profile1 },
@@ -160,21 +157,20 @@ export default function HomePage() {
               <div key={idx} className="flex items-start gap-3">
                 <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full object-cover" />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{user.name}</p>
+                  <p className="font-semibold">{user.name}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">{user.desc}</p>
                 </div>
-                <button className="text-xs border border-gray-400 dark:border-gray-600 rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <button className="text-xs border border-gray-400 dark:border-gray-600 rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
                   Follow
                 </button>
               </div>
             ))}
           </div>
-          <button className="mt-3 text-xs text-blue-600 hover:underline">See more suggestions</button>
+          <button className="mt-3 text-xs text-blue-600 dark:text-blue-400 hover:underline">See more suggestions</button>
         </section>
 
-        {/* Reading list */}
         <section className="text-xs mt-6 text-gray-600 dark:text-gray-400 leading-relaxed">
-          <h4 className="font-semibold mb-2 text-gray-700 dark:text-gray-300">Reading list</h4>
+          <h4 className="font-semibold mb-2">Reading list</h4>
           <p>
             Click the <span className="border px-1 rounded text-xs font-mono">🔖</span> on any story to easily add it to your reading list or a custom list that you can share.
           </p>
@@ -191,10 +187,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Guía de escritura */}
-        <section className="bg-blue-50 dark:bg-gray-800 rounded-xl p-5 shadow">
-          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">{t("WriteInGenAirate")}</h4>
-          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+        <section className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-5 shadow-md">
+          <h4 className="font-semibold mb-3">{t("WriteInGenAirate")}</h4>
+          <ul className="text-sm space-y-1">
             <li>✍️ {t("NewWritersGuide")}</li>
             <li>✍️ {t("WritingTips")}</li>
             <li>✍️ {t("ExpandAudience")}</li>
@@ -204,10 +199,6 @@ export default function HomePage() {
           </button>
         </section>
       </aside>
-
-     
-
-     
     </div>
   );
 }

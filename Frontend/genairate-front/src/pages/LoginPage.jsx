@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { login as loginService } from '../services/authService';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -14,15 +13,10 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const result = await loginService(email, password);
-      // Handle offline user object without token
-      if (result.offline) {
-        login(result, null);
-      } else {
-        const { token, user } = result;
-        login(user, token);
-      }
-      navigate('/dashboard'); // ✅ Ir directamente al dashboard
+      const result = await fakeLogin(email, password);
+      const { token, user } = result;
+      login(user, token);
+      navigate('/dashboard');
     } catch (err) {
       alert('Credenciales incorrectas');
       console.error(err);
