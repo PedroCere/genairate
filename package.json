@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@tiptap/extension-image": "^2.11.9",
+    "@tiptap/react": "^2.11.9",
+    "@tiptap/starter-kit": "^2.11.9",
+    "i18next": "^25.1.1",
+    "react-i18next": "^15.5.1"
+  }
+}
