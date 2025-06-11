@@ -38,33 +38,33 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void generarContenido_conTemplateId() {
+    void shouldGenerateContentWithTemplateId() {
         ContentRequest request = TestDataFactory.defaultContentRequest();
         ContentResponse generated = TestDataFactory.defaultContentResponse();
         PromptStyleTemplate template = TestDataFactory.defaultTemplate();
 
         when(templateClient.getTemplateById(1L)).thenReturn(template);
-        when(predictorGateway.generarPrediccionConPrompt(any())).thenReturn(generated);
+        when(predictorGateway.generatePredictionWithPrompt(any())).thenReturn(generated);
         when(repository.save(any())).thenAnswer(i -> {
             BlogArticle saved = i.getArgument(0);
             saved.setId(100L);
             return saved;
         });
 
-        ContentResponse result = service.generarContenido(request);
+        ContentResponse result = service.generateContent(request);
 
         assertThat(result.getTitle()).isEqualTo(generated.getTitle());
         assertThat(result.getId()).isEqualTo(100L);
     }
 
     @Test
-    void reescribirTexto_ok() {
+    void rewriteTextSuccessfully() {
         BlogArticle article = TestDataFactory.defaultBlogArticle();
         ModifyContentRequest request = new ModifyContentRequest(article.getId(), "reescribilo informal");
         ContentResponse rewritten = TestDataFactory.defaultContentResponse();
 
         when(repository.findById(article.getId())).thenReturn(Optional.of(article));
-        when(predictorGateway.generarPrediccionConPrompt(any())).thenReturn(rewritten);
+        when(predictorGateway.generatePredictionWithPrompt(any())).thenReturn(rewritten);
 
         ContentResponse result = service.reescribirTexto(request);
 
@@ -73,7 +73,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void resumirContenido_ok() {
+    void shouldSummarizeContentSuccessfully() {
         ContentRequest req = TestDataFactory.defaultContentRequest();
         ContentResponse res = TestDataFactory.defaultContentResponse();
         when(predictorGateway.resumirContenido(req)).thenReturn(res);
@@ -82,7 +82,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void corrigirTexto_ok() {
+    void shouldCorrectTextSuccessfully() {
         ContentRequest req = TestDataFactory.defaultContentRequest();
         ContentResponse res = TestDataFactory.defaultContentResponse();
         when(predictorGateway.corregirTexto(req)).thenReturn(res);
@@ -91,13 +91,13 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void traducirContenido_ok() {
+    void shouldTranslateContentSuccessfully() {
         BlogArticle article = TestDataFactory.defaultBlogArticle();
         TranslateRequest request = new TranslateRequest(article.getId(), "en");
         ContentResponse translated = TestDataFactory.defaultContentResponse();
 
         when(repository.findById(article.getId())).thenReturn(Optional.of(article));
-        when(predictorGateway.generarPrediccionConPrompt(any())).thenReturn(translated);
+        when(predictorGateway.generatePredictionWithPrompt(any())).thenReturn(translated);
 
         ContentResponse result = service.traducirContenido(request);
         assertThat(result).isEqualTo(translated);
@@ -105,7 +105,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void obtenerPorId_existente() {
+    void shouldReturnArticleByIdIfExists() {
         BlogArticle article = TestDataFactory.defaultBlogArticle();
         when(repository.findById(article.getId())).thenReturn(Optional.of(article));
 
@@ -115,7 +115,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void guardarArticulo_creaNuevo() {
+    void shouldSaveNewArticleWhenIdIsNull() {
         ContentResponse dto = TestDataFactory.defaultContentResponse();
         dto.setId(null);
         service.guardarArticulo(dto);
@@ -123,7 +123,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void guardarArticulo_actualizaExistente() {
+    void shouldUpdateExistingArticleWhenIdExists() {
         BlogArticle existing = TestDataFactory.defaultBlogArticle();
         ContentResponse mod = TestDataFactory.defaultContentResponse();
         mod.setId(existing.getId());
@@ -135,13 +135,13 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void eliminarPorId_ok() {
+    void shouldDeleteArticleById() {
         service.eliminarPorId(101L);
         verify(repository).deleteById(101L);
     }
 
     @Test
-    void obtenerRecientes_ok() {
+    void shouldReturnMostRecentArticles() {
         List<BlogArticle> articles = List.of(TestDataFactory.defaultBlogArticle());
         when(repository.findTop3ByOrderByCreatedAtDesc()).thenReturn(articles);
 
@@ -150,7 +150,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void getByUserId_ok() {
+    void shouldReturnArticlesByUserId() {
         List<BlogArticle> articles = List.of(TestDataFactory.defaultBlogArticle());
         when(repository.findByUserId(1L)).thenReturn(articles);
 
@@ -159,7 +159,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void getAll_ok() {
+    void  shouldReturnAllArticles() {
         List<BlogArticle> articles = List.of(TestDataFactory.defaultBlogArticle());
         when(repository.findAll()).thenReturn(articles);
 
@@ -168,7 +168,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void partialUpdate_actualizaCampos() {
+    void shouldPartiallyUpdateFieldsWhenPresent() {
         BlogArticle article = TestDataFactory.defaultBlogArticle();
         BlogArticlePatchRequest patch = BlogArticlePatchRequest.builder()
                 .title("Nuevo Título")
@@ -185,7 +185,7 @@ public class BlogContentServiceImplTest {
     }
 
     @Test
-    void partialUpdate_articleNotFound_lanzaExcepcion() {
+    void shouldThrowExceptionWhenArticleNotFoundForPartialUpdate() {
         when(repository.findById(999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.partialUpdate(999L, new BlogArticlePatchRequest()))

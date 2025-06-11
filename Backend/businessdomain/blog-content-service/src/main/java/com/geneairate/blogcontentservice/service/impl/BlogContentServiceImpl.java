@@ -6,6 +6,8 @@ import com.geneairate.blogcontentservice.gateway.TemplateClient;
 import com.geneairate.blogcontentservice.model.BlogArticle;
 import com.geneairate.blogcontentservice.repository.BlogContentRepository;
 import com.geneairate.blogcontentservice.service.BlogContentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,17 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BlogContentServiceImpl implements BlogContentService {
     private final OpenRouterClient predictorGateway;
     private final BlogContentRepository repository;
     private final TemplateClient templateClient;
-
-    public BlogContentServiceImpl(OpenRouterClient predictorGateway, BlogContentRepository repository, TemplateClient templateClient) {
-        this.predictorGateway = predictorGateway;
-        this.repository = repository;
-        this.templateClient = templateClient;
-    }
-
     @Override
     public List<ContentResponse> getByUserId(Long userId) {
         return repository.findByUserId(userId)
@@ -34,7 +30,7 @@ public class BlogContentServiceImpl implements BlogContentService {
     }
 
     @Override
-    public ContentResponse generarContenido(ContentRequest request) {
+    public ContentResponse generateContent(ContentRequest request) {
         PromptStyleTemplate template;
         if (request.getTemplateId() != null) {
             template = templateClient.getTemplateById(request.getTemplateId());
@@ -80,7 +76,7 @@ public class BlogContentServiceImpl implements BlogContentService {
                 template.getExtraInstructions() != null ? template.getExtraInstructions() : ""
         );
 
-        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
+        ContentResponse response = predictorGateway.generatePredictionWithPrompt(prompt);
 
         BlogArticle article = BlogArticle.builder()
                 .title(response.getTitle())
@@ -153,7 +149,7 @@ public class BlogContentServiceImpl implements BlogContentService {
 
 
 
-        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
+        ContentResponse response = predictorGateway.generatePredictionWithPrompt(prompt);
         fullUpdate(request.getId(), response);
         return response;
     }
@@ -211,7 +207,7 @@ public class BlogContentServiceImpl implements BlogContentService {
 
 
 
-        ContentResponse response = predictorGateway.generarPrediccionConPrompt(prompt);
+        ContentResponse response = predictorGateway.generatePredictionWithPrompt(prompt);
         fullUpdate(request.getId(), response);
         return response;
 

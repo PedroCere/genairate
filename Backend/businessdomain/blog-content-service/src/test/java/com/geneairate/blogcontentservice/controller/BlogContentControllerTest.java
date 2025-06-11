@@ -43,7 +43,7 @@ public class BlogContentControllerTest {
         ContentRequest request = TestDataFactory.defaultContentRequest();
         ContentResponse response = TestDataFactory.defaultContentResponse();
 
-        when(service.generarContenido(any())).thenReturn(response);
+        when(service.generateContent(any())).thenReturn(response);
 
         mockMvc.perform(post("/content/generate")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +124,7 @@ public class BlogContentControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk());
 
-        verify(service).guardarArticulo(dto);
+        verify(service).guardarArticulo(refEq(dto));
     }
 
     @Test

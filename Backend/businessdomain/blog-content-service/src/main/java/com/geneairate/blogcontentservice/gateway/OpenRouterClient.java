@@ -26,7 +26,7 @@ public class OpenRouterClient {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ContentResponse generarPrediccionConPrompt(String prompt) {
+    public ContentResponse generatePredictionWithPrompt(String prompt) {
         String json = generarRawRespuesta(prompt);
         return parsearRespuesta(json);
     }
@@ -39,7 +39,7 @@ public class OpenRouterClient {
             IMPORTANTE: Respondé solo en JSON válido con título, secciones, conclusión, palabras clave y descripción meta.
             [/INST]
         """, request.getTone(), request.getLanguage(), request.getUserInput());
-        return generarPrediccionConPrompt(prompt);
+        return generatePredictionWithPrompt(prompt);
     }
 
     public ContentResponse resumirContenido(ContentRequest request) {
@@ -50,7 +50,7 @@ public class OpenRouterClient {
             IMPORTANTE: Respondé solo en JSON con introducción, 2 secciones clave y una conclusión.
             [/INST]
         """, request.getLanguage(), request.getTone(), request.getUserInput());
-        return generarPrediccionConPrompt(prompt);
+        return generatePredictionWithPrompt(prompt);
     }
 
     public ContentResponse corregirTexto(ContentRequest request) {
@@ -61,7 +61,7 @@ public class OpenRouterClient {
             IMPORTANTE: Respondé solo en JSON.
             [/INST]
         """, request.getUserInput());
-        return generarPrediccionConPrompt(prompt);
+        return generatePredictionWithPrompt(prompt);
     }
 
     private String generarRawRespuesta(String prompt) {
