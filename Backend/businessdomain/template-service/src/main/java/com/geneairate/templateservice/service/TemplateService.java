@@ -41,7 +41,9 @@ public class TemplateService {
 
     public void updateTemplate(Long id, PromptStyleTemplateRequest dto, String userId) {
         var template = repository.findById(id).orElseThrow();
-        if (!template.getUserId().equals(userId)) throw new SecurityException("No autorizado");
+        if (!template.getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No autorizado");
+        }
         template.setName(dto.getName());
         template.setTone(dto.getTone());
         template.setLanguage(dto.getLanguage());
@@ -52,7 +54,9 @@ public class TemplateService {
 
     public void deleteTemplate(Long id, String userId) {
         var template = repository.findById(id).orElseThrow();
-        if (!template.getUserId().equals(userId)) throw new SecurityException("No autorizado");
+        if (!template.getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No autorizado");
+        }
         repository.delete(template);
     }
 

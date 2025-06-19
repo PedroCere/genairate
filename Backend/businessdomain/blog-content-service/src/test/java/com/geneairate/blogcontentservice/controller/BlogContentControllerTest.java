@@ -54,7 +54,7 @@ public class BlogContentControllerTest {
 
     @Test
     void rewrite_returnsModifiedContent() throws Exception {
-        ModifyContentRequest request = new ModifyContentRequest(1L, "reescribilo en tono casual");
+        ModifyContentRequest request = new ModifyContentRequest(1L, "reescribilo de otra forma");
         ContentResponse response = TestDataFactory.defaultContentResponse();
 
         when(service.reescribirTexto(any())).thenReturn(response);
@@ -155,7 +155,7 @@ public class BlogContentControllerTest {
 
     @Test
     void patch_updatesPartially() throws Exception {
-        BlogArticlePatchRequest patch = BlogArticlePatchRequest.builder().title("Nuevo título").build();
+        BlogArticlePatchRequest patch = BlogArticlePatchRequest.builder().title("New Title").build();
 
         mockMvc.perform(patch("/content/1")
                         .contentType(MediaType.APPLICATION_JSON)

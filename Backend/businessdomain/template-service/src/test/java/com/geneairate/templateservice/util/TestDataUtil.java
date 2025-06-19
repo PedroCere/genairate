@@ -39,4 +39,25 @@ public class TestDataUtil {
         );
     }
 
+    public static PromptStyleTemplate sampleTemplate() {
+        return sampleTemplate(1L, DEFAULT_USER_ID, false);
+    }
+
+    public static PromptStyleTemplateRequest sampleUpdatedRequest() {
+        return PromptStyleTemplateRequest.builder()
+                .name("Updated Template")
+                .tone("casual")
+                .language("es")
+                .length("long")
+                .extraInstructions("Incorpora ejemplos prácticos.")
+                .build();
+    }
+
+    public static PromptStyleTemplate sampleDefaultTemplate(String userId) {
+        return sampleTemplate(999L, userId, true);
+    }
+
+
+
+
 }
