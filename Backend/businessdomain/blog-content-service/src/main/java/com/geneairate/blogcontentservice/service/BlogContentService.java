@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BlogContentService {
 
-    ContentResponse generarContenido(ContentRequest request);
+    ContentResponse generateContent(ContentRequest request);
 
     ContentResponse reescribirTexto(ModifyContentRequest request);
 

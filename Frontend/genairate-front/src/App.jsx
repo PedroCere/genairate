@@ -25,13 +25,13 @@ import HelpPage from './pages/HelpPage';
 import ArticleViewPage from './pages/ArticleViewPage';
 
 import OnboardingPage from './components/OnboardingPage';
-
 import SettingsLayout from './components/settings/SettingsLayout';
 import PreferencesSection from './components/preferences/PreferencesSection';
+import NotificationsSection from './components/preferences/NotificationsSection';
+
 import Layout from './Layout';
 import HomePage from './pages/HomePage';
 import ErrorPage from './components/ErrorPage';
-import NotificationsSection from './components/preferences/NotificationsSection';
 
 import i18n from './i18n';
 import { I18nextProvider } from 'react-i18next';
@@ -72,7 +72,6 @@ function App() {
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   const router = createBrowserRouter([
-    // 🔓 Rutas públicas
     {
       path: '/',
       element: <LandingPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />,
@@ -86,8 +85,6 @@ function App() {
       path: '/register',
       element: <RegisterPage />,
     },
-  
-    // 🔐 Rutas privadas (requieren login)
     {
       path: '/',
       element: (
@@ -119,11 +116,11 @@ function App() {
             { path: 'account', element: <AccountPage /> },
             { path: 'preferences', element: <PreferencesSection /> },
             { path: 'notifications', element: <NotificationsSection /> },
-            { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> }
-          ]
-        }
+            { path: 'security', element: <div className="p-6 text-gray-600 dark:text-gray-400">Próximamente</div> },
+          ],
+        },
       ],
-    }
+    },
   ]);
 
   return (

@@ -104,7 +104,7 @@ export default function HomePage() {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
+    <div className="max-w-7xl mx-auto px-4 py--6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 relative text-gray-900 dark:text-gray-100">
       <div>
         <ArticleTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
