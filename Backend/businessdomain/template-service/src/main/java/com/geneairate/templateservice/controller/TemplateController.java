@@ -19,35 +19,35 @@ public class TemplateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PromptStyleTemplate> getTemplate(@PathVariable Long id) {
+    public ResponseEntity<PromptStyleTemplate> getTemplate(@PathVariable("id") Long id) {
         return ResponseEntity.ok(templateService.getTemplateById(id));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PromptStyleTemplate>> getByUser(@PathVariable String userId) {
+    public ResponseEntity<List<PromptStyleTemplate>> getByUser(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(templateService.getTemplatesByUser(userId));
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<Long> create(@RequestBody PromptStyleTemplateRequest request, @PathVariable String userId) {
+    public ResponseEntity<Long> create(@RequestBody PromptStyleTemplateRequest request, @PathVariable("userId") String userId) {
         return ResponseEntity.ok(templateService.createTemplate(request, userId));
     }
 
     @PutMapping("/{id}/{userId}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @PathVariable String userId,
+    public ResponseEntity<Void> update(@PathVariable("id") Long id, @PathVariable("userId") String userId,
                                        @RequestBody PromptStyleTemplateRequest request) {
         templateService.updateTemplate(id, request, userId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @PathVariable String userId) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id, @PathVariable("userId") String userId) {
         templateService.deleteTemplate(id, userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/default/{userId}")
-    public ResponseEntity<PromptStyleTemplate> getDefaultTemplate(@PathVariable String userId) {
+    public ResponseEntity<PromptStyleTemplate> getDefaultTemplate(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(templateService.getDefaultTemplateForUser(userId));
     }
 

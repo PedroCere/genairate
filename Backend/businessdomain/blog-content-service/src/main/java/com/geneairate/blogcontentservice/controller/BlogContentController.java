@@ -3,6 +3,7 @@ package com.geneairate.blogcontentservice.controller;
 import com.geneairate.blogcontentservice.dto.*;
 import com.geneairate.blogcontentservice.service.BlogContentService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,16 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/content")
+@RequiredArgsConstructor
 public class BlogContentController {
 
     private final BlogContentService service;
 
-    public BlogContentController(BlogContentService blogContentService) {
-        this.service = blogContentService;
-    }
-
     @GetMapping("/user/{userId}/blogs")
-    public ResponseEntity<List<ContentResponse>> getBlogsByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<ContentResponse>> getBlogsByUser(@PathVariable(name = "userId") Long userId) {
         List<ContentResponse> blogs = service.getByUserId(userId);
         return ResponseEntity.ok(blogs);
     }
@@ -27,7 +25,7 @@ public class BlogContentController {
     @PostMapping("/generate")
     public ResponseEntity<ContentResponse> generate(@RequestBody ContentRequest request) {
         System.out.println("Received JSON for generate: " + request);
-        return ResponseEntity.ok(service.generarContenido(request));
+        return ResponseEntity.ok(service.generateContent(request));
     }
 
     @PutMapping("/rewrite")
@@ -51,7 +49,7 @@ public class BlogContentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContentResponse> getById(@Valid @PathVariable Long id) {
+    public ResponseEntity<ContentResponse> getById(@Valid @PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
 
@@ -62,7 +60,7 @@ public class BlogContentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Valid @PathVariable Long id) {
+    public ResponseEntity<Void> delete(@Valid @PathVariable(name = "id") Long id) {
         service.eliminarPorId(id);
         return ResponseEntity.ok().build();
     }
@@ -80,7 +78,7 @@ public class BlogContentController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> patchBlog(@Valid @PathVariable Long id, @RequestBody BlogArticlePatchRequest patch) {
+    public ResponseEntity<Void> patchBlog(@Valid @PathVariable(name = "id") Long id, @RequestBody BlogArticlePatchRequest patch) {
         service.partialUpdate(id, patch);
         return ResponseEntity.noContent().build();
     }
